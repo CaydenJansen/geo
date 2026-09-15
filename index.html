@@ -8943,6 +8943,530 @@
   .session-step-body .play-mode-picker { grid-template-columns:1fr !important; }
   .session-step-body .start-options { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
 }
+/* ---------- v10.5 mobile overflow hardening ---------- */
+/* Compact controls should adapt to the available width rather than allowing
+   labels to escape their own button/card. Keep this stylesheet last. */
+button,
+.start-option,
+.play-mode-button,
+.country-pool-button,
+.country-set-button,
+.menu-tune-button,
+.session-step-summary,
+.session-step-body,
+.challenge-row,
+.matching-field-option {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.start-option-name,
+.start-option-meta,
+.play-mode-name,
+.play-mode-meta,
+.country-pool-name,
+.country-pool-meta,
+.country-set-name,
+.country-set-meta,
+.session-step-label,
+.session-step-value,
+.challenge-name,
+.challenge-desc,
+.menu-tune-button,
+.settings-section-title,
+.settings-section-subtitle {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* Session length is intentionally one compact row on ordinary phones. Scale
+   the labels to fit that row; very narrow phones already fall back to 2 × 2. */
+@media (max-width: 520px) {
+  .session-step-body .start-option {
+    min-width: 0 !important;
+    padding-inline: 4px !important;
+  }
+  .session-step-body .start-option-name {
+    width: 100%;
+    font-size: clamp(.72rem, 3.25vw, .92rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -.02em !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+  #unlimitedStartBtn .start-option-name {
+    font-size: clamp(.68rem, 3vw, .82rem) !important;
+    letter-spacing: -.035em !important;
+  }
+
+  /* Defensive wrapping for labels in all compact setup choices. */
+  .session-step-body .play-mode-name,
+  .session-step-body .country-pool-name,
+  .session-step-body .country-set-name {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    line-height: 1.08;
+  }
+}
+
+/* On especially narrow devices prefer legibility over squeezing four choices
+   into one row. */
+@media (max-width: 400px) {
+  .session-step-body .start-options {
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+  }
+  .session-step-body .start-option-name,
+  #unlimitedStartBtn .start-option-name {
+    font-size: .9rem !important;
+    overflow-wrap: normal;
+  }
+}
+
+/* Headers/actions must never force their parent panel wider than the viewport. */
+.start-head > *,
+.settings-head > *,
+.mastery-head > *,
+.mastery-map-head > *,
+.search-head > *,
+.matching-head > * {
+  min-width: 0;
+}
+
+@media (max-width: 420px) {
+  .start-close,
+  .settings-close,
+  .mastery-close,
+  .mastery-map-close,
+  .search-close,
+  .matching-close {
+    max-width: 42%;
+    white-space: normal !important;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+  }
+}
+/* ---------- v10.6 Detective mode ---------- */
+.detective-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  display: none;
+  align-items: stretch;
+  justify-content: center;
+  padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  background: rgba(25,22,16,.34);
+  backdrop-filter: blur(12px);
+}
+.detective-overlay.open { display: flex; }
+.detective-panel {
+  width: min(720px, 100%);
+  min-width: 0;
+  max-height: calc(100dvh - 20px);
+  overflow: auto;
+  border: 1px solid rgba(23,23,23,.10);
+  border-radius: 26px;
+  padding: 16px;
+  background: var(--panel);
+  box-shadow: var(--shadow-panel, 0 24px 70px rgba(0,0,0,.18));
+}
+.detective-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.detective-head-copy { min-width: 0; }
+.detective-eyebrow {
+  color: #725424;
+  font-size: .64rem;
+  font-weight: 950;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.detective-title {
+  margin: 2px 0 0;
+  font-size: clamp(1.55rem, 6vw, 2.2rem);
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+.detective-round-status { margin-top: 5px; color: var(--muted); font-size: .73rem; font-weight: 780; }
+.detective-menu {
+  flex: 0 0 auto;
+  min-width: 64px;
+  min-height: 42px;
+  border: 1px solid rgba(23,23,23,.12);
+  border-radius: 13px;
+  padding: 0 12px;
+  background: rgba(255,255,255,.58);
+  color: var(--text);
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 880;
+  cursor: pointer;
+}
+.detective-case-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 11px;
+  padding: 8px 10px;
+  border: 1px solid rgba(154,109,35,.16);
+  border-radius: 13px;
+  background: rgba(210,165,76,.09);
+  color: #6f5428;
+  font-size: .7rem;
+  font-weight: 880;
+}
+.detective-loading {
+  min-height: 200px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 800;
+}
+.detective-clues { display: grid; gap: 9px; }
+.detective-clue-card {
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(23,23,23,.09);
+  border-radius: 15px;
+  background: rgba(255,255,255,.42);
+  animation: detectiveClueIn 220ms cubic-bezier(.2,.85,.25,1) both;
+}
+.detective-clue-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.detective-clue-number {
+  color: #8a6a31;
+  font-size: .58rem;
+  font-weight: 950;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.detective-clue-label { color: var(--muted); font-size: .62rem; font-weight: 860; }
+.detective-clue-value {
+  margin-top: 5px;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.detective-clue-visual {
+  margin-top: 8px;
+  min-height: 128px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(244,241,233,.78);
+}
+.detective-clue-visual img {
+  display: block;
+  max-width: min(280px, 82%);
+  max-height: 142px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 7px 22px rgba(0,0,0,.10);
+}
+.detective-clue-visual svg { width: 100%; height: 170px; display: block; }
+.detective-reveal {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 10px;
+  border: 1px solid rgba(154,109,35,.24);
+  border-radius: 14px;
+  background: rgba(210,165,76,.12);
+  color: #6f5428;
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.detective-guess-card {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  margin-top: 11px;
+  padding: 12px;
+  border: 1px solid rgba(23,23,23,.10);
+  border-radius: 17px;
+  background: rgba(255,255,255,.52);
+}
+.detective-guess-label { display:block; margin-bottom:7px; font-size:.66rem; font-weight:900; color:var(--muted); }
+.detective-guess-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; }
+.detective-input {
+  min-width: 0;
+  width: 100%;
+  min-height: 46px;
+  border: 1.5px solid rgba(23,23,23,.14);
+  border-radius: 13px;
+  padding: 0 12px;
+  background: rgba(255,255,255,.85);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 780;
+  outline: none;
+}
+.detective-input:focus { border-color: rgba(40,100,240,.55); box-shadow:0 0 0 3px rgba(40,100,240,.10); }
+.detective-guess-button {
+  min-width: 80px;
+  min-height: 46px;
+  border: 0;
+  border-radius: 13px;
+  padding: 0 15px;
+  background: var(--accent);
+  color: white;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 920;
+  cursor: pointer;
+}
+.detective-suggestions {
+  position: absolute;
+  left: 12px;
+  right: 100px;
+  bottom: calc(100% - 12px);
+  z-index: 4;
+  max-height: min(260px, 36dvh);
+  overflow: auto;
+  border: 1px solid rgba(23,23,23,.12);
+  border-radius: 13px;
+  padding: 5px;
+  background: #fbfaf6;
+  box-shadow: 0 14px 36px rgba(0,0,0,.16);
+}
+.detective-suggestions.hidden { display:none; }
+.detective-suggestion {
+  display:block;
+  width:100%;
+  min-height:38px;
+  border:0;
+  border-radius:9px;
+  padding:7px 9px;
+  background:transparent;
+  color:var(--text);
+  text-align:left;
+  font:inherit;
+  font-size:.78rem;
+  font-weight:800;
+  cursor:pointer;
+}
+.detective-suggestion.active,
+.detective-suggestion:hover { background:rgba(40,100,240,.09); }
+.detective-feedback { min-height: 20px; margin-top: 7px; font-size:.72rem; font-weight:820; line-height:1.25; }
+.detective-feedback.wrong { color:#9a3f35; }
+.detective-feedback.near { color:#8a641d; }
+.detective-feedback.correct { color:#237244; }
+.detective-give-up {
+  margin-top: 3px;
+  border:0;
+  padding:5px 0;
+  background:transparent;
+  color:var(--muted);
+  font:inherit;
+  font-size:.68rem;
+  font-weight:800;
+  cursor:pointer;
+}
+.detective-result {
+  margin-top: 11px;
+  padding: 16px;
+  border: 1px solid rgba(41,122,74,.20);
+  border-radius: 18px;
+  background: rgba(41,122,74,.08);
+  text-align: center;
+}
+.detective-result.missed { border-color:rgba(154,63,53,.18); background:rgba(154,63,53,.06); }
+.detective-result-kicker { color:var(--muted); font-size:.62rem; font-weight:950; letter-spacing:.08em; text-transform:uppercase; }
+.detective-answer { margin-top:3px; font-size:1.7rem; font-weight:950; letter-spacing:-.035em; }
+.detective-result-points { margin-top:4px; color:#257446; font-size:.84rem; font-weight:900; }
+.detective-result.missed .detective-result-points { color:#9a3f35; }
+.detective-next {
+  width:100%;
+  min-height:48px;
+  margin-top:12px;
+  border:0;
+  border-radius:14px;
+  background:var(--accent);
+  color:white;
+  font:inherit;
+  font-size:.86rem;
+  font-weight:920;
+  cursor:pointer;
+}
+.detective-complete { padding: 20px 8px 8px; text-align:center; }
+.detective-complete-eyebrow { color:#8a6a31; font-size:.64rem; font-weight:950; letter-spacing:.12em; text-transform:uppercase; }
+.detective-complete-title { margin:5px 0 0; font-size:2rem; line-height:1; letter-spacing:-.04em; }
+.detective-complete-score { margin-top:12px; font-size:1.18rem; font-weight:950; }
+.detective-complete-meta { margin-top:5px; color:var(--muted); font-size:.76rem; font-weight:760; line-height:1.35; }
+.detective-complete .detective-next { max-width:320px; }
+@keyframes detectiveClueIn {
+  from { opacity:0; transform:translateY(7px) scale(.992); }
+  to { opacity:1; transform:none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .detective-clue-card { animation:none; }
+}
+@media (max-width:520px) {
+  .detective-overlay { padding:max(6px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left)); }
+  .detective-panel { max-height:calc(100dvh - 12px); border-radius:19px; padding:12px; }
+  .detective-head { gap:8px; }
+  .detective-menu { min-width:58px; min-height:40px; padding-inline:9px; }
+  .detective-case-meta { font-size:.64rem; }
+  .detective-clue-card { padding:10px; }
+  .detective-clue-value { font-size:.93rem; }
+  .detective-clue-visual { min-height:112px; }
+  .detective-clue-visual svg { height:145px; }
+  .detective-guess-row { grid-template-columns:minmax(0,1fr) 74px; }
+  .detective-guess-button { min-width:0; padding-inline:8px; }
+  .detective-suggestions { right:90px; }
+  .session-step-body .play-mode-picker { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+}
+@media (max-width:350px) {
+  .detective-guess-row { grid-template-columns:1fr; }
+  .detective-guess-button { width:100%; }
+  .detective-suggestions { right:12px; }
+}
+.session-step-body .play-mode-picker { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+
+.detective-mode-button {
+  border-color:rgba(154,109,35,.16) !important;
+  background:rgba(210,165,76,.055) !important;
+}
+.detective-mode-button.active {
+  border-color:rgba(154,109,35,.48) !important;
+  background:rgba(210,165,76,.20) !important;
+  color:#5f471e !important;
+  box-shadow:inset 0 0 0 1px rgba(154,109,35,.07) !important;
+}
+.detective-mode-button.active .play-mode-name,
+.detective-mode-button.active .play-mode-meta { color:#5f471e !important; }
+
+.detective-overlay.open { animation:polishOverlayIn 180ms ease both; }
+.detective-overlay.open .detective-panel { animation:polishPanelIn 220ms var(--ease-out) both; transform-origin:50% 45%; }
+@media (prefers-reduced-motion: reduce) {
+  .detective-overlay.open, .detective-overlay.open .detective-panel { animation:none !important; }
+}
+/* ---------- v10.7 Rapid Fire mode ---------- */
+.rapid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 191;
+  display: none;
+  align-items: stretch;
+  justify-content: center;
+  padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  background: rgba(22,25,31,.34);
+  backdrop-filter: blur(12px);
+}
+.rapid-overlay.open { display:flex; }
+.rapid-panel {
+  width:min(720px,100%);
+  min-width:0;
+  max-height:calc(100dvh - 20px);
+  overflow:auto;
+  border:1px solid rgba(23,23,23,.10);
+  border-radius:26px;
+  padding:16px;
+  background:var(--panel);
+  box-shadow:var(--shadow-panel,0 24px 70px rgba(0,0,0,.18));
+}
+.rapid-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.rapid-head-copy { min-width:0; }
+.rapid-eyebrow { color:#285aa8; font-size:.64rem; font-weight:950; letter-spacing:.13em; text-transform:uppercase; }
+.rapid-title { margin:2px 0 0; font-size:clamp(1.55rem,6vw,2.2rem); line-height:1; letter-spacing:-.04em; }
+.rapid-round-status { margin-top:5px; color:var(--muted); font-size:.73rem; font-weight:780; }
+.rapid-menu {
+  flex:0 0 auto; min-width:64px; min-height:42px; border:1px solid rgba(23,23,23,.12); border-radius:13px;
+  padding:0 12px; background:rgba(255,255,255,.58); color:var(--text); font:inherit; font-size:.78rem; font-weight:880; cursor:pointer;
+}
+.rapid-scorebar {
+  display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; padding:8px 10px;
+  border:1px solid rgba(40,100,240,.15); border-radius:13px; background:rgba(40,100,240,.06); color:#31588f; font-size:.7rem; font-weight:900;
+}
+.rapid-question-card {
+  min-width:0; padding:14px; border:1px solid rgba(23,23,23,.09); border-radius:20px; background:rgba(255,255,255,.43);
+}
+.rapid-kicker { color:#315f9d; font-size:.62rem; font-weight:950; letter-spacing:.1em; text-transform:uppercase; }
+.rapid-question { margin-top:4px; font-size:clamp(1.18rem,5vw,1.6rem); font-weight:950; line-height:1.08; letter-spacing:-.025em; overflow-wrap:anywhere; }
+.rapid-cue {
+  margin-top:13px; min-height:152px; display:grid; place-items:center; overflow:hidden; border-radius:16px; background:rgba(242,244,248,.78);
+}
+.rapid-cue-text { padding:20px 12px; font-size:clamp(1.65rem,9vw,3.1rem); font-weight:950; line-height:1.02; text-align:center; letter-spacing:-.045em; overflow-wrap:anywhere; }
+.rapid-cue img { display:block; max-width:min(340px,88%); max-height:190px; object-fit:contain; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.10); }
+.rapid-cue svg { width:100%; height:210px; display:block; }
+.rapid-answer-area { margin-top:13px; }
+.rapid-text-panel { position:relative; min-width:0; overflow:visible; }
+.rapid-text-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:stretch; }
+.rapid-input {
+  width:100%; min-width:0; min-height:48px; border:1px solid rgba(23,23,23,.14); border-radius:13px; padding:0 13px; background:rgba(255,255,255,.76); color:var(--text); font:inherit; font-size:.95rem; font-weight:760; outline:none;
+}
+.rapid-input:focus { border-color:rgba(40,100,240,.55); box-shadow:0 0 0 3px rgba(40,100,240,.10); }
+.rapid-check, .rapid-next {
+  min-height:48px; border:1px solid var(--accent); border-radius:13px; padding:0 16px; background:var(--accent); color:white; font:inherit; font-size:.82rem; font-weight:920; cursor:pointer;
+}
+.rapid-suggestions {
+  position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:40; margin-top:0;
+  max-height:var(--rapid-suggestions-max,220px); overflow:auto; border:1px solid rgba(23,23,23,.10); border-radius:12px; padding:5px; background:#f7f4ec; box-shadow:0 12px 32px rgba(0,0,0,.12); overscroll-behavior:contain;
+}
+.rapid-suggestions.drop-up { top:auto; bottom:calc(100% + 6px); }
+.rapid-suggestion { width:100%; min-height:38px; border:0; border-radius:9px; padding:7px 9px; background:transparent; color:var(--text); font:inherit; font-size:.82rem; font-weight:800; text-align:left; cursor:pointer; }
+.rapid-suggestion.active, .rapid-suggestion:hover { background:rgba(40,100,240,.10); }
+.rapid-choice-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+.rapid-choice {
+  min-width:0; min-height:118px; border:1px solid rgba(23,23,23,.11); border-radius:15px; padding:9px; background:rgba(255,255,255,.66); cursor:pointer; display:grid; place-items:center; gap:6px; overflow:hidden;
+}
+.rapid-choice img { width:100%; max-height:92px; object-fit:contain; border-radius:7px; }
+.rapid-choice svg { width:100%; height:92px; display:block; }
+.rapid-choice-label { display:none; max-width:100%; color:var(--muted); font-size:.66rem; font-weight:900; text-align:center; overflow-wrap:anywhere; }
+.rapid-choice-grid.reveal-labels .rapid-choice-label { display:block; }
+.rapid-choice.correct { border-color:rgba(41,122,74,.48); background:rgba(41,122,74,.10); }
+.rapid-choice.wrong { border-color:rgba(183,75,64,.50); background:rgba(183,75,64,.10); }
+.rapid-feedback { min-height:24px; margin-top:8px; font-size:.76rem; font-weight:850; line-height:1.3; }
+.rapid-feedback.correct { color:#257446; }
+.rapid-feedback.wrong { color:#9b3e35; }
+.rapid-feedback.near { color:#8a641d; }
+.rapid-reveal {
+  margin-top:7px; min-height:38px; border:0; padding:0 4px; background:transparent; color:var(--muted); font:inherit; font-size:.7rem; font-weight:850; cursor:pointer;
+}
+.rapid-result { margin-top:13px; padding:12px; border:1px solid rgba(23,23,23,.08); border-radius:15px; background:rgba(255,255,255,.48); }
+.rapid-result-kicker { color:var(--muted); font-size:.6rem; font-weight:950; letter-spacing:.09em; text-transform:uppercase; }
+.rapid-answer { margin-top:3px; font-size:1.25rem; font-weight:950; line-height:1.1; overflow-wrap:anywhere; }
+.rapid-result-meta { margin:5px 0 10px; color:var(--muted); font-size:.72rem; font-weight:800; }
+.rapid-complete { padding:24px 8px 14px; text-align:center; }
+.rapid-complete-eyebrow { color:#315f9d; font-size:.64rem; font-weight:950; letter-spacing:.1em; text-transform:uppercase; }
+.rapid-complete-title { margin:5px 0 0; font-size:1.75rem; letter-spacing:-.04em; }
+.rapid-complete-score { margin-top:12px; font-size:2.5rem; font-weight:950; letter-spacing:-.05em; }
+.rapid-complete-meta { margin:6px auto 16px; max-width:430px; color:var(--muted); font-size:.78rem; font-weight:780; line-height:1.4; }
+.rapid-mode-button { border-color:rgba(40,100,240,.16) !important; background:rgba(40,100,240,.045) !important; }
+.rapid-mode-button.active { border-color:rgba(40,100,240,.48) !important; background:rgba(40,100,240,.14) !important; box-shadow:inset 0 0 0 1px rgba(40,100,240,.08); }
+.rapid-mode-button.active .play-mode-name, .rapid-mode-button.active .play-mode-meta { color:#31588f !important; }
+@media (max-width:520px) {
+  .rapid-overlay { padding:max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left)); }
+  .rapid-panel { max-height:calc(100dvh - 12px); border-radius:20px; padding:12px; }
+  .rapid-title { font-size:1.55rem; }
+  .rapid-menu { min-height:40px; min-width:58px; padding-inline:10px; }
+  .rapid-question-card { padding:11px; border-radius:17px; }
+  .rapid-cue { min-height:132px; }
+  .rapid-cue svg { height:180px; }
+  .rapid-text-row { grid-template-columns:minmax(0,1fr) 74px; }
+  .rapid-check { padding-inline:8px; }
+  .rapid-choice { min-height:104px; padding:7px; }
+  .rapid-choice img, .rapid-choice svg { max-height:78px; height:78px; }
+}
+@media (max-width:340px) {
+  .rapid-choice-grid { grid-template-columns:1fr; }
+  .rapid-scorebar { align-items:flex-start; flex-direction:column; gap:3px; }
+}
 </style>
 </head>
 
@@ -9184,6 +9708,14 @@
               <button class="play-mode-button" id="matchingModeBtn" type="button" data-play-mode="matching" aria-pressed="false">
                 <span class="play-mode-name">Matching</span>
                 <span class="play-mode-meta">Match facts across a country board</span>
+              </button>
+              <button class="play-mode-button detective-mode-button" id="detectiveModeBtn" type="button" data-play-mode="detective" aria-pressed="false">
+                <span class="play-mode-name">Detective</span>
+                <span class="play-mode-meta">Reveal clues until you can identify the country</span>
+              </button>
+              <button class="play-mode-button rapid-mode-button" id="rapidModeBtn" type="button" data-play-mode="rapid" aria-pressed="false">
+                <span class="play-mode-name">Rapid Fire</span>
+                <span class="play-mode-meta">One mixed question at a time</span>
               </button>
             </div></div>
             </details>
@@ -9488,6 +10020,111 @@
             <button class="matching-new-round matching-next-round hidden" id="matchingNewRoundBtn" type="button">Continue →</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="detective-overlay" id="detectiveOverlay" role="dialog" aria-modal="true" aria-labelledby="detectiveTitle">
+    <div class="detective-panel">
+      <div class="detective-head">
+        <div class="detective-head-copy">
+          <div class="detective-eyebrow">Detective</div>
+          <h2 class="detective-title" id="detectiveTitle">Identify the country</h2>
+          <div class="detective-round-status" id="detectiveRoundStatus">Case 1</div>
+        </div>
+        <button class="detective-menu" id="detectiveMenuBtn" type="button">Menu</button>
+      </div>
+
+      <div class="detective-case-meta">
+        <span id="detectivePointsAvailable">100 pts available</span>
+        <span id="detectiveClueCounter">Building clues</span>
+      </div>
+
+      <div class="detective-loading" id="detectiveLoading">Preparing case…</div>
+
+      <div class="detective-case hidden" id="detectiveCase">
+        <div class="detective-clues" id="detectiveClues"></div>
+        <button class="detective-reveal" id="detectiveRevealBtn" type="button">Reveal another clue</button>
+
+        <div class="detective-guess-card" id="detectiveGuessCard">
+          <label class="detective-guess-label" for="detectiveInput">Make your guess</label>
+          <div class="detective-guess-row">
+            <input class="detective-input" id="detectiveInput" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Type a country…" aria-label="Guess the country" />
+            <button class="detective-guess-button" id="detectiveGuessBtn" type="button">Guess</button>
+          </div>
+          <div class="detective-suggestions hidden" id="detectiveSuggestions" role="listbox" aria-label="Country suggestions"></div>
+          <div class="detective-feedback" id="detectiveFeedback" aria-live="polite"></div>
+          <button class="detective-give-up" id="detectiveGiveUpBtn" type="button">Give up and reveal the answer</button>
+        </div>
+
+        <div class="detective-result hidden" id="detectiveResult">
+          <div class="detective-result-kicker" id="detectiveResultKicker">Case solved</div>
+          <div class="detective-answer" id="detectiveAnswer"></div>
+          <div class="detective-result-points" id="detectiveResultPoints"></div>
+          <button class="detective-next" id="detectiveNextBtn" type="button">Next case →</button>
+        </div>
+      </div>
+
+      <div class="detective-complete hidden" id="detectiveComplete">
+        <div class="detective-complete-eyebrow">Casebook complete</div>
+        <h3 class="detective-complete-title">Session complete.</h3>
+        <div class="detective-complete-score" id="detectiveCompleteScore">0 points</div>
+        <div class="detective-complete-meta" id="detectiveCompleteMeta"></div>
+        <button class="detective-next" id="detectiveBackToMenuBtn" type="button">Back to menu</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="rapid-overlay" id="rapidOverlay" role="dialog" aria-modal="true" aria-labelledby="rapidTitle">
+    <div class="rapid-panel">
+      <div class="rapid-head">
+        <div class="rapid-head-copy">
+          <div class="rapid-eyebrow">Rapid Fire</div>
+          <h2 class="rapid-title" id="rapidTitle">Mixed recall</h2>
+          <div class="rapid-round-status" id="rapidRoundStatus">Question 1</div>
+        </div>
+        <button class="rapid-menu" id="rapidMenuBtn" type="button">Menu</button>
+      </div>
+
+      <div class="rapid-scorebar">
+        <span id="rapidScore">0/0 correct</span>
+        <span id="rapidStreak">0 streak</span>
+      </div>
+
+      <div class="rapid-question-card" id="rapidQuestionCard">
+        <div class="rapid-kicker" id="rapidKicker">FLAG → COUNTRY</div>
+        <div class="rapid-question" id="rapidQuestion">Which country is this?</div>
+        <div class="rapid-cue" id="rapidCue"></div>
+
+        <div class="rapid-answer-area">
+          <div class="rapid-text-panel" id="rapidTextPanel">
+            <div class="rapid-text-row">
+              <input class="rapid-input" id="rapidInput" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" aria-label="Type your answer" />
+              <button class="rapid-check" id="rapidCheckBtn" type="button">Check</button>
+            </div>
+            <div class="rapid-suggestions hidden" id="rapidSuggestions" role="listbox" aria-label="Possible answers"></div>
+          </div>
+          <div class="rapid-choice-grid hidden" id="rapidChoiceGrid"></div>
+          <div class="rapid-feedback" id="rapidFeedback" aria-live="polite"></div>
+          <button class="rapid-reveal" id="rapidRevealBtn" type="button">Reveal answer</button>
+        </div>
+
+        <div class="rapid-result hidden" id="rapidResult">
+          <div class="rapid-result-kicker" id="rapidResultKicker">Correct</div>
+          <div class="rapid-answer" id="rapidAnswer"></div>
+          <div class="rapid-result-meta" id="rapidResultMeta"></div>
+          <button class="rapid-next" id="rapidNextBtn" type="button">Next question →</button>
+        </div>
+      </div>
+
+      <div class="rapid-complete hidden" id="rapidComplete">
+        <div class="rapid-complete-eyebrow">Rapid Fire complete</div>
+        <h3 class="rapid-complete-title">Session complete.</h3>
+        <div class="rapid-complete-score" id="rapidCompleteScore">0%</div>
+        <div class="rapid-complete-meta" id="rapidCompleteMeta"></div>
+        <button class="rapid-next" id="rapidBackToMenuBtn" type="button">Back to menu</button>
       </div>
     </div>
   </div>
@@ -10493,6 +11130,8 @@
     let lookupReturnLiveGameplayState = null;
     let lookupReturnToStart = false;
     let lookupReturnToMatching = false;
+    let lookupReturnToDetective = false;
+    let lookupReturnToRapid = false;
     let searchLaunchedFromStart = false;
     let searchReturnMenuAllowClose = null;
     let matchingReturnMenuAllowClose = false;
@@ -10512,7 +11151,7 @@
       : (selectedSessionMode === "finite" ? 5 : null);
     let matchingBuildToken = 0;
     const savedPlayMode = localStorage.getItem(PLAY_MODE_KEY);
-    let menuPlayMode = ["standard", "interactive", "matching"].includes(savedPlayMode) ? savedPlayMode : "standard";
+    let menuPlayMode = ["standard", "interactive", "matching", "detective", "rapid"].includes(savedPlayMode) ? savedPlayMode : "standard";
     const savedCountryPool = localStorage.getItem(COUNTRY_POOL_KEY);
     let selectedCountryPool = ["random", "fresh", "weakest", "due"].includes(savedCountryPool)
       ? savedCountryPool
@@ -10820,7 +11459,7 @@
           mode,
           pool,
           countrySet,
-          interaction: ["matching", "interactive"].includes(saved.interaction) ? saved.interaction : "standard",
+          interaction: ["matching", "interactive", "detective", "rapid"].includes(saved.interaction) ? saved.interaction : "standard",
           limit: Number.isInteger(limit) && limit > 0 ? Math.min(countries.length, limit) : null,
           poolCount: Number.isInteger(poolCount) && poolCount >= 0
             ? Math.min(countries.length, poolCount)
@@ -10838,7 +11477,9 @@
             : {},
           summary: normalizeSessionSummary(saved.summary),
           matchingCursor: Math.max(0, Number(saved.matchingCursor) || 0),
-          matchingRoundNo: Math.max(0, Number(saved.matchingRoundNo) || 0)
+          matchingRoundNo: Math.max(0, Number(saved.matchingRoundNo) || 0),
+          detective: saved.detective && typeof saved.detective === "object" ? saved.detective : null,
+          rapid: saved.rapid && typeof saved.rapid === "object" ? saved.rapid : null
         };
       } catch (_) {
         return null;
@@ -10911,7 +11552,7 @@
 
       const lifetimeTotal = Number(rec?.lifetimeTotal) || 0;
       const stageStats = Object.values(rec?.stageStats || {}).filter(s => Number(s?.attempts) > 0);
-      return lifetimeTotal > 0 || stageStats.length > 0 || Number(rec?.attempts) > 0;
+      return lifetimeTotal > 0 || stageStats.length > 0 || Number(rec?.attempts) > 0 || Number(rec?.detectiveAttempts) > 0;
     }
 
     function freshCountryIndices() {
@@ -10949,12 +11590,25 @@
 
           const lifetimeTotal = Number(rec?.lifetimeTotal) || 0;
           const stageStats = Object.values(rec?.stageStats || {}).filter(s => Number(s?.attempts) > 0);
-          const hasHistory = lifetimeTotal > 0 || stageStats.length > 0 || Number(rec?.attempts) > 0;
-          if (!hasHistory) return null;
+          const scoredAttempts = Number(rec?.attempts) || 0;
+          const detectiveAttempts = Number(rec?.detectiveAttempts) || 0;
+          const hasScoredHistory = lifetimeTotal > 0 || stageStats.length > 0 || scoredAttempts > 0;
+          const hasDetectiveHistory = detectiveAttempts > 0;
+          if (!hasScoredHistory && !hasDetectiveHistory) return null;
 
+          // Fact-level results remain authoritative whenever they exist. Detective
+          // accuracy is only a fallback so a player who has studied exclusively in
+          // Detective can still use the Weakest strategy instead of falling into a
+          // gap between Fresh and Weakest.
+          const detectiveScoreTotal = Number(rec?.detectiveScoreTotal);
+          const detectiveAccuracy = hasDetectiveHistory
+            ? Number.isFinite(detectiveScoreTotal) && detectiveScoreTotal >= 0
+              ? Math.max(0, Math.min(1, detectiveScoreTotal / (detectiveAttempts * 100)))
+              : (Number(rec.detectiveCorrect) || 0) / detectiveAttempts
+            : 1;
           const lifetimeAccuracy = lifetimeTotal > 0
             ? (Number(rec.lifetimeCorrect) || 0) / lifetimeTotal
-            : 1;
+            : hasScoredHistory ? 1 : detectiveAccuracy;
           const stageAccuracies = stageStats.map(s => (Number(s.correct) || 0) / Math.max(1, Number(s.attempts) || 1));
           const worstStage = stageAccuracies.length ? Math.min(...stageAccuracies) : lifetimeAccuracy;
           const lastScore = Number.isFinite(Number(rec?.lastScore)) ? Number(rec.lastScore) : lifetimeAccuracy;
@@ -10965,7 +11619,7 @@
             lifetimeAccuracy,
             lastScore,
             level: Number(rec?.level) || 0,
-            attempts: Number(rec?.attempts) || 0
+            attempts: scoredAttempts + (hasScoredHistory ? 0 : detectiveAttempts)
           };
         })
         .filter(Boolean)
@@ -11280,6 +11934,8 @@
     }
 
     function challengeSetSummaryForMode(mode = menuPlayMode) {
+      if (mode === "detective") return "Progressive clues";
+      if (mode === "rapid") return "Mixed questions";
       const state = challengeSetStateForMode(mode);
       const count = enabledChallengeKeysForMode(mode).length;
       return `${challengeSetDisplayName(state)} · ${count} challenge${count === 1 ? "" : "s"}`;
@@ -11291,6 +11947,8 @@
     }
 
     function challengeSetNamesForMode(mode = menuPlayMode, max = 4) {
+      if (mode === "detective") return "Clues become more revealing as the case unfolds";
+      if (mode === "rapid") return "Flags, capitals, silhouettes and more";
       const names = enabledChallengeKeysForMode(mode).map(key => challengeNameForMode(key, mode));
       if (names.length <= max) return names.join(" · ");
       return `${names.slice(0, max - 1).join(" · ")} + ${names.length - (max - 1)} more`;
@@ -11311,6 +11969,8 @@
     function modeDisplayName(mode = menuPlayMode) {
       if (mode === "matching") return "Matching";
       if (mode === "interactive") return "Interactive";
+      if (mode === "detective") return "Detective";
+      if (mode === "rapid") return "Rapid Fire";
       return "Flash card";
     }
 
@@ -11321,8 +11981,13 @@
       return "Random";
     }
 
+    function sessionUnitLabel(mode = menuPlayMode, count = 2) {
+      const singular = mode === "rapid" ? "question" : mode === "detective" ? "case" : "country";
+      return count === 1 ? singular : `${singular}s`;
+    }
+
     function sessionChoiceLabel(mode, limit = null) {
-      if (mode === "finite") return `${limit} countries`;
+      if (mode === "finite") return `${limit} ${sessionUnitLabel(menuPlayMode, Number(limit) || 0)}`;
       if (mode === "unlimited") return "Unlimited";
       return "";
     }
@@ -11340,6 +12005,9 @@
       const requested = Number(selectedSessionLimit) || 5;
       const available = countryPoolAvailableCount(selectedCountryPool, selectedCountrySet);
       const effective = Math.min(requested, available);
+      if (["rapid", "detective"].includes(menuPlayMode)) {
+        return effective < requested ? `${effective} available` : `${requested} ${sessionUnitLabel(menuPlayMode, requested)}`;
+      }
       return effective < requested ? `${effective} available` : `${requested} countries`;
     }
 
@@ -11357,6 +12025,8 @@
       const setName = countrySetDisplayName();
       const lengthName = startMenuLengthLabel();
       const challengeSummary = challengeSetSummaryForMode(menuPlayMode);
+      const challengeStep = document.querySelector('[data-session-step="challenges"]');
+      if (challengeStep) challengeStep.classList.toggle("hidden", ["detective", "rapid"].includes(menuPlayMode));
 
       if (primary) primary.textContent = `${modeName} · ${poolName}`;
       if (secondary) secondary.textContent = `${lengthName} · ${setName}`;
@@ -11456,7 +12126,7 @@
       // Smart Review is targeted, fact-level practice. Matching deliberately
       // remains a broad association exercise, so switch to Flash card if a
       // previously selected Matching mode conflicts with Smart Review.
-      if (pool === "due" && menuPlayMode === "matching") {
+      if (pool === "due" && ["matching", "detective", "rapid"].includes(menuPlayMode)) {
         menuPlayMode = "standard";
         localStorage.setItem(PLAY_MODE_KEY, menuPlayMode);
       }
@@ -11467,17 +12137,17 @@
     function updatePlayModePicker() {
       const smartReviewSelected = selectedCountryPool === "due";
 
-      if (smartReviewSelected && menuPlayMode === "matching") {
+      if (smartReviewSelected && ["matching", "detective", "rapid"].includes(menuPlayMode)) {
         menuPlayMode = "standard";
         localStorage.setItem(PLAY_MODE_KEY, menuPlayMode);
       }
 
       playModePicker?.querySelectorAll("[data-play-mode]").forEach(button => {
         const mode = button.dataset.playMode;
-        const unavailable = smartReviewSelected && mode === "matching";
+        const unavailable = smartReviewSelected && ["matching", "detective", "rapid"].includes(mode);
         button.disabled = unavailable;
         button.classList.toggle("mode-unavailable", unavailable);
-        button.title = unavailable ? "Matching is not available for targeted Smart Review" : "";
+        button.title = unavailable ? `${modeDisplayName(mode)} is not available for targeted Smart Review` : "";
         const active = mode === menuPlayMode;
         button.classList.toggle("active", active);
         button.setAttribute("aria-pressed", active ? "true" : "false");
@@ -11489,7 +12159,7 @@
           const facts = dueFactCount(due);
           playModeNote.innerHTML = `
             <div class="play-mode-note-count">${facts} due fact${facts === 1 ? "" : "s"} in ${countrySetDisplayName()}</div>
-            <div class="play-mode-note-sub">Smart Review uses Flash card or Interactive · Matching is unavailable</div>
+            <div class="play-mode-note-sub">Smart Review uses Flash card or Interactive · Matching, Detective and Rapid Fire are unavailable</div>
           `;
         } else {
           const setSummary = challengeSetSummaryForMode(menuPlayMode);
@@ -11568,8 +12238,8 @@
     }
 
     function setMenuPlayMode(mode) {
-      if (selectedCountryPool === "due" && mode === "matching") return;
-      menuPlayMode = ["matching", "interactive"].includes(mode) ? mode : "standard";
+      if (selectedCountryPool === "due" && ["matching", "detective", "rapid"].includes(mode)) return;
+      menuPlayMode = ["matching", "interactive", "detective", "rapid"].includes(mode) ? mode : "standard";
       localStorage.setItem(PLAY_MODE_KEY, menuPlayMode);
       updatePlayModePicker();
     }
@@ -11595,6 +12265,12 @@
       if (studySession?.interaction === "matching" && studySession?.active !== false) {
         matchingOverlay.classList.add("open");
         if (!matchingState) startMatchingRound();
+      } else if (studySession?.interaction === "detective" && studySession?.active !== false) {
+        detectiveOverlay?.classList.add("open");
+        prepareDetectiveRound(false);
+      } else if (studySession?.interaction === "rapid" && studySession?.active !== false) {
+        rapidOverlay?.classList.add("open");
+        rapidRenderQuestion();
       }
     }
 
@@ -11669,7 +12345,7 @@
         mode,
         pool: normalizedPool,
         countrySet: normalizedSet,
-        interaction: ["matching", "interactive"].includes(interaction) ? interaction : "standard",
+        interaction: ["matching", "interactive", "detective", "rapid"].includes(interaction) ? interaction : "standard",
         limit,
         poolCount,
         active: true,
@@ -11680,7 +12356,9 @@
         factFocus,
         summary: freshSessionSummary(),
         matchingCursor: 0,
-        matchingRoundNo: 0
+        matchingRoundNo: 0,
+        detective: interaction === "detective" ? detectiveDefaultState() : null,
+        rapid: interaction === "rapid" ? rapidDefaultState() : null
       };
       saveStudySession();
 
@@ -11695,6 +12373,8 @@
       lookupReturnLiveGameplayState = null;
       lookupReturnToStart = false;
       lookupReturnToMatching = false;
+      lookupReturnToDetective = false;
+      lookupReturnToRapid = false;
       searchLaunchedFromStart = false;
       searchReturnMenuAllowClose = null;
 
@@ -11720,8 +12400,16 @@
       if (studySession.interaction === "matching") {
         matchingState = null;
         openMatchingMode(true, true);
+      } else if (studySession.interaction === "detective") {
+        matchingOverlay.classList.remove("open");
+        openDetectiveMode(false);
+      } else if (studySession.interaction === "rapid") {
+        matchingOverlay.classList.remove("open");
+        detectiveOverlay?.classList.remove("open");
+        openRapidMode(false);
       } else {
         matchingOverlay.classList.remove("open");
+        detectiveOverlay?.classList.remove("open");
         render();
       }
     }
@@ -12812,6 +13500,33 @@
         img.onerror = null;
         img.classList.add("flag-unavailable");
         img.src = flagFallbackDataUri(c);
+      };
+      img.src = getFlagUrl(c.code);
+    }
+
+    // Quiz visuals must never leak the answer through alt text or the offline
+    // fallback image. Revealed/reference flags can use setFlag(); hidden-answer
+    // questions use this neutral variant instead.
+    function quizFlagFallbackDataUri() {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200"><rect width="320" height="200" rx="18" fill="#ddd9d0"/><rect x="8" y="8" width="304" height="184" rx="12" fill="none" stroke="#b7b1a6" stroke-width="4"/><text x="160" y="106" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" font-weight="750" fill="#6f695f">Flag unavailable</text></svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    function setQuizFlag(img, c, altText = "Flag clue") {
+      img.classList.remove("flag-unavailable");
+      img.decoding = "async";
+      img.alt = altText;
+      let fallbackTried = false;
+      img.onerror = () => {
+        if (!fallbackTried) {
+          fallbackTried = true;
+          img.src = `https://flagcdn.com/w640/${c.code.toLowerCase()}.png`;
+          return;
+        }
+        img.onerror = null;
+        img.classList.add("flag-unavailable");
+        img.alt = altText;
+        img.src = quizFlagFallbackDataUri();
       };
       img.src = getFlagUrl(c.code);
     }
@@ -16960,10 +17675,18 @@
       const weakCountries = scoredCountryIndicesByWeakness(6).map(countryIndex => {
         const country = countries[countryIndex];
         const rec = smartReview.countries?.[country.code] || {};
-        const attempts = Number(rec.attempts) || 0;
+        const scoredAttempts = Number(rec.attempts) || 0;
+        const detectiveAttempts = Number(rec.detectiveAttempts) || 0;
+        const attempts = scoredAttempts || detectiveAttempts;
         const lifetimeTotal = Number(rec.lifetimeTotal) || 0;
         const lifetimeCorrect = Number(rec.lifetimeCorrect) || 0;
-        const accuracy = lifetimeTotal ? lifetimeCorrect / lifetimeTotal : null;
+        const accuracy = lifetimeTotal
+          ? lifetimeCorrect / lifetimeTotal
+          : detectiveAttempts
+            ? Number.isFinite(Number(rec.detectiveScoreTotal))
+              ? Math.max(0, Math.min(1, Number(rec.detectiveScoreTotal) / (detectiveAttempts * 100)))
+              : (Number(rec.detectiveCorrect) || 0) / detectiveAttempts
+            : null;
         const stageStats = Object.entries(rec.stageStats || {})
           .filter(([, stat]) => Number(stat?.attempts) > 0)
           .map(([field, stat]) => ({
@@ -17537,6 +18260,8 @@
       const returnLive = lookupReturnLiveGameplayState;
       const returnToStart = lookupReturnToStart;
       const returnToMatching = lookupReturnToMatching;
+      const returnToDetective = lookupReturnToDetective;
+      const returnToRapid = lookupReturnToRapid;
 
       lookupCountryCode = null;
       lookupReturnState = null;
@@ -17544,6 +18269,8 @@
       lookupReturnLiveGameplayState = null;
       lookupReturnToStart = false;
       lookupReturnToMatching = false;
+      lookupReturnToDetective = false;
+      lookupReturnToRapid = false;
 
       navigationCursor = returnCursor;
       liveGameplayState = clonePlain(returnLive);
@@ -17560,6 +18287,12 @@
       if (returnToMatching && studySession?.interaction === "matching" && studySession?.active !== false) {
         matchingOverlay.classList.add("open");
         if (!matchingState) startMatchingRound();
+      } else if (returnToDetective && studySession?.interaction === "detective" && studySession?.active !== false) {
+        detectiveOverlay?.classList.add("open");
+        prepareDetectiveRound(false);
+      } else if (returnToRapid && studySession?.interaction === "rapid" && studySession?.active !== false) {
+        rapidOverlay?.classList.add("open");
+        rapidRenderQuestion();
       } else if (returnToStart) {
         openStartOverlay(false);
       }
@@ -19120,8 +19853,10 @@
       if ((Number(metrics.dueCount) || 0) > 0) return "due";
 
       const attempts = Number(metrics.attempts) || 0;
-      const accuracy = Number.isFinite(Number(metrics.accuracy)) ? Number(metrics.accuracy) : 1;
-      const cleanAccuracy = Number.isFinite(Number(metrics.cleanAccuracy)) ? Number(metrics.cleanAccuracy) : accuracy;
+      const hasAccuracy = metrics.accuracy !== null && metrics.accuracy !== undefined && Number.isFinite(Number(metrics.accuracy));
+      const accuracy = hasAccuracy ? Number(metrics.accuracy) : 1;
+      const hasCleanAccuracy = metrics.cleanAccuracy !== null && metrics.cleanAccuracy !== undefined && Number.isFinite(Number(metrics.cleanAccuracy));
+      const cleanAccuracy = hasCleanAccuracy ? Number(metrics.cleanAccuracy) : accuracy;
       const minLevel = Math.max(0, Number(metrics.minLevel) || 0);
       const factCount = Math.max(0, Number(metrics.factCount) || 0);
 
@@ -19195,10 +19930,17 @@
       const nextValues = reviewFacts.map(item => item.nextDueAt).filter(value => Number.isFinite(value) && value < Number.MAX_SAFE_INTEGER);
       const nextDueAt = nextValues.length ? Math.min(...nextValues) : null;
 
+      const detectiveAttempts = Math.max(0, Number(rec.detectiveAttempts) || 0);
+      const detectiveCorrect = Math.max(0, Number(rec.detectiveCorrect) || 0);
+      const detectiveAverageScore = detectiveAttempts
+        ? Math.max(0, Math.min(100, (Number(rec.detectiveScoreTotal) || 0) / detectiveAttempts))
+        : null;
+      const detectiveBestClues = Number.isFinite(Number(rec.detectiveBestClues)) ? Number(rec.detectiveBestClues) : null;
+
       const status = masteryMapStatusForMetrics({
         studied,
         dueCount: dueStages.length,
-        attempts: attempts || Number(rec.lifetimeTotal) || Number(rec.attempts) || 0,
+        attempts: attempts || Number(rec.lifetimeTotal) || Number(rec.attempts) || detectiveAttempts || 0,
         accuracy,
         cleanAccuracy,
         minLevel,
@@ -19219,7 +19961,11 @@
         minLevel,
         dueStages,
         nextDueAt,
-        weakestFact: facts[0] || null
+        weakestFact: facts[0] || null,
+        detectiveAttempts,
+        detectiveCorrect,
+        detectiveAverageScore,
+        detectiveBestClues
       };
     }
 
@@ -19329,8 +20075,39 @@
         masteryMapFacts.replaceChildren();
         const empty = document.createElement("div");
         empty.className = "mastery-map-empty-detail";
-        empty.textContent = "Study this country in Flash card, Interactive or Matching mode and its mastery profile will appear here.";
+        empty.textContent = "Study this country in any mode and its progress will appear here.";
         masteryMapFacts.appendChild(empty);
+        return;
+      }
+
+      if (!profile.factCount && profile.detectiveAttempts > 0) {
+        const solveRate = Math.round(profile.detectiveCorrect / Math.max(1, profile.detectiveAttempts) * 100);
+        const avgScore = profile.detectiveAverageScore == null ? "—" : `${Math.round(profile.detectiveAverageScore)} pts`;
+        const bestClues = profile.detectiveBestClues == null ? "—" : `${profile.detectiveBestClues} clue${profile.detectiveBestClues === 1 ? "" : "s"}`;
+        masteryMapCountryMeta.textContent = `${profile.detectiveAttempts} Detective case${profile.detectiveAttempts === 1 ? "" : "s"} played · direct fact mastery not established yet`;
+        masteryMapDetailStats.replaceChildren();
+        [
+          [`${solveRate}%`, "Cases solved"],
+          [avgScore, "Average score"],
+          [bestClues, "Best solve"],
+          ["—", "Review level"]
+        ].forEach(([value, label]) => {
+          const card = document.createElement("div");
+          card.className = "mastery-map-detail-stat";
+          const valueEl = document.createElement("div");
+          valueEl.className = "mastery-map-detail-stat-value";
+          valueEl.textContent = value;
+          const labelEl = document.createElement("div");
+          labelEl.className = "mastery-map-detail-stat-label";
+          labelEl.textContent = label;
+          card.append(valueEl, labelEl);
+          masteryMapDetailStats.appendChild(card);
+        });
+        masteryMapFacts.replaceChildren();
+        const note = document.createElement("div");
+        note.className = "mastery-map-empty-detail";
+        note.textContent = "Detective builds country recognition. Smart Review levels appear after direct fact questions in the other study modes.";
+        masteryMapFacts.appendChild(note);
         return;
       }
 
@@ -19548,6 +20325,1240 @@
       masteryMapReturnFocus = null;
       target?.focus?.({ preventScroll: true });
     }
+    /* ---------------------------------------------------------
+       Detective mode
+       Progressive country identification from additive clues.
+       --------------------------------------------------------- */
+    const detectiveOverlay = document.getElementById("detectiveOverlay");
+    const detectiveMenuBtn = document.getElementById("detectiveMenuBtn");
+    const detectiveRoundStatus = document.getElementById("detectiveRoundStatus");
+    const detectivePointsAvailable = document.getElementById("detectivePointsAvailable");
+    const detectiveClueCounter = document.getElementById("detectiveClueCounter");
+    const detectiveLoading = document.getElementById("detectiveLoading");
+    const detectiveCase = document.getElementById("detectiveCase");
+    const detectiveClues = document.getElementById("detectiveClues");
+    const detectiveRevealBtn = document.getElementById("detectiveRevealBtn");
+    const detectiveGuessCard = document.getElementById("detectiveGuessCard");
+    const detectiveInput = document.getElementById("detectiveInput");
+    const detectiveGuessBtn = document.getElementById("detectiveGuessBtn");
+    const detectiveSuggestions = document.getElementById("detectiveSuggestions");
+    const detectiveFeedback = document.getElementById("detectiveFeedback");
+    const detectiveGiveUpBtn = document.getElementById("detectiveGiveUpBtn");
+    const detectiveResult = document.getElementById("detectiveResult");
+    const detectiveResultKicker = document.getElementById("detectiveResultKicker");
+    const detectiveAnswer = document.getElementById("detectiveAnswer");
+    const detectiveResultPoints = document.getElementById("detectiveResultPoints");
+    const detectiveNextBtn = document.getElementById("detectiveNextBtn");
+    const detectiveComplete = document.getElementById("detectiveComplete");
+    const detectiveCompleteScore = document.getElementById("detectiveCompleteScore");
+    const detectiveCompleteMeta = document.getElementById("detectiveCompleteMeta");
+    const detectiveBackToMenuBtn = document.getElementById("detectiveBackToMenuBtn");
+
+    let detectiveSuggestionIndex = -1;
+    let detectivePreparingToken = 0;
+
+    function detectiveShuffle(items) {
+      const result = [...items];
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = randomInt(i + 1);
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    }
+
+    function detectiveDefaultState() {
+      return {
+        score: 0,
+        solved: 0,
+        completed: 0,
+        totalClues: 0,
+        round: null
+      };
+    }
+
+    function ensureDetectiveState() {
+      if (!studySession) return null;
+      if (!studySession.detective || typeof studySession.detective !== "object") {
+        studySession.detective = detectiveDefaultState();
+      }
+      const state = studySession.detective;
+      state.score = Math.max(0, Number(state.score) || 0);
+      state.solved = Math.max(0, Number(state.solved) || 0);
+      state.completed = Math.max(0, Number(state.completed) || 0);
+      state.totalClues = Math.max(0, Number(state.totalClues) || 0);
+      if (state.round && typeof state.round === "object") {
+        state.round.wrongGuessKeys = Array.isArray(state.round.wrongGuessKeys)
+          ? [...new Set(state.round.wrongGuessKeys.map(interactiveLooseNormalize).filter(Boolean))]
+          : [];
+      }
+      return state;
+    }
+
+    function detectiveCountryCandidates() {
+      const indices = countrySetIndices(studySession?.countrySet || selectedCountrySet || "world");
+      const source = indices.length ? indices.map(i => countries[i]).filter(Boolean) : countries;
+      return [...source].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    function detectiveCurrentPoints(round = ensureDetectiveState()?.round) {
+      if (!round) return 0;
+      const cluePenalty = Math.max(0, (Number(round.revealedCount) || 1) - 1) * 14;
+      const guessPenalty = Math.max(0, Number(round.wrongGuesses) || 0) * 8;
+      return Math.max(10, 100 - cluePenalty - guessPenalty);
+    }
+
+    function detectiveWithTimeout(promise, ms = 1400) {
+      return Promise.race([
+        Promise.resolve(promise).catch(() => null),
+        new Promise(resolve => window.setTimeout(() => resolve(null), ms))
+      ]);
+    }
+
+    function detectiveHemisphere(c) {
+      const vertical = Number(c.lat) >= 0 ? "Northern" : "Southern";
+      const horizontal = Number(c.lon) >= 0 ? "Eastern" : "Western";
+      return `${vertical} · ${horizontal} hemispheres`;
+    }
+
+    function detectiveCurrencies(c) {
+      const codes = CURRENCY_CODES_BY_COUNTRY[c.code] || [];
+      return [...new Set(codes.map(currencyDisplayName).filter(Boolean))];
+    }
+
+    function detectiveLanguages(c) {
+      const details = languageDetailsForCountry(c);
+      const names = [...new Set([...(details.official || []), ...(details.used || []), ...(c.languages || [])].filter(Boolean))];
+      return names.slice(0, 5);
+    }
+
+    function detectiveLargestCity(c) {
+      try { return getCityFacts(c).largest?.name || ""; } catch (_) { return ""; }
+    }
+
+    function detectiveCapital(c) {
+      try {
+        const facts = getCityFacts(c);
+        const names = (facts.capitals || []).map(item => item.name).filter(Boolean);
+        return names.length ? names.join(" · ") : c.capital;
+      } catch (_) {
+        return c.capital || "";
+      }
+    }
+
+    async function buildDetectiveClues(c) {
+      const cachedFacts = countryFactsCache?.[c.code] || null;
+      const factsPromise = cachedFacts ? Promise.resolve(cachedFacts) : detectiveWithTimeout(loadCountryFacts(c), 1500);
+      const neighbourPromise = detectiveWithTimeout(neighbourStudySetFor(c), 1100);
+      const [facts, neighbours] = await Promise.all([factsPromise, neighbourPromise]);
+
+      const opening = [];
+      if (Number.isFinite(facts?.population)) opening.push({ key: "population", label: "Population", value: formatWholeNumber(facts.population) });
+      if (Number.isFinite(facts?.area)) opening.push({ key: "area", label: "Area", value: formatArea(facts.area) });
+      if (Number.isFinite(facts?.formationYear)) opening.push({ key: "formation", label: "Modern state formation", value: String(facts.formationYear) });
+      const government = facts ? governmentTypeForCountry(c, facts) : "";
+      if (government && government !== "Not listed") opening.push({ key: "government", label: "Government", value: government });
+      opening.push({ key: "hemisphere", label: "Location", value: detectiveHemisphere(c) });
+
+      const middle = [];
+      const languages = detectiveLanguages(c);
+      if (languages.length) middle.push({ key: "languages", label: "Languages", value: languages.join(" · ") });
+      const currencies = detectiveCurrencies(c);
+      if (currencies.length) middle.push({ key: "currency", label: "Currency", value: currencies.join(" · ") });
+      if (neighbours?.names?.length) {
+        middle.push({
+          key: "neighbours",
+          label: neighbours.mode === "nearest" ? "Nearest countries" : "Neighbours",
+          value: neighbours.names.join(" · ")
+        });
+      }
+      const largest = detectiveLargestCity(c);
+      const capital = detectiveCapital(c);
+
+      const early = detectiveShuffle(opening).slice(0, 2);
+      const mid = detectiveShuffle(middle).slice(0, 2);
+      const strong = detectiveShuffle([
+        { key: "flag", label: "Flag", visual: "flag" },
+        { key: "capital", label: "Capital", value: capital },
+        largest && interactiveLooseNormalize(largest) !== interactiveLooseNormalize(capital)
+          ? { key: "largestCityLate", label: "Largest city", value: largest }
+          : null
+      ].filter(Boolean));
+
+      const silhouetteAvailable = !!(window.d3 && window.topojson);
+      let clues = [
+        ...early,
+        ...mid,
+        silhouetteAvailable ? { key: "silhouette", label: "Silhouette", visual: "silhouette" } : null,
+        ...strong
+      ].filter(Boolean);
+
+      // Always keep enough variety if live facts were unavailable.
+      const fallbacks = [
+        { key: "hemisphereFallback", label: "Location", value: detectiveHemisphere(c) },
+        languages.length ? { key: "languagesFallback", label: "Languages", value: languages.join(" · ") } : null,
+        currencies.length ? { key: "currencyFallback", label: "Currency", value: currencies.join(" · ") } : null,
+        silhouetteAvailable ? { key: "silhouetteFallback", label: "Silhouette", visual: "silhouette" } : null,
+        { key: "flagFallback", label: "Flag", visual: "flag" },
+        { key: "capitalFallback", label: "Capital", value: capital }
+      ].filter(Boolean);
+      const usedKinds = new Set(clues.map(item => item.visual || item.label + "|" + item.value));
+      for (const item of fallbacks) {
+        const signature = item.visual || item.label + "|" + item.value;
+        if (usedKinds.has(signature)) continue;
+        clues.push(item);
+        usedKinds.add(signature);
+      }
+
+      // De-duplicate by what the player actually sees. This prevents the same
+      // fact (notably largest city) from appearing twice under different internal
+      // keys when live/fallback clue sources overlap.
+      const seenClues = new Set();
+      clues = clues.filter(clue => {
+        const signature = clue.visual
+          ? `visual:${clue.visual}`
+          : `${interactiveLooseNormalize(clue.label)}|${interactiveLooseNormalize(clue.value)}`;
+        if (seenClues.has(signature)) return false;
+        seenClues.add(signature);
+        return true;
+      });
+
+      // Keep the case brisk. Strong identity clues live at the end.
+      clues = clues.slice(0, 7);
+      return clues;
+    }
+
+    async function renderDetectiveSilhouette(svgEl, c) {
+      if (!svgEl) return;
+      svgEl.setAttribute("viewBox", "0 0 320 180");
+      svgEl.innerHTML = "";
+      if (!window.d3 || !window.topojson) return;
+      try {
+        const world = shouldUseHighDetailSilhouette(c)
+          ? await loadHighDetailSilhouetteWorld()
+          : await loadSilhouetteWorld();
+        const features = topojson.feature(world, world.objects.countries).features;
+        const numeric = String(c.numeric || "").padStart(3, "0");
+        const target = features.find(f => String(f.id).padStart(3, "0") === numeric);
+        if (!target) return;
+        const displayTarget = mainTerritoryGeometry(c, target);
+        const projection = silhouetteProjectionForTarget(displayTarget, [[8, 7], [312, 173]]);
+        const path = d3.geoPath(projection);
+        const svg = d3.select(svgEl);
+        const group = svg.append("g");
+        const islandBoost = silhouetteNeedsIslandBoost(c, displayTarget);
+        appendSilhouetteShape(group, displayTarget, path, {
+          thinThreshold: 11,
+          normalStroke: islandBoost ? 2.1 : .85,
+          thinStroke: 4
+        });
+        if (islandBoost) appendIslandVisibilityDots(group, projection, displayTarget, 1.7);
+      } catch (_) {}
+    }
+
+    function detectiveRenderClue(clue, index, c) {
+      const card = document.createElement("article");
+      card.className = "detective-clue-card";
+      card.dataset.detectiveClue = clue.key;
+
+      const top = document.createElement("div");
+      top.className = "detective-clue-top";
+      const number = document.createElement("span");
+      number.className = "detective-clue-number";
+      number.textContent = `Clue ${index + 1}`;
+      const label = document.createElement("span");
+      label.className = "detective-clue-label";
+      label.textContent = clue.label;
+      top.append(number, label);
+      card.appendChild(top);
+
+      if (clue.visual) {
+        const visual = document.createElement("div");
+        visual.className = "detective-clue-visual";
+        if (clue.visual === "flag") {
+          const img = document.createElement("img");
+          setQuizFlag(img, c, "Country flag clue");
+          visual.appendChild(img);
+        } else if (clue.visual === "silhouette") {
+          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          svg.setAttribute("role", "img");
+          svg.setAttribute("aria-label", "Country silhouette clue");
+          visual.appendChild(svg);
+          renderDetectiveSilhouette(svg, c);
+        }
+        card.appendChild(visual);
+      } else {
+        const value = document.createElement("div");
+        value.className = "detective-clue-value";
+        value.textContent = clue.value || "—";
+        card.appendChild(value);
+      }
+      return card;
+    }
+
+    function detectiveRenderRound() {
+      const state = ensureDetectiveState();
+      const round = state?.round;
+      const c = currentCountry();
+      if (!state || !round || !c) return;
+
+      detectiveLoading.classList.add("hidden");
+      detectiveCase.classList.remove("hidden");
+      detectiveComplete.classList.add("hidden");
+      detectiveRoundStatus.textContent = `Case ${Math.min(index + 1, sessionCountryTotal())} of ${sessionCountryTotal()}`;
+      detectivePointsAvailable.textContent = `${detectiveCurrentPoints(round)} pts available`;
+      detectiveClueCounter.textContent = `${round.revealedCount} of ${round.clues.length} clues`;
+
+      detectiveClues.replaceChildren();
+      round.clues.slice(0, round.revealedCount).forEach((clue, clueIndex) => {
+        detectiveClues.appendChild(detectiveRenderClue(clue, clueIndex, c));
+      });
+
+      const finished = !!round.finished;
+      detectiveRevealBtn.classList.toggle("hidden", finished || round.revealedCount >= round.clues.length);
+      detectiveGuessCard.classList.toggle("hidden", finished);
+      detectiveResult.classList.toggle("hidden", !finished);
+      detectiveFeedback.textContent = round.feedback || "";
+      detectiveFeedback.className = `detective-feedback${round.feedbackType ? ` ${round.feedbackType}` : ""}`;
+      detectiveInput.disabled = finished;
+      detectiveGuessBtn.disabled = finished;
+      detectiveGiveUpBtn.disabled = finished;
+
+      if (finished) {
+        const solved = !!round.solved;
+        detectiveResult.classList.toggle("missed", !solved);
+        detectiveResultKicker.textContent = solved ? "Case solved" : "Case closed";
+        detectiveAnswer.textContent = c.name;
+        detectiveResultPoints.textContent = solved ? `+${round.points || 0} points` : "0 points";
+        detectiveNextBtn.textContent = index + 1 >= sessionCountryTotal() ? "See results →" : "Next case →";
+      } else {
+        detectiveInput.disabled = false;
+        detectiveGuessBtn.disabled = false;
+        detectiveGiveUpBtn.disabled = false;
+        detectiveUpdateSuggestions();
+        window.setTimeout(() => detectiveInput.focus(), 30);
+      }
+    }
+
+    async function prepareDetectiveRound(force = false) {
+      if (studySession?.interaction !== "detective" || studySession?.active === false) return;
+      const state = ensureDetectiveState();
+      const c = currentCountry();
+      if (!state || !c) {
+        finishDetectiveSession();
+        return;
+      }
+
+      if (!force && state.round?.code === c.code && Array.isArray(state.round.clues) && state.round.clues.length) {
+        detectiveRenderRound();
+        return;
+      }
+
+      const token = ++detectivePreparingToken;
+      detectiveCase.classList.add("hidden");
+      detectiveComplete.classList.add("hidden");
+      detectiveLoading.classList.remove("hidden");
+      detectiveLoading.textContent = "Preparing case…";
+      detectiveRoundStatus.textContent = `Case ${Math.min(index + 1, sessionCountryTotal())} of ${sessionCountryTotal()}`;
+      detectivePointsAvailable.textContent = "100 pts available";
+      detectiveClueCounter.textContent = "Building clues";
+
+      const clues = await buildDetectiveClues(c);
+      if (token !== detectivePreparingToken || studySession?.interaction !== "detective" || currentCountry()?.code !== c.code) return;
+
+      state.round = {
+        code: c.code,
+        clues,
+        revealedCount: Math.min(1, clues.length),
+        wrongGuesses: 0,
+        wrongGuessKeys: [],
+        solved: false,
+        finished: false,
+        points: 0,
+        feedback: "",
+        feedbackType: ""
+      };
+      saveStudySession();
+      detectiveInput.value = "";
+      detectiveSuggestionIndex = -1;
+      detectiveSuggestions.classList.add("hidden");
+      detectiveRenderRound();
+
+      const nextIndex = index + 1;
+      if (nextIndex < sessionCountryTotal()) loadCountryFacts(countries[countryOrder[nextIndex]]).catch(() => {});
+    }
+
+    function openDetectiveMode(resume = true) {
+      if (studySession?.interaction !== "detective" || studySession?.active === false) return;
+      matchingOverlay.classList.remove("open");
+      startOverlay.classList.remove("open");
+      detectiveOverlay.classList.add("open");
+      if (resume) prepareDetectiveRound(false);
+      else prepareDetectiveRound(true);
+    }
+
+    function closeDetectiveToMenu() {
+      detectiveOverlay.classList.remove("open");
+      openStartOverlay(true);
+    }
+
+    function detectiveRevealAnotherClue(fromWrongGuess = false) {
+      const state = ensureDetectiveState();
+      const round = state?.round;
+      if (!round || round.finished) return;
+      if (round.revealedCount < round.clues.length) round.revealedCount += 1;
+      round.feedback = fromWrongGuess ? "Not quite. Another clue has been added." : "";
+      round.feedbackType = fromWrongGuess ? "wrong" : "";
+      saveStudySession();
+      if (!fromWrongGuess) hapticFeedback("tap");
+      detectiveRenderRound();
+      const lastCard = detectiveClues.lastElementChild;
+      lastCard?.scrollIntoView?.({ block: "nearest", behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth" });
+    }
+
+    function detectiveCountryMatchesGuess(c, value) {
+      const typed = interactiveLooseNormalize(value);
+      if (!typed) return false;
+      if (interactiveLooseNormalize(c.name) === typed) return true;
+      return (COUNTRY_SEARCH_ALIASES[c.code] || []).some(alias => interactiveLooseNormalize(alias) === typed);
+    }
+
+    function detectiveGuessLooksLikeTypo(c, value) {
+      const candidates = [c.name, ...(COUNTRY_SEARCH_ALIASES[c.code] || [])];
+      return candidates.some(candidate => interactiveLooksLikeTypo(value, candidate));
+    }
+
+    function detectiveGuessPenaltyKey(value) {
+      const typed = interactiveLooseNormalize(value);
+      if (!typed) return "";
+      for (const country of detectiveCountryCandidates()) {
+        const names = [country.name, ...(COUNTRY_SEARCH_ALIASES[country.code] || [])];
+        if (names.some(name => interactiveLooseNormalize(name) === typed)) return `country:${country.code}`;
+      }
+      return `text:${typed}`;
+    }
+
+    function detectiveRecordOutcome(c, solved, points, round) {
+      const rec = reviewRecord(c.code);
+      rec.detectiveAttempts = Math.max(0, Number(rec.detectiveAttempts) || 0) + 1;
+      rec.detectiveCorrect = Math.max(0, Number(rec.detectiveCorrect) || 0) + (solved ? 1 : 0);
+      // Keep a difficulty-sensitive Detective score as well as the simple solved
+      // count. This lets Weakest distinguish a first-clue solve from a case that
+      // needed every clue or several wrong guesses, without pretending Detective
+      // proves any individual fact.
+      rec.detectiveScoreTotal = Math.max(0, Number(rec.detectiveScoreTotal) || 0) + Math.max(0, Math.min(100, Number(points) || 0));
+      rec.detectiveBestClues = solved
+        ? Math.min(Number.isFinite(Number(rec.detectiveBestClues)) ? Number(rec.detectiveBestClues) : Number.MAX_SAFE_INTEGER, Number(round?.revealedCount) || 1)
+        : Number(rec.detectiveBestClues) || null;
+      rec.lastDetectiveAt = Date.now();
+      saveSmartReview();
+
+      const wrongGuesses = Math.max(0, Number(round?.wrongGuesses) || 0);
+      const cluesUsed = Math.max(1, Number(round?.revealedCount) || 1);
+      const cleanSolve = solved && wrongGuesses === 0 && cluesUsed === 1;
+      const assistedSolve = solved && wrongGuesses === 0 && cluesUsed > 1;
+      recordDailyFactCounts({
+        total: 1,
+        clean: cleanSolve ? 1 : 0,
+        assisted: assistedSolve ? 1 : 0,
+        missed: !solved || wrongGuesses > 0 ? 1 : 0
+      });
+
+      const state = ensureDetectiveState();
+      if (state) {
+        state.completed += 1;
+        state.solved += solved ? 1 : 0;
+        state.score += Math.max(0, Number(points) || 0);
+        state.totalClues += Math.max(1, Number(round?.revealedCount) || 1);
+      }
+      saveStudySession();
+    }
+
+    function submitDetectiveGuess() {
+      const state = ensureDetectiveState();
+      const round = state?.round;
+      const c = currentCountry();
+      if (!round || !c || round.finished) return;
+      const typed = detectiveInput.value.trim();
+      if (!typed) {
+        round.feedback = "Type a country first.";
+        round.feedbackType = "wrong";
+        detectiveRenderRound();
+        return;
+      }
+
+      if (detectiveCountryMatchesGuess(c, typed)) {
+        const points = detectiveCurrentPoints(round);
+        round.solved = true;
+        round.finished = true;
+        round.points = points;
+        round.feedback = "Correct.";
+        round.feedbackType = "correct";
+        detectiveRecordOutcome(c, true, points, round);
+        detectiveInput.blur();
+        hapticFeedback("correct");
+        detectiveSuggestions.classList.add("hidden");
+        detectiveRenderRound();
+        return;
+      }
+
+      if (detectiveGuessLooksLikeTypo(c, typed)) {
+        round.feedback = "Almost — check the spelling.";
+        round.feedbackType = "near";
+        saveStudySession();
+        detectiveRenderRound();
+        return;
+      }
+
+      const wrongKey = detectiveGuessPenaltyKey(typed);
+      if (!Array.isArray(round.wrongGuessKeys)) round.wrongGuessKeys = [];
+      if (wrongKey && round.wrongGuessKeys.includes(wrongKey)) {
+        round.feedback = "You already tried that — no extra penalty.";
+        round.feedbackType = "near";
+        saveStudySession();
+        detectiveRenderRound();
+        return;
+      }
+      if (wrongKey) round.wrongGuessKeys.push(wrongKey);
+      round.wrongGuesses = Math.max(0, Number(round.wrongGuesses) || 0) + 1;
+      detectiveInput.value = "";
+      detectiveSuggestions.classList.add("hidden");
+      detectiveSuggestionIndex = -1;
+      hapticFeedback("wrong");
+      if (round.revealedCount < round.clues.length) {
+        detectiveRevealAnotherClue(true);
+      } else {
+        round.feedback = "Not quite. All clues are on the table.";
+        round.feedbackType = "wrong";
+        saveStudySession();
+        detectiveRenderRound();
+      }
+    }
+
+    function giveUpDetectiveRound() {
+      const state = ensureDetectiveState();
+      const round = state?.round;
+      const c = currentCountry();
+      if (!round || !c || round.finished) return;
+      round.solved = false;
+      round.finished = true;
+      round.points = 0;
+      round.feedback = "";
+      round.feedbackType = "";
+      detectiveRecordOutcome(c, false, 0, round);
+      document.activeElement?.blur?.();
+      hapticFeedback("wrong");
+      detectiveSuggestions.classList.add("hidden");
+      detectiveRenderRound();
+    }
+
+    function advanceDetectiveCase() {
+      const state = ensureDetectiveState();
+      if (!state?.round?.finished) return;
+      if (index + 1 >= sessionCountryTotal()) {
+        finishDetectiveSession();
+        return;
+      }
+      index += 1;
+      state.round = null;
+      saveState();
+      saveStudySession();
+      detectiveInput.value = "";
+      detectiveFeedback.textContent = "";
+      prepareDetectiveRound(true);
+    }
+
+    function finishDetectiveSession() {
+      const state = ensureDetectiveState() || detectiveDefaultState();
+      if (studySession) {
+        studySession.active = false;
+        studySession.detective = state;
+        saveStudySession();
+      }
+      index = sessionCountryTotal();
+      saveState();
+      detectiveCase.classList.add("hidden");
+      detectiveLoading.classList.add("hidden");
+      detectiveComplete.classList.remove("hidden");
+      detectiveRoundStatus.textContent = "Session complete";
+      detectivePointsAvailable.textContent = `${state.score} pts`;
+      detectiveClueCounter.textContent = `${state.solved}/${state.completed} solved`;
+      detectiveCompleteScore.textContent = `${state.score} points`;
+      const average = state.completed ? (state.totalClues / state.completed).toFixed(1) : "—";
+      detectiveCompleteMeta.textContent = `${state.solved} of ${state.completed} cases solved · ${average} clues used on average`;
+    }
+
+    function detectiveUpdateSuggestions() {
+      if (!detectiveInput || !detectiveSuggestions) return;
+      const query = interactiveLooseNormalize(detectiveInput.value);
+      detectiveSuggestions.replaceChildren();
+      detectiveSuggestionIndex = -1;
+      if (!query) {
+        detectiveSuggestions.classList.add("hidden");
+        return;
+      }
+      const matches = detectiveCountryCandidates()
+        .map(country => {
+          const name = interactiveLooseNormalize(country.name);
+          const aliases = (COUNTRY_SEARCH_ALIASES[country.code] || []).map(interactiveLooseNormalize);
+          let rank = 99;
+          if (name === query || aliases.includes(query)) rank = 0;
+          else if (name.startsWith(query) || aliases.some(alias => alias.startsWith(query))) rank = 1;
+          else if (name.includes(query) || aliases.some(alias => alias.includes(query))) rank = 2;
+          return { country, rank };
+        })
+        .filter(item => item.rank < 99)
+        .sort((a, b) => a.rank - b.rank || a.country.name.localeCompare(b.country.name))
+        .slice(0, 6);
+
+      if (!matches.length) {
+        detectiveSuggestions.classList.add("hidden");
+        return;
+      }
+      matches.forEach((item, idx) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "detective-suggestion";
+        button.dataset.detectiveSuggestion = item.country.name;
+        button.textContent = item.country.name;
+        button.addEventListener("pointerdown", event => event.preventDefault());
+        button.addEventListener("click", () => {
+          detectiveInput.value = item.country.name;
+          detectiveSuggestions.classList.add("hidden");
+          detectiveSuggestionIndex = -1;
+          detectiveInput.focus();
+        });
+        detectiveSuggestions.appendChild(button);
+      });
+      detectiveSuggestions.classList.remove("hidden");
+    }
+
+    function moveDetectiveSuggestion(delta) {
+      const options = [...detectiveSuggestions.querySelectorAll(".detective-suggestion")];
+      if (!options.length || detectiveSuggestions.classList.contains("hidden")) return false;
+      detectiveSuggestionIndex = (detectiveSuggestionIndex + delta + options.length) % options.length;
+      options.forEach((button, index) => button.classList.toggle("active", index === detectiveSuggestionIndex));
+      options[detectiveSuggestionIndex]?.scrollIntoView?.({ block: "nearest" });
+      return true;
+    }
+
+    function chooseDetectiveSuggestion() {
+      const options = [...detectiveSuggestions.querySelectorAll(".detective-suggestion")];
+      const button = options[detectiveSuggestionIndex];
+      if (!button) return false;
+      detectiveInput.value = button.dataset.detectiveSuggestion || button.textContent || "";
+      detectiveSuggestions.classList.add("hidden");
+      detectiveSuggestionIndex = -1;
+      return true;
+    }
+
+    detectiveMenuBtn?.addEventListener("click", closeDetectiveToMenu);
+    detectiveRevealBtn?.addEventListener("click", () => detectiveRevealAnotherClue(false));
+    detectiveGuessBtn?.addEventListener("click", submitDetectiveGuess);
+    detectiveGiveUpBtn?.addEventListener("click", giveUpDetectiveRound);
+    detectiveNextBtn?.addEventListener("click", advanceDetectiveCase);
+    detectiveBackToMenuBtn?.addEventListener("click", () => {
+      detectiveOverlay.classList.remove("open");
+      openStartOverlay(false);
+    });
+    detectiveInput?.addEventListener("input", detectiveUpdateSuggestions);
+    detectiveInput?.addEventListener("keydown", event => {
+      if (event.key === "ArrowDown") {
+        if (moveDetectiveSuggestion(1)) event.preventDefault();
+      } else if (event.key === "ArrowUp") {
+        if (moveDetectiveSuggestion(-1)) event.preventDefault();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (!chooseDetectiveSuggestion()) submitDetectiveGuess();
+      } else if (event.key === "Escape") {
+        detectiveSuggestions.classList.add("hidden");
+      }
+    });
+    /* ---------------------------------------------------------
+       Rapid Fire mode
+       One mixed cue/answer relationship per question.
+       --------------------------------------------------------- */
+    const rapidOverlay = document.getElementById("rapidOverlay");
+    const rapidPanel = rapidOverlay?.querySelector(".rapid-panel");
+    const rapidMenuBtn = document.getElementById("rapidMenuBtn");
+    const rapidRoundStatus = document.getElementById("rapidRoundStatus");
+    const rapidScore = document.getElementById("rapidScore");
+    const rapidStreak = document.getElementById("rapidStreak");
+    const rapidQuestionCard = document.getElementById("rapidQuestionCard");
+    const rapidKicker = document.getElementById("rapidKicker");
+    const rapidQuestion = document.getElementById("rapidQuestion");
+    const rapidCue = document.getElementById("rapidCue");
+    const rapidTextPanel = document.getElementById("rapidTextPanel");
+    const rapidInput = document.getElementById("rapidInput");
+    const rapidCheckBtn = document.getElementById("rapidCheckBtn");
+    const rapidSuggestions = document.getElementById("rapidSuggestions");
+    const rapidChoiceGrid = document.getElementById("rapidChoiceGrid");
+    const rapidFeedback = document.getElementById("rapidFeedback");
+    const rapidRevealBtn = document.getElementById("rapidRevealBtn");
+    const rapidResult = document.getElementById("rapidResult");
+    const rapidResultKicker = document.getElementById("rapidResultKicker");
+    const rapidAnswer = document.getElementById("rapidAnswer");
+    const rapidResultMeta = document.getElementById("rapidResultMeta");
+    const rapidNextBtn = document.getElementById("rapidNextBtn");
+    const rapidComplete = document.getElementById("rapidComplete");
+    const rapidCompleteScore = document.getElementById("rapidCompleteScore");
+    const rapidCompleteMeta = document.getElementById("rapidCompleteMeta");
+    const rapidBackToMenuBtn = document.getElementById("rapidBackToMenuBtn");
+
+    let rapidSuggestionIndex = -1;
+    let rapidRenderToken = 0;
+
+    const RAPID_TYPES = {
+      flagCountry: { stage: "country", kicker: "FLAG → COUNTRY", prompt: "Which country is this?", cue: "flag", target: "country" },
+      silhouetteCountry: { stage: "country", kicker: "SILHOUETTE → COUNTRY", prompt: "Which country has this outline?", cue: "silhouette", target: "country" },
+      countryCapital: { stage: "capital", kicker: "COUNTRY → CAPITAL", prompt: "What is a capital of this country?", cue: "country", target: "capital" },
+      capitalCountry: { stage: "country", kicker: "CAPITAL → COUNTRY", prompt: "Which country has this capital?", cue: "capital", target: "country" },
+      countryCurrency: { stage: "currency", kicker: "COUNTRY → CURRENCY", prompt: "Name a currency used by this country.", cue: "country", target: "currency" },
+      countryLargest: { stage: "largestCity", kicker: "COUNTRY → LARGEST CITY", prompt: "What is this country’s largest city?", cue: "country", target: "largestCity" },
+      countryFlag: { stage: "flag", kicker: "COUNTRY → FLAG", prompt: "Which flag belongs to this country?", cue: "country", target: "flagChoice" },
+      countrySilhouette: { stage: "silhouette", kicker: "COUNTRY → SILHOUETTE", prompt: "Which silhouette belongs to this country?", cue: "country", target: "silhouetteChoice" },
+      silhouetteFlag: { stage: "flag", kicker: "SILHOUETTE → FLAG", prompt: "Which flag belongs to this silhouette?", cue: "silhouette", target: "flagChoice" },
+      flagCapital: { stage: "capital", kicker: "FLAG → CAPITAL", prompt: "What is a capital of this country?", cue: "flag", target: "capital" }
+    };
+
+    function rapidDefaultState() {
+      return { correct: 0, total: 0, streak: 0, bestStreak: 0, round: null, recentTypes: [] };
+    }
+
+    function ensureRapidState() {
+      if (!studySession) return null;
+      if (!studySession.rapid || typeof studySession.rapid !== "object") studySession.rapid = rapidDefaultState();
+      const state = studySession.rapid;
+      state.correct = Math.max(0, Number(state.correct) || 0);
+      state.total = Math.max(0, Number(state.total) || 0);
+      state.streak = Math.max(0, Number(state.streak) || 0);
+      state.bestStreak = Math.max(state.streak, Number(state.bestStreak) || 0);
+      state.recentTypes = Array.isArray(state.recentTypes) ? state.recentTypes.slice(-3) : [];
+      return state;
+    }
+
+    function rapidCapitalTargets(c) {
+      const values = interactiveCapitalTargets(c).filter(Boolean);
+      return values.length ? values : capitalNamesForCountry(c).filter(Boolean);
+    }
+
+    function rapidCurrencyTargets(c) {
+      return interactiveCurrencyTargets(c).filter(Boolean);
+    }
+
+    function rapidLargestCity(c) {
+      try { return getCityFacts(c)?.largest?.name || ""; } catch (_) { return ""; }
+    }
+
+    function rapidAvailableTypes(c) {
+      const capitals = rapidCapitalTargets(c);
+      const currencies = rapidCurrencyTargets(c);
+      const largest = rapidLargestCity(c);
+      const silhouetteAvailable = !!(window.d3 && window.topojson);
+      return Object.keys(RAPID_TYPES).filter(type => {
+        const spec = RAPID_TYPES[type];
+        if (!silhouetteAvailable && (spec.cue === "silhouette" || spec.target === "silhouetteChoice")) return false;
+        if (["countryCapital", "capitalCountry", "flagCapital"].includes(type)) return capitals.length > 0;
+        if (type === "countryCurrency") return currencies.length > 0;
+        if (type === "countryLargest") return !!largest;
+        return true;
+      });
+    }
+
+    function rapidWeakStages(c) {
+      const rec = smartReview.countries?.[c.code];
+      if (!rec?.stageStats) return [];
+      return Object.entries(rec.stageStats)
+        .filter(([stage, stat]) => ALL_STAGES.includes(stage) && stage !== "historyFacts" && Number(stat?.attempts) > 0)
+        .map(([stage, stat]) => {
+          const attempts = Math.max(1, Number(stat.attempts) || 1);
+          return {
+            stage,
+            cleanAccuracy: (Number(stat.cleanCorrect) || 0) / attempts,
+            accuracy: (Number(stat.correct) || 0) / attempts,
+            level: Math.max(0, Number(stat.level) || 0)
+          };
+        })
+        .sort((a, b) => a.cleanAccuracy - b.cleanAccuracy || a.accuracy - b.accuracy || a.level - b.level)
+        .map(item => item.stage);
+    }
+
+    function rapidPickType(c, state) {
+      const all = rapidAvailableTypes(c);
+      let targeted = all;
+
+      // In Weakest mode, picking a weak country is only half the job. Prefer a
+      // Rapid Fire relationship that actually exercises that country's weakest
+      // recorded fact type when one is available.
+      if (studySession?.pool === "weakest") {
+        for (const weakStage of rapidWeakStages(c)) {
+          const matches = all.filter(type => RAPID_TYPES[type]?.stage === weakStage);
+          if (matches.length) { targeted = matches; break; }
+        }
+      }
+
+      const recent = new Set(state?.recentTypes || []);
+      const preferred = targeted.filter(type => !recent.has(type));
+      const pool = preferred.length ? preferred : targeted;
+      return pool[randomInt(pool.length)] || all[randomInt(all.length)] || "flagCountry";
+    }
+
+    function rapidMakeRound(c) {
+      const state = ensureRapidState();
+      const type = rapidPickType(c, state);
+      const round = {
+        countryCode: c.code,
+        type,
+        status: "active",
+        correct: null,
+        cueValue: null,
+        optionCodes: null,
+        at: Date.now()
+      };
+      if (type === "capitalCountry") {
+        const capitals = rapidCapitalTargets(c);
+        round.cueValue = capitals[randomInt(capitals.length)] || c.capital || "";
+      }
+      state.round = round;
+      state.recentTypes = [...(state.recentTypes || []), type].slice(-3);
+      saveStudySession();
+      return round;
+    }
+
+    function rapidVisualOptions(round, c, stage) {
+      if (Array.isArray(round.optionCodes) && round.optionCodes.length) {
+        const restored = round.optionCodes.map(code => countries.find(country => country.code === code)).filter(Boolean);
+        if (restored.some(country => country.code === c.code) && restored.length >= 2) return restored;
+      }
+      const generated = interactiveVisualCountries(c, stage);
+      round.optionCodes = generated.map(country => country.code);
+      saveStudySession();
+      return generated;
+    }
+
+    function rapidExpectedValues(round, c) {
+      const target = RAPID_TYPES[round.type]?.target;
+      if (target === "country") return [c.name, ...(COUNTRY_SEARCH_ALIASES[c.code] || [])];
+      if (target === "capital") return rapidCapitalTargets(c);
+      if (target === "currency") return rapidCurrencyTargets(c);
+      if (target === "largestCity") return [rapidLargestCity(c)].filter(Boolean);
+      return [c.name];
+    }
+
+    function rapidAnswerLabel(round, c) {
+      const target = RAPID_TYPES[round.type]?.target;
+      if (target === "capital") return rapidCapitalTargets(c).join(" · ");
+      if (target === "currency") return rapidCurrencyTargets(c).join(" · ");
+      if (target === "largestCity") return rapidLargestCity(c);
+      if (target === "flagChoice") return `${c.name} · flag`;
+      if (target === "silhouetteChoice") return `${c.name} · silhouette`;
+      return c.name;
+    }
+
+    function rapidTextMatches(round, c, typed) {
+      const actual = interactiveLooseNormalize(typed);
+      if (!actual) return false;
+      return rapidExpectedValues(round, c).some(value => interactiveLooseNormalize(value) === actual);
+    }
+
+    function rapidLooksLikeTypo(round, c, typed) {
+      return rapidExpectedValues(round, c).some(value => interactiveLooksLikeTypo(typed, value));
+    }
+
+    function rapidRecordFact(c, stage, correct) {
+      if (!c || !ALL_STAGES.includes(stage) || stage === "historyFacts") return;
+      const result = { correct: !!correct, assisted: false, at: Date.now() };
+      const rec = reviewRecord(c.code);
+      const now = Date.now();
+      rec.attempts += 1;
+      rec.lastScore = correct ? 1 : 0;
+      rec.lifetimeCorrect += correct ? 1 : 0;
+      rec.lifetimeTotal += 1;
+      smartReview.presentationCounter += 1;
+      rec.lastSeenCounter = smartReview.presentationCounter;
+      const stat = ensureStageReviewSchedule(rec, stage);
+      stat.attempts += 1;
+      if (correct) {
+        stat.correct += 1;
+        stat.cleanCorrect += 1;
+        stat.streak += 1;
+      } else {
+        stat.streak = 0;
+      }
+      scheduleFactResult(rec, stage, result, now, smartReview.presentationCounter);
+      refreshCountryScheduleFromFacts(rec);
+      saveSmartReview();
+      recordDailyAttemptResults({ [stage]: result });
+    }
+
+    async function rapidRenderCue(round, c, token) {
+      rapidCue.replaceChildren();
+      const type = RAPID_TYPES[round.type];
+      const cue = type.cue;
+      if (cue === "country" || cue === "capital") {
+        const text = document.createElement("div");
+        text.className = "rapid-cue-text";
+        text.textContent = cue === "country" ? c.name : (round.cueValue || c.capital || "");
+        rapidCue.appendChild(text);
+        return;
+      }
+      if (cue === "flag") {
+        const img = document.createElement("img");
+        setQuizFlag(img, c, "Flag clue");
+        rapidCue.appendChild(img);
+        return;
+      }
+      if (cue === "silhouette") {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("viewBox", "0 0 260 170");
+        svg.setAttribute("aria-label", "Country silhouette clue");
+        rapidCue.appendChild(svg);
+        await renderMatchingSilhouette(svg, c);
+        if (token !== rapidRenderToken) return;
+      }
+    }
+
+    async function rapidRenderChoice(button, optionCountry, target) {
+      const label = document.createElement("span");
+      label.className = "rapid-choice-label";
+      label.textContent = optionCountry.name;
+      if (target === "flagChoice") {
+        const img = document.createElement("img");
+        setQuizFlag(img, optionCountry, "Flag option");
+        button.append(img, label);
+        return;
+      }
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 180 110");
+      svg.setAttribute("aria-hidden", "true");
+      button.append(svg, label);
+      await renderMatchingSilhouette(svg, optionCountry);
+    }
+
+    async function rapidCandidateTexts(round) {
+      const target = RAPID_TYPES[round.type]?.target;
+      if (target === "country") return countries.map(c => c.name).sort((a,b) => a.localeCompare(b));
+      if (target === "capital") return interactiveCandidateTexts("capital");
+      if (target === "currency") return interactiveCandidateTexts("currency");
+      if (target === "largestCity") {
+        return [...new Set(countries.map(rapidLargestCity).filter(Boolean))].sort((a,b) => a.localeCompare(b));
+      }
+      return [];
+    }
+
+    function positionRapidSuggestions() {
+      if (rapidSuggestions.classList.contains("hidden")) return;
+      const bounds = rapidInput?.getBoundingClientRect?.();
+      if (!bounds) return;
+      const viewportHeight = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight;
+      const viewportTop = window.visualViewport?.offsetTop || 0;
+      const panelBounds = rapidPanel?.getBoundingClientRect?.();
+      const lowerLimit = Math.min(viewportTop + viewportHeight, panelBounds?.bottom || viewportTop + viewportHeight) - 10;
+      const upperLimit = Math.max(viewportTop + 8, panelBounds?.top || viewportTop + 8);
+      const availableBelow = Math.max(0, lowerLimit - bounds.bottom - 6);
+      const availableAbove = Math.max(0, bounds.top - upperLimit - 6);
+      const dropUp = availableBelow < 150 && availableAbove > availableBelow;
+      const room = dropUp ? availableAbove : availableBelow;
+      rapidSuggestions.classList.toggle("drop-up", dropUp);
+      rapidSuggestions.style.setProperty("--rapid-suggestions-max", `${Math.max(92, Math.min(220, room || 220))}px`);
+    }
+
+    async function rapidUpdateSuggestions() {
+      const state = ensureRapidState();
+      const round = state?.round;
+      if (!round || round.status !== "active" || rapidTextPanel.classList.contains("hidden")) return;
+      const query = interactiveLooseNormalize(rapidInput.value);
+      rapidSuggestions.replaceChildren();
+      rapidSuggestionIndex = -1;
+      if (!query) {
+        rapidSuggestions.classList.add("hidden");
+        return;
+      }
+      const values = await rapidCandidateTexts(round);
+      if (round !== ensureRapidState()?.round) return;
+      const matches = values
+        .map(value => ({ value, norm: interactiveLooseNormalize(value) }))
+        .filter(item => item.norm.includes(query))
+        .sort((a,b) => (a.norm.startsWith(query) ? 0 : 1) - (b.norm.startsWith(query) ? 0 : 1) || a.value.localeCompare(b.value))
+        .slice(0, 7);
+      if (!matches.length) {
+        rapidSuggestions.classList.add("hidden");
+        return;
+      }
+      for (const item of matches) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "rapid-suggestion";
+        button.dataset.rapidSuggestion = item.value;
+        button.textContent = item.value;
+        button.addEventListener("pointerdown", event => event.preventDefault());
+        button.addEventListener("click", () => {
+          rapidInput.value = item.value;
+          rapidSuggestions.classList.add("hidden");
+          rapidSuggestionIndex = -1;
+          rapidInput.focus();
+        });
+        rapidSuggestions.appendChild(button);
+      }
+      rapidSuggestions.classList.remove("hidden");
+      requestAnimationFrame(positionRapidSuggestions);
+    }
+
+    function rapidMoveSuggestion(delta) {
+      const options = [...rapidSuggestions.querySelectorAll(".rapid-suggestion")];
+      if (!options.length || rapidSuggestions.classList.contains("hidden")) return false;
+      rapidSuggestionIndex = (rapidSuggestionIndex + delta + options.length) % options.length;
+      options.forEach((button, i) => button.classList.toggle("active", i === rapidSuggestionIndex));
+      options[rapidSuggestionIndex]?.scrollIntoView?.({ block: "nearest" });
+      return true;
+    }
+
+    function rapidAcceptSuggestion() {
+      const options = [...rapidSuggestions.querySelectorAll(".rapid-suggestion")];
+      const button = options[rapidSuggestionIndex];
+      if (!button) return false;
+      rapidInput.value = button.dataset.rapidSuggestion || button.textContent || "";
+      rapidSuggestions.classList.add("hidden");
+      rapidSuggestionIndex = -1;
+      return true;
+    }
+
+    function rapidFinishQuestion(correct, label = null) {
+      const state = ensureRapidState();
+      const round = state?.round;
+      const c = currentCountry();
+      if (!round || !c || round.status !== "active") return;
+      round.status = "answered";
+      round.correct = !!correct;
+      state.total += 1;
+      if (correct) {
+        state.correct += 1;
+        state.streak += 1;
+        state.bestStreak = Math.max(state.bestStreak, state.streak);
+      } else {
+        state.streak = 0;
+      }
+      rapidRecordFact(c, RAPID_TYPES[round.type].stage, correct);
+      saveStudySession();
+      document.activeElement?.blur?.();
+      hapticFeedback(correct ? "correct" : "wrong");
+      rapidSuggestions.classList.add("hidden");
+      rapidFeedback.textContent = "";
+      rapidResultKicker.textContent = correct ? "Correct" : "Answer";
+      rapidAnswer.textContent = label || rapidAnswerLabel(round, c);
+      rapidResultMeta.textContent = correct ? (state.streak > 1 ? `${state.streak} in a row` : "Clean recall") : "Counted as a miss for review";
+      rapidResult.classList.remove("hidden");
+      rapidTextPanel.classList.add("hidden");
+      rapidChoiceGrid.querySelectorAll(".rapid-choice").forEach(button => {
+        button.disabled = true;
+        const labelText = button.querySelector(".rapid-choice-label")?.textContent?.trim();
+        if (labelText) button.setAttribute("aria-label", labelText);
+      });
+      rapidChoiceGrid.classList.add("reveal-labels");
+      rapidRevealBtn.classList.add("hidden");
+      rapidNextBtn.textContent = index + 1 >= sessionCountryTotal() ? "See results →" : "Next question →";
+      rapidScore.textContent = `${state.correct}/${state.total} correct`;
+      rapidStreak.textContent = `${state.streak} streak`;
+    }
+
+    function rapidSubmitText() {
+      const state = ensureRapidState();
+      const round = state?.round;
+      const c = currentCountry();
+      if (!round || !c || round.status !== "active") return;
+      const typed = rapidInput.value.trim();
+      if (!typed) return;
+      if (rapidTextMatches(round, c, typed)) {
+        rapidFeedback.textContent = "Correct";
+        rapidFeedback.className = "rapid-feedback correct";
+        rapidFinishQuestion(true);
+        return;
+      }
+      if (rapidLooksLikeTypo(round, c, typed)) {
+        rapidFeedback.textContent = "Almost — check the spelling.";
+        rapidFeedback.className = "rapid-feedback near";
+        return;
+      }
+      rapidFeedback.textContent = `Not quite.`;
+      rapidFeedback.className = "rapid-feedback wrong";
+      rapidFinishQuestion(false);
+    }
+
+    function rapidChooseCountry(button, optionCountry) {
+      const state = ensureRapidState();
+      const round = state?.round;
+      const c = currentCountry();
+      if (!round || !c || round.status !== "active") return;
+      const correct = optionCountry.code === c.code;
+      button.classList.add(correct ? "correct" : "wrong");
+      rapidFinishQuestion(correct);
+      if (correct) {
+        rapidChoiceGrid.querySelectorAll(".rapid-choice").forEach(choice => {
+          if (choice.dataset.countryCode === c.code) choice.classList.add("correct");
+        });
+      } else {
+        rapidChoiceGrid.querySelectorAll(".rapid-choice").forEach(choice => {
+          if (choice.dataset.countryCode === c.code) choice.classList.add("correct");
+        });
+      }
+    }
+
+    async function rapidRenderQuestion() {
+      if (studySession?.interaction !== "rapid" || studySession?.active === false) return;
+      const state = ensureRapidState();
+      const c = currentCountry();
+      if (!c) {
+        showRapidComplete();
+        return;
+      }
+      let round = state.round;
+      if (!round || round.countryCode !== c.code) round = rapidMakeRound(c);
+      const type = RAPID_TYPES[round.type] || RAPID_TYPES.flagCountry;
+      const token = ++rapidRenderToken;
+
+      rapidComplete.classList.add("hidden");
+      rapidQuestionCard.classList.remove("hidden");
+      rapidResult.classList.add("hidden");
+      rapidRevealBtn.classList.remove("hidden");
+      rapidFeedback.textContent = "";
+      rapidFeedback.className = "rapid-feedback";
+      rapidKicker.textContent = type.kicker;
+      rapidQuestion.textContent = type.prompt;
+      rapidRoundStatus.textContent = `Question ${Math.min(index + 1, sessionCountryTotal())} of ${sessionCountryTotal()}`;
+      rapidScore.textContent = `${state.correct}/${state.total} correct`;
+      rapidStreak.textContent = `${state.streak} streak`;
+      rapidInput.value = "";
+      rapidSuggestions.classList.add("hidden");
+      rapidSuggestionIndex = -1;
+      rapidChoiceGrid.replaceChildren();
+      rapidChoiceGrid.classList.remove("reveal-labels");
+
+      await rapidRenderCue(round, c, token);
+      if (token !== rapidRenderToken) return;
+
+      if (round.status === "answered") {
+        rapidTextPanel.classList.add("hidden");
+        rapidRevealBtn.classList.add("hidden");
+        rapidResultKicker.textContent = round.correct ? "Correct" : "Answer";
+        rapidAnswer.textContent = rapidAnswerLabel(round, c);
+        rapidResultMeta.textContent = round.correct ? "Clean recall" : "Counted as a miss for review";
+        rapidResult.classList.remove("hidden");
+        rapidNextBtn.textContent = index + 1 >= sessionCountryTotal() ? "See results →" : "Next question →";
+        return;
+      }
+
+      if (["flagChoice", "silhouetteChoice"].includes(type.target)) {
+        rapidTextPanel.classList.add("hidden");
+        rapidChoiceGrid.classList.remove("hidden");
+        const stage = type.target === "flagChoice" ? "flag" : "silhouette";
+        const options = rapidVisualOptions(round, c, stage);
+        for (const [optionIndex, option] of options.entries()) {
+          if (token !== rapidRenderToken) return;
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "rapid-choice";
+          button.dataset.countryCode = option.code;
+          button.setAttribute("aria-label", `${type.target === "flagChoice" ? "Flag" : "Silhouette"} option ${optionIndex + 1}`);
+          button.addEventListener("click", () => rapidChooseCountry(button, option));
+          rapidChoiceGrid.appendChild(button);
+          await rapidRenderChoice(button, option, type.target);
+        }
+      } else {
+        rapidChoiceGrid.classList.add("hidden");
+        rapidTextPanel.classList.remove("hidden");
+        rapidInput.placeholder = type.target === "country" ? "Type the country…" : type.target === "capital" ? "Type a capital…" : type.target === "currency" ? "Type the currency…" : "Type the city…";
+        window.setTimeout(() => { if (rapidOverlay.classList.contains("open")) rapidInput.focus(); }, 40);
+      }
+    }
+
+    function rapidRevealAnswer() {
+      const state = ensureRapidState();
+      const round = state?.round;
+      const c = currentCountry();
+      if (!round || !c || round.status !== "active") return;
+      const target = RAPID_TYPES[round.type]?.target;
+      rapidFinishQuestion(false);
+      if (["flagChoice", "silhouetteChoice"].includes(target)) {
+        rapidChoiceGrid.querySelectorAll(".rapid-choice").forEach(choice => {
+          if (choice.dataset.countryCode === c.code) choice.classList.add("correct");
+        });
+      }
+    }
+
+    function advanceRapidQuestion() {
+      const state = ensureRapidState();
+      if (!state?.round || state.round.status !== "answered") return;
+      if (index + 1 >= sessionCountryTotal()) {
+        showRapidComplete();
+        return;
+      }
+      index += 1;
+      state.round = null;
+      saveStudySession();
+      saveState();
+      const next = currentCountry();
+      if (next) loadCountryFacts(next).catch(() => {});
+      rapidRenderQuestion();
+    }
+
+    function showRapidComplete() {
+      const state = ensureRapidState() || rapidDefaultState();
+      if (studySession) {
+        studySession.active = false;
+        studySession.rapid = state;
+      }
+      index = sessionCountryTotal();
+      saveStudySession();
+      saveState();
+      rapidQuestionCard.classList.add("hidden");
+      rapidComplete.classList.remove("hidden");
+      rapidRoundStatus.textContent = "Session complete";
+      rapidScore.textContent = `${state.correct}/${state.total} correct`;
+      rapidStreak.textContent = `best ${state.bestStreak} streak`;
+      const accuracy = state.total ? Math.round(state.correct / state.total * 100) : 0;
+      rapidCompleteScore.textContent = `${accuracy}%`;
+      rapidCompleteMeta.textContent = `${state.correct} of ${state.total} questions correct · best streak ${state.bestStreak}`;
+    }
+
+    function openRapidMode(resume = true) {
+      if (studySession?.interaction !== "rapid") return;
+      matchingOverlay?.classList.remove("open");
+      detectiveOverlay?.classList.remove("open");
+      rapidOverlay.classList.add("open");
+      if (studySession.active === false) showRapidComplete();
+      else rapidRenderQuestion();
+    }
+
+    function closeRapidToMenu() {
+      rapidOverlay.classList.remove("open");
+      openStartOverlay(true);
+    }
+
+    function rapidBackToMenu() {
+      rapidOverlay.classList.remove("open");
+      openStartOverlay(false);
+    }
+
+    rapidMenuBtn?.addEventListener("click", closeRapidToMenu);
+    rapidCheckBtn?.addEventListener("click", rapidSubmitText);
+    rapidRevealBtn?.addEventListener("click", rapidRevealAnswer);
+    rapidNextBtn?.addEventListener("click", advanceRapidQuestion);
+    rapidBackToMenuBtn?.addEventListener("click", rapidBackToMenu);
+    rapidInput?.addEventListener("input", rapidUpdateSuggestions);
+    rapidInput?.addEventListener("keydown", event => {
+      if (event.key === "ArrowDown") {
+        if (rapidMoveSuggestion(1)) event.preventDefault();
+        return;
+      }
+      if (event.key === "ArrowUp") {
+        if (rapidMoveSuggestion(-1)) event.preventDefault();
+        return;
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        if (rapidAcceptSuggestion()) return;
+        rapidSubmitText();
+      }
+    });
     function settingRowKey(row) {
       return row?.dataset?.settingKey || null;
     }
@@ -20080,6 +22091,8 @@
       searchLaunchedFromStart = !canResumeRun;
       searchReturnMenuAllowClose = canResumeRun;
       lookupReturnToMatching = canResumeRun && studySession?.interaction === "matching" && studySession?.active !== false;
+      lookupReturnToDetective = canResumeRun && studySession?.interaction === "detective" && studySession?.active !== false;
+      lookupReturnToRapid = canResumeRun && studySession?.interaction === "rapid" && studySession?.active !== false;
       startOverlay.classList.remove("open");
       openCountrySearch();
     });
@@ -20110,7 +22123,7 @@
       const recapSet = studySession?.countrySet || "world";
       const available = countryPoolAvailableCount("weakest", recapSet);
       if (!available) return;
-      const interaction = ["matching", "interactive"].includes(studySession?.interaction)
+      const interaction = ["matching", "interactive", "rapid"].includes(studySession?.interaction)
         ? studySession.interaction
         : "standard";
       startStudySession("finite", Math.min(5, available), interaction, "weakest", recapSet);
@@ -20513,6 +22526,24 @@
         return;
       }
 
+      if (detectiveOverlay?.classList.contains("open")) {
+        if (event.key === "Escape") closeDetectiveToMenu();
+        else if ((event.key === "Enter" || event.key === " ") && !event.target?.closest?.("input, textarea, select, button")) {
+          const round = ensureDetectiveState()?.round;
+          if (round?.finished) { event.preventDefault(); advanceDetectiveCase(); }
+        }
+        return;
+      }
+
+      if (rapidOverlay?.classList.contains("open")) {
+        if (event.key === "Escape") closeRapidToMenu();
+        else if ((event.key === "Enter" || event.key === " ") && !event.target?.closest?.("input, textarea, select, button")) {
+          const round = ensureRapidState()?.round;
+          if (round?.status === "answered") { event.preventDefault(); advanceRapidQuestion(); }
+        }
+        return;
+      }
+
       if (startOverlay.classList.contains("open")) {
         if (event.key === "Escape") closeStartOverlay();
         return;
@@ -20632,6 +22663,12 @@
     } else if (studySession.interaction === "matching") {
       menuPlayMode = "matching";
       window.setTimeout(() => openMatchingMode(true, true), 40);
+    } else if (studySession.interaction === "detective") {
+      menuPlayMode = "detective";
+      window.setTimeout(() => openDetectiveMode(true), 40);
+    } else if (studySession.interaction === "rapid") {
+      menuPlayMode = "rapid";
+      window.setTimeout(() => openRapidMode(true), 40);
     } else if (studySession.interaction === "interactive") {
       menuPlayMode = "interactive";
     } else {
