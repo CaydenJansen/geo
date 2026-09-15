@@ -32,6 +32,13 @@
       --accent: #2864f0;
       --accent-dark: #1f53ca;
       --blue: var(--accent);
+      --correct: #2f7d4d;
+      --correct-dark: #257446;
+      --correct-soft: rgba(47,125,77,.10);
+      --incorrect: #b74b40;
+      --incorrect-dark: #9b3e35;
+      --incorrect-soft: rgba(183,75,64,.10);
+      --near: #8a641d;
       --button-muted: rgba(23,23,23,.075);
       --shadow: 0 18px 55px rgba(25,22,16,.08);
     }
@@ -2032,14 +2039,15 @@
     }
 
     .missed-button {
-      background: rgba(151,55,43,.10);
-      color: #7f3027;
-      border: 1px solid rgba(151,55,43,.13);
+      background: var(--incorrect-soft);
+      color: var(--incorrect-dark);
+      border: 1px solid rgba(183,75,64,.26);
     }
 
     .got-button {
-      background: var(--accent);
+      background: var(--correct);
       color: white;
+      border: 1px solid var(--correct);
     }
 
     .missed-button:disabled,
@@ -3429,7 +3437,7 @@
       display: grid;
       place-items: center;
       border-radius: 999px;
-      background: #2f7d4d;
+      background: var(--correct);
       color: white;
       font-size: .78rem;
       font-weight: 950;
@@ -3508,7 +3516,7 @@
 
     .matching-slot.wrong {
       animation: matchingShake .24s ease;
-      border-color: #b74b40;
+      border-color: var(--incorrect);
       background: rgba(183,75,64,.07);
     }
 
@@ -3617,7 +3625,7 @@
       font-weight: 800;
     }
 
-    .matching-feedback.complete { color: #257446; }
+    .matching-feedback.complete { color: var(--correct-dark); }
 
     @media (max-width: 720px) {
       .matching-overlay { padding: 8px; align-items: stretch; }
@@ -3984,7 +3992,7 @@
 
     .matching-slot.wrong:not(.correct) {
       border-style: solid;
-      border-color: #b74b40;
+      border-color: var(--incorrect);
       background: rgba(183,75,64,.11);
       box-shadow: inset 0 0 0 1px rgba(183,75,64,.08);
     }
@@ -4591,7 +4599,7 @@
 
     .matching-slot.wrong {
       background: rgba(183,75,64,.12) !important;
-      border-color: #b74b40 !important;
+      border-color: var(--incorrect) !important;
       border-style: solid !important;
     }
 
@@ -4798,12 +4806,12 @@
     }
 
     .interactive-input.correct {
-      border-color: #2f7d4d;
+      border-color: var(--correct);
       background: rgba(47,125,77,.08);
     }
 
     .interactive-input.wrong {
-      border-color: #b74b40;
+      border-color: var(--incorrect);
       background: rgba(183,75,64,.08);
     }
 
@@ -4886,11 +4894,11 @@
 
     .interactive-choice:active { transform: scale(.985); }
     .interactive-choice.correct {
-      border-color: #2f7d4d;
+      border-color: var(--correct);
       background: rgba(47,125,77,.11);
     }
     .interactive-choice.wrong {
-      border-color: #b74b40;
+      border-color: var(--incorrect);
       background: rgba(183,75,64,.10);
     }
 
@@ -4932,7 +4940,7 @@
     }
 
     .interactive-feedback.near {
-      color: #8b641d;
+      color: var(--near);
     }
 
     .interactive-feedback {
@@ -4942,8 +4950,8 @@
       font-weight: 820;
       text-align: center;
     }
-    .interactive-feedback.correct { color: #2f7d4d; }
-    .interactive-feedback.wrong { color: #a33f35; }
+    .interactive-feedback.correct { color: var(--correct); }
+    .interactive-feedback.wrong { color: var(--incorrect-dark); }
 
     .stage.interactive-mode .hint-button,
     .stage.interactive-mode .capital-hint-text {
@@ -5698,7 +5706,7 @@
     .interactive-collection-hint-chip {
       background: rgba(189,132,36,.10);
       border: 1px solid rgba(189,132,36,.22);
-      color: #8b641d;
+      color: var(--near);
     }
 
     .interactive-collection-missed-chip {
@@ -5977,6 +5985,42 @@
        study card and above the hint row on short phone screens. */
     .stage.interactive-mode { overflow: visible !important; }
 
+
+    /* ---------- Interactive visual-choice difficulty ---------- */
+    .interactive-choice-grid[data-choice-count="6"] .interactive-choice,
+    .interactive-choice-grid[data-choice-count="8"] .interactive-choice {
+      min-height: 108px;
+    }
+    .interactive-choice-grid[data-choice-count="6"] .interactive-choice img,
+    .interactive-choice-grid[data-choice-count="8"] .interactive-choice img {
+      max-height: 72px;
+    }
+    .interactive-choice-grid[data-choice-count="6"] .interactive-choice svg,
+    .interactive-choice-grid[data-choice-count="8"] .interactive-choice svg {
+      height: 78px;
+    }
+
+    @media (max-width: 520px) {
+      .interactive-choice-grid[data-choice-count="6"],
+      .interactive-choice-grid[data-choice-count="8"] {
+        max-height: min(56dvh, 470px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-right: 2px;
+      }
+      .interactive-choice-grid[data-choice-count="6"] .interactive-choice,
+      .interactive-choice-grid[data-choice-count="8"] .interactive-choice {
+        min-height: 88px;
+      }
+      .interactive-choice-grid[data-choice-count="6"] .interactive-choice img,
+      .interactive-choice-grid[data-choice-count="8"] .interactive-choice img {
+        max-height: 56px;
+      }
+      .interactive-choice-grid[data-choice-count="6"] .interactive-choice svg,
+      .interactive-choice-grid[data-choice-count="8"] .interactive-choice svg {
+        height: 60px;
+      }
+    }
     /* ---------- Regional + custom country sets ---------- */
     .country-set-section {
       width: 100%;
@@ -8695,6 +8739,42 @@
         flex-basis: 14px;
       }
     }
+
+    /* ---------- v10.11 mode-level challenge options ---------- */
+    .interactive-choice-settings {
+      margin: 12px 0;
+      padding: 11px 12px;
+      border: 1px solid rgba(23,23,23,.08);
+      border-radius: 14px;
+      background: rgba(255,255,255,.24);
+    }
+    .interactive-choice-count-picker {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 7px;
+      margin-top: 7px;
+    }
+    .interactive-choice-count-button {
+      min-height: 42px;
+      border: 1px solid rgba(23,23,23,.10);
+      border-radius: 11px;
+      background: rgba(255,255,255,.56);
+      color: var(--text);
+      font: inherit;
+      font-weight: 880;
+      cursor: pointer;
+    }
+    .interactive-choice-count-button.active {
+      border-color: rgba(40,100,240,.34);
+      background: rgba(40,100,240,.11);
+      color: var(--accent-dark);
+    }
+    .interactive-choice-settings-help {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: .65rem;
+      line-height: 1.3;
+    }
     /* ---------- v10.2 lightweight personalisation ---------- */
     .profile-greeting {
       margin-top: 4px;
@@ -9263,9 +9343,9 @@ button,
 .detective-suggestion.active,
 .detective-suggestion:hover { background:rgba(40,100,240,.09); }
 .detective-feedback { min-height: 20px; margin-top: 7px; font-size:.72rem; font-weight:820; line-height:1.25; }
-.detective-feedback.wrong { color:#9a3f35; }
-.detective-feedback.near { color:#8a641d; }
-.detective-feedback.correct { color:#237244; }
+.detective-feedback.wrong { color:var(--incorrect-dark); }
+.detective-feedback.near { color:var(--near); }
+.detective-feedback.correct { color:var(--correct-dark); }
 .detective-give-up {
   margin-top: 3px;
   border:0;
@@ -9280,16 +9360,19 @@ button,
 .detective-result {
   margin-top: 11px;
   padding: 16px;
-  border: 1px solid rgba(41,122,74,.20);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  background: rgba(41,122,74,.08);
+  background: rgba(255,255,255,.48);
   text-align: center;
 }
-.detective-result.missed { border-color:rgba(154,63,53,.18); background:rgba(154,63,53,.06); }
+.detective-result.solved { border-color:rgba(47,125,77,.34); background:var(--correct-soft); }
+.detective-result.missed { border-color:rgba(183,75,64,.34); background:var(--incorrect-soft); }
 .detective-result-kicker { color:var(--muted); font-size:.62rem; font-weight:950; letter-spacing:.08em; text-transform:uppercase; }
+.detective-result.solved .detective-result-kicker { color:var(--correct-dark); }
+.detective-result.missed .detective-result-kicker { color:var(--incorrect-dark); }
 .detective-answer { margin-top:3px; font-size:1.7rem; font-weight:950; letter-spacing:-.035em; }
-.detective-result-points { margin-top:4px; color:#257446; font-size:.84rem; font-weight:900; }
-.detective-result.missed .detective-result-points { color:#9a3f35; }
+.detective-result-points { margin-top:4px; color:var(--correct-dark); font-size:.84rem; font-weight:900; }
+.detective-result.missed .detective-result-points { color:var(--incorrect-dark); }
 .detective-next {
   width:100%;
   min-height:48px;
@@ -9429,19 +9512,25 @@ button,
 .rapid-choice svg { width:100%; height:92px; display:block; }
 .rapid-choice-label { display:none; max-width:100%; color:var(--muted); font-size:.66rem; font-weight:900; text-align:center; overflow-wrap:anywhere; }
 .rapid-choice-grid.reveal-labels .rapid-choice-label { display:block; }
-.rapid-choice.correct { border-color:rgba(41,122,74,.48); background:rgba(41,122,74,.10); }
-.rapid-choice.wrong { border-color:rgba(183,75,64,.50); background:rgba(183,75,64,.10); }
+.rapid-choice.correct { border-color:rgba(47,125,77,.48); background:var(--correct-soft); }
+.rapid-choice.wrong { border-color:rgba(183,75,64,.50); background:var(--incorrect-soft); }
 .rapid-feedback { min-height:24px; margin-top:8px; font-size:.76rem; font-weight:850; line-height:1.3; }
-.rapid-feedback.correct { color:#257446; }
-.rapid-feedback.wrong { color:#9b3e35; }
-.rapid-feedback.near { color:#8a641d; }
+.rapid-feedback.correct { color:var(--correct-dark); }
+.rapid-feedback.wrong { color:var(--incorrect-dark); }
+.rapid-feedback.near { color:var(--near); }
 .rapid-reveal {
   margin-top:7px; min-height:38px; border:0; padding:0 4px; background:transparent; color:var(--muted); font:inherit; font-size:.7rem; font-weight:850; cursor:pointer;
 }
 .rapid-result { margin-top:13px; padding:12px; border:1px solid rgba(23,23,23,.08); border-radius:15px; background:rgba(255,255,255,.48); }
+.rapid-result.correct { border-color:rgba(47,125,77,.34); background:var(--correct-soft); }
+.rapid-result.wrong { border-color:rgba(183,75,64,.34); background:var(--incorrect-soft); }
 .rapid-result-kicker { color:var(--muted); font-size:.6rem; font-weight:950; letter-spacing:.09em; text-transform:uppercase; }
+.rapid-result.correct .rapid-result-kicker { color:var(--correct-dark); }
+.rapid-result.wrong .rapid-result-kicker { color:var(--incorrect-dark); }
 .rapid-answer { margin-top:3px; font-size:1.25rem; font-weight:950; line-height:1.1; overflow-wrap:anywhere; }
 .rapid-result-meta { margin:5px 0 10px; color:var(--muted); font-size:.72rem; font-weight:800; }
+.rapid-result.correct .rapid-result-meta { color:var(--correct-dark); }
+.rapid-result.wrong .rapid-result-meta { color:var(--incorrect-dark); }
 .rapid-complete { padding:24px 8px 14px; text-align:center; }
 .rapid-complete-eyebrow { color:#315f9d; font-size:.64rem; font-weight:950; letter-spacing:.1em; text-transform:uppercase; }
 .rapid-complete-title { margin:5px 0 0; font-size:1.75rem; letter-spacing:-.04em; }
@@ -10166,6 +10255,16 @@ button,
         </div>
       </section>
 
+      <section class="interactive-choice-settings hidden" id="interactiveChoiceSettings" aria-labelledby="interactiveChoiceSettingsLabel">
+        <div class="tune-section-label" id="interactiveChoiceSettingsLabel">Multiple-choice options</div>
+        <div class="interactive-choice-count-picker" id="interactiveChoiceCountPicker" role="group" aria-label="Number of multiple-choice options">
+          <button class="interactive-choice-count-button" type="button" data-interactive-choice-count="4" aria-pressed="false">4</button>
+          <button class="interactive-choice-count-button" type="button" data-interactive-choice-count="6" aria-pressed="false">6</button>
+          <button class="interactive-choice-count-button" type="button" data-interactive-choice-count="8" aria-pressed="false">8</button>
+        </div>
+        <div class="interactive-choice-settings-help">Used for visual questions such as flags and silhouettes.</div>
+      </section>
+
       <div class="tune-order-head">
         <div>
           <div class="tune-section-label" id="tuneSectionLabel">Challenges &amp; order</div>
@@ -10482,6 +10581,8 @@ button,
     const COUNTRY_SET_KEY = "flag-by-flag-country-set-v1";
     const CUSTOM_COUNTRY_SET_KEY = "flag-by-flag-custom-country-set-v1";
     const MATCHING_CONFIG_KEY = "flag-by-flag-matching-config-v1";
+    const DETECTIVE_CONFIG_KEY = "flag-by-flag-detective-config-v1";
+    const INTERACTIVE_CHOICE_COUNT_KEY = "flag-by-flag-interactive-choice-count-v1";
     const DAILY_PROGRESS_KEY = "flag-by-flag-daily-progress-v1";
     const SESSION_CHOICE_KEY = "flag-by-flag-session-choice-v1";
 
@@ -10606,6 +10707,36 @@ button,
       enabled: Object.fromEntries(MATCHING_ALL_FIELDS.map(field => [
         field,
         MATCHING_BASIC_FIELDS.includes(field)
+      ]))
+    };
+
+    const DETECTIVE_ALL_CLUES = [
+      "population", "area", "formation", "hemisphere", "government", "neighbours",
+      "languages", "silhouette", "largestCity", "currency", "capital", "flag"
+    ];
+    const DETECTIVE_RECOMMENDED_CLUES = [
+      "population", "area", "formation", "hemisphere", "neighbours",
+      "languages", "silhouette", "capital", "flag"
+    ];
+    const DETECTIVE_CLUE_META = {
+      population: { label: "Population" },
+      area: { label: "Area" },
+      formation: { label: "Formation date" },
+      hemisphere: { label: "Location" },
+      government: { label: "Government" },
+      neighbours: { label: "Neighbours" },
+      languages: { label: "Languages" },
+      currency: { label: "Currency" },
+      silhouette: { label: "Silhouette" },
+      largestCity: { label: "Largest city" },
+      capital: { label: "Capital" },
+      flag: { label: "Flag" }
+    };
+    const DEFAULT_DETECTIVE_CONFIG = {
+      order: [...DETECTIVE_ALL_CLUES],
+      enabled: Object.fromEntries(DETECTIVE_ALL_CLUES.map(key => [
+        key,
+        DETECTIVE_RECOMMENDED_CLUES.includes(key)
       ]))
     };
 
@@ -11053,6 +11184,8 @@ button,
     const tunePresetPicker = document.getElementById("tunePresetPicker");
     const tuneChallengeSetSummary = document.getElementById("tuneChallengeSetSummary");
     const tuneShuffleBtn = document.getElementById("tuneShuffleBtn");
+    const interactiveChoiceSettings = document.getElementById("interactiveChoiceSettings");
+    const interactiveChoiceCountPicker = document.getElementById("interactiveChoiceCountPicker");
     const stageSettingsEl = document.getElementById("stageSettings");
     const settingsWarning = document.getElementById("settingsWarning");
     const settingsHapticsToggle = document.getElementById("settingsHapticsToggle");
@@ -11106,6 +11239,8 @@ button,
     let index = loadProgress(); // next unseen country position in the shuffled order
     let config = loadConfig();
     let matchingConfig = loadMatchingConfig();
+    let detectiveConfig = loadDetectiveConfig();
+    let interactiveChoiceCount = loadInteractiveChoiceCount();
     let currentStage = loadCurrentStage();
     let phase = loadPhase();
 
@@ -11889,12 +12024,14 @@ button,
     function normalizeChallengeMode(mode = menuPlayMode) {
       if (mode === "matching") return "matching";
       if (mode === "interactive") return "interactive";
+      if (mode === "detective") return "detective";
       return "standard";
     }
 
     function challengeUniverseForMode(mode = menuPlayMode) {
       const normalized = normalizeChallengeMode(mode);
       if (normalized === "matching") return [...MATCHING_ALL_FIELDS];
+      if (normalized === "detective") return [...detectiveConfig.order];
       if (normalized === "interactive") return config.order.filter(stage => INTERACTIVE_STAGES.has(stage));
       return [...config.order];
     }
@@ -11902,12 +12039,16 @@ button,
     function challengeBasicKeysForMode(mode = menuPlayMode) {
       const normalized = normalizeChallengeMode(mode);
       if (normalized === "matching") return [...MATCHING_BASIC_FIELDS];
+      if (normalized === "detective") return [...DETECTIVE_RECOMMENDED_CLUES];
       if (normalized === "interactive") return [...INTERACTIVE_BASIC_STAGES];
       return [...FLASH_BASIC_STAGES];
     }
 
     function challengeEnabledMapForMode(mode = menuPlayMode) {
-      return normalizeChallengeMode(mode) === "matching" ? matchingConfig.enabled : config.enabled;
+      const normalized = normalizeChallengeMode(mode);
+      if (normalized === "matching") return matchingConfig.enabled;
+      if (normalized === "detective") return detectiveConfig.enabled;
+      return config.enabled;
     }
 
     function enabledChallengeKeysForMode(mode = menuPlayMode) {
@@ -11922,32 +12063,47 @@ button,
       const basic = new Set(challengeBasicKeysForMode(mode));
       const enabled = universe.filter(key => !!enabledMap[key]);
 
+      if (normalizeChallengeMode(mode) === "detective") {
+        const recommendedOrder = DEFAULT_DETECTIVE_CONFIG.order;
+        const orderMatches = detectiveConfig.order.length === recommendedOrder.length &&
+          detectiveConfig.order.every((key, index) => key === recommendedOrder[index]);
+        if (orderMatches && enabled.length === basic.size && enabled.every(key => basic.has(key))) return "basic";
+        if (orderMatches && enabled.length === universe.length && universe.every(key => !!enabledMap[key])) return "expert";
+        return "custom";
+      }
+
       if (enabled.length === basic.size && enabled.every(key => basic.has(key))) return "basic";
       if (enabled.length === universe.length && universe.every(key => !!enabledMap[key])) return "expert";
       return "custom";
     }
 
-    function challengeSetDisplayName(state = challengeSetStateForMode()) {
+    function challengeSetDisplayName(state = challengeSetStateForMode(), mode = menuPlayMode) {
+      if (normalizeChallengeMode(mode) === "detective") {
+        if (state === "basic") return "Recommended";
+        if (state === "expert") return "All clues";
+        return "Custom";
+      }
       if (state === "basic") return "Basics";
       if (state === "expert") return "Expert";
       return "Custom";
     }
 
     function challengeSetSummaryForMode(mode = menuPlayMode) {
-      if (mode === "detective") return "Progressive clues";
       if (mode === "rapid") return "Mixed questions";
       const state = challengeSetStateForMode(mode);
       const count = enabledChallengeKeysForMode(mode).length;
-      return `${challengeSetDisplayName(state)} · ${count} challenge${count === 1 ? "" : "s"}`;
+      const unit = normalizeChallengeMode(mode) === "detective" ? "clue" : "challenge";
+      return `${challengeSetDisplayName(state, mode)} · ${count} ${unit}${count === 1 ? "" : "s"}`;
     }
 
     function challengeNameForMode(key, mode = menuPlayMode) {
-      if (normalizeChallengeMode(mode) === "matching") return MATCHING_FIELD_META[key]?.label || key;
+      const normalized = normalizeChallengeMode(mode);
+      if (normalized === "matching") return MATCHING_FIELD_META[key]?.label || key;
+      if (normalized === "detective") return DETECTIVE_CLUE_META[key]?.label || key;
       return STAGE_META[key]?.name || key;
     }
 
     function challengeSetNamesForMode(mode = menuPlayMode, max = 4) {
-      if (mode === "detective") return "Clues become more revealing as the case unfolds";
       if (mode === "rapid") return "Flags, capitals, silhouettes and more";
       const names = enabledChallengeKeysForMode(mode).map(key => challengeNameForMode(key, mode));
       if (names.length <= max) return names.join(" · ");
@@ -12026,7 +12182,7 @@ button,
       const lengthName = startMenuLengthLabel();
       const challengeSummary = challengeSetSummaryForMode(menuPlayMode);
       const challengeStep = document.querySelector('[data-session-step="challenges"]');
-      if (challengeStep) challengeStep.classList.toggle("hidden", ["detective", "rapid"].includes(menuPlayMode));
+      if (challengeStep) challengeStep.classList.toggle("hidden", menuPlayMode === "rapid");
 
       if (primary) primary.textContent = `${modeName} · ${poolName}`;
       if (secondary) secondary.textContent = `${lengthName} · ${setName}`;
@@ -12524,6 +12680,41 @@ button,
 
     function saveMatchingConfig() {
       localStorage.setItem(MATCHING_CONFIG_KEY, JSON.stringify(matchingConfig));
+    }
+
+    function loadDetectiveConfig() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(DETECTIVE_CONFIG_KEY));
+        if (saved && Array.isArray(saved.order) && saved.enabled) {
+          const known = saved.order.filter(key => DETECTIVE_ALL_CLUES.includes(key));
+          const missing = DETECTIVE_ALL_CLUES.filter(key => !known.includes(key));
+          const order = [...known, ...missing];
+          const enabled = { ...DEFAULT_DETECTIVE_CONFIG.enabled };
+          for (const key of DETECTIVE_ALL_CLUES) {
+            if (typeof saved.enabled[key] === "boolean") enabled[key] = saved.enabled[key];
+          }
+          if (order.length === DETECTIVE_ALL_CLUES.length && Object.values(enabled).some(Boolean)) {
+            return { order, enabled };
+          }
+        }
+      } catch (_) {}
+      return {
+        order: [...DEFAULT_DETECTIVE_CONFIG.order],
+        enabled: { ...DEFAULT_DETECTIVE_CONFIG.enabled }
+      };
+    }
+
+    function saveDetectiveConfig() {
+      localStorage.setItem(DETECTIVE_CONFIG_KEY, JSON.stringify(detectiveConfig));
+    }
+
+    function loadInteractiveChoiceCount() {
+      const saved = Number(localStorage.getItem(INTERACTIVE_CHOICE_COUNT_KEY));
+      return [4, 6, 8].includes(saved) ? saved : 4;
+    }
+
+    function saveInteractiveChoiceCount() {
+      localStorage.setItem(INTERACTIVE_CHOICE_COUNT_KEY, String(interactiveChoiceCount));
     }
 
     function factFocusForCountry(c) {
@@ -16579,7 +16770,7 @@ button,
       return weighted[weighted.length - 1].item;
     }
 
-    function interactiveFlagVisualCountries(c) {
+    function interactiveFlagVisualCountries(c, optionCount = interactiveChoiceCount) {
       const candidates = countries
         .filter(other => other.code !== c.code)
         .map(country => ({
@@ -16601,7 +16792,8 @@ button,
         }
       }
 
-      while (picked.length < 3) {
+      const distractorCount = Math.max(3, Math.min(7, Number(optionCount) - 1 || 3));
+      while (picked.length < distractorCount) {
         const remaining = candidates.filter(item => !used.has(item.country.code));
         if (!remaining.length) break;
 
@@ -16618,8 +16810,9 @@ button,
       return interactiveShuffle([c, ...picked]);
     }
 
-    function interactiveVisualCountries(c, stage) {
-      if (stage === "flag") return interactiveFlagVisualCountries(c);
+    function interactiveVisualCountries(c, stage, optionCount = interactiveChoiceCount) {
+      const count = [4, 6, 8].includes(Number(optionCount)) ? Number(optionCount) : 4;
+      if (stage === "flag") return interactiveFlagVisualCountries(c, count);
 
       const nearby = countries
         .filter(other => other.code !== c.code)
@@ -16628,12 +16821,13 @@ button,
         .slice(0, 14)
         .map(item => item.country);
 
-      const pool = nearby.length >= 3
+      const needed = count - 1;
+      const pool = nearby.length >= needed
         ? nearby
         : countries.filter(other => other.code !== c.code);
       const picked = [];
       const candidates = [...pool];
-      while (picked.length < 3 && candidates.length) {
+      while (picked.length < needed && candidates.length) {
         const i = randomInt(candidates.length);
         picked.push(candidates.splice(i, 1)[0]);
       }
@@ -16911,7 +17105,8 @@ button,
       if (stage === "flag" || stage === "silhouette") {
         interactiveChoiceGrid.classList.remove("hidden");
         interactiveTextPanel.classList.add("hidden");
-        const options = interactiveVisualCountries(c, stage);
+        const options = interactiveVisualCountries(c, stage, interactiveChoiceCount);
+        interactiveChoiceGrid.dataset.choiceCount = String(options.length);
 
         for (const optionCountry of options) {
           if (token !== interactiveRenderToken) return;
@@ -20451,69 +20646,39 @@ button,
       const neighbourPromise = detectiveWithTimeout(neighbourStudySetFor(c), 1100);
       const [facts, neighbours] = await Promise.all([factsPromise, neighbourPromise]);
 
-      const opening = [];
-      if (Number.isFinite(facts?.population)) opening.push({ key: "population", label: "Population", value: formatWholeNumber(facts.population) });
-      if (Number.isFinite(facts?.area)) opening.push({ key: "area", label: "Area", value: formatArea(facts.area) });
-      if (Number.isFinite(facts?.formationYear)) opening.push({ key: "formation", label: "Modern state formation", value: String(facts.formationYear) });
+      const clues = [];
+      if (Number.isFinite(facts?.population)) clues.push({ key: "population", label: "Population", value: formatWholeNumber(facts.population) });
+      if (Number.isFinite(facts?.area)) clues.push({ key: "area", label: "Area", value: formatArea(facts.area) });
+      if (Number.isFinite(facts?.formationYear)) clues.push({ key: "formation", label: "Modern state formation", value: String(facts.formationYear) });
       const government = facts ? governmentTypeForCountry(c, facts) : "";
-      if (government && government !== "Not listed") opening.push({ key: "government", label: "Government", value: government });
-      opening.push({ key: "hemisphere", label: "Location", value: detectiveHemisphere(c) });
+      if (government && government !== "Not listed") clues.push({ key: "government", label: "Government", value: government });
+      clues.push({ key: "hemisphere", label: "Location", value: detectiveHemisphere(c) });
 
-      const middle = [];
       const languages = detectiveLanguages(c);
-      if (languages.length) middle.push({ key: "languages", label: "Languages", value: languages.join(" · ") });
+      if (languages.length) clues.push({ key: "languages", label: "Languages", value: languages.join(" · ") });
       const currencies = detectiveCurrencies(c);
-      if (currencies.length) middle.push({ key: "currency", label: "Currency", value: currencies.join(" · ") });
+      if (currencies.length) clues.push({ key: "currency", label: "Currency", value: currencies.join(" · ") });
       if (neighbours?.names?.length) {
-        middle.push({
+        clues.push({
           key: "neighbours",
           label: neighbours.mode === "nearest" ? "Nearest countries" : "Neighbours",
           value: neighbours.names.join(" · ")
         });
       }
+
       const largest = detectiveLargestCity(c);
       const capital = detectiveCapital(c);
-
-      const early = detectiveShuffle(opening).slice(0, 2);
-      const mid = detectiveShuffle(middle).slice(0, 2);
-      const strong = detectiveShuffle([
-        { key: "flag", label: "Flag", visual: "flag" },
-        { key: "capital", label: "Capital", value: capital },
-        largest && interactiveLooseNormalize(largest) !== interactiveLooseNormalize(capital)
-          ? { key: "largestCityLate", label: "Largest city", value: largest }
-          : null
-      ].filter(Boolean));
-
       const silhouetteAvailable = !!(window.d3 && window.topojson);
-      let clues = [
-        ...early,
-        ...mid,
-        silhouetteAvailable ? { key: "silhouette", label: "Silhouette", visual: "silhouette" } : null,
-        ...strong
-      ].filter(Boolean);
-
-      // Always keep enough variety if live facts were unavailable.
-      const fallbacks = [
-        { key: "hemisphereFallback", label: "Location", value: detectiveHemisphere(c) },
-        languages.length ? { key: "languagesFallback", label: "Languages", value: languages.join(" · ") } : null,
-        currencies.length ? { key: "currencyFallback", label: "Currency", value: currencies.join(" · ") } : null,
-        silhouetteAvailable ? { key: "silhouetteFallback", label: "Silhouette", visual: "silhouette" } : null,
-        { key: "flagFallback", label: "Flag", visual: "flag" },
-        { key: "capitalFallback", label: "Capital", value: capital }
-      ].filter(Boolean);
-      const usedKinds = new Set(clues.map(item => item.visual || item.label + "|" + item.value));
-      for (const item of fallbacks) {
-        const signature = item.visual || item.label + "|" + item.value;
-        if (usedKinds.has(signature)) continue;
-        clues.push(item);
-        usedKinds.add(signature);
+      if (silhouetteAvailable) clues.push({ key: "silhouette", label: "Silhouette", visual: "silhouette" });
+      if (largest && interactiveLooseNormalize(largest) !== interactiveLooseNormalize(capital)) {
+        clues.push({ key: "largestCity", label: "Largest city", value: largest });
       }
+      if (capital) clues.push({ key: "capital", label: "Capital", value: capital });
+      clues.push({ key: "flag", label: "Flag", visual: "flag" });
 
-      // De-duplicate by what the player actually sees. This prevents the same
-      // fact (notably largest city) from appearing twice under different internal
-      // keys when live/fallback clue sources overlap.
+      // De-duplicate by what the player actually sees.
       const seenClues = new Set();
-      clues = clues.filter(clue => {
+      const unique = clues.filter(clue => {
         const signature = clue.visual
           ? `visual:${clue.visual}`
           : `${interactiveLooseNormalize(clue.label)}|${interactiveLooseNormalize(clue.value)}`;
@@ -20522,9 +20687,20 @@ button,
         return true;
       });
 
-      // Keep the case brisk. Strong identity clues live at the end.
-      clues = clues.slice(0, 7);
-      return clues;
+      const byKey = new Map(unique.map(clue => [clue.key, clue]));
+      const ordered = detectiveConfig.order
+        .filter(key => detectiveConfig.enabled[key])
+        .map(key => byKey.get(key))
+        .filter(Boolean);
+
+      // A custom clue set can occasionally contain only unavailable live-data
+      // clues for one country. Never create an unsolvable blank case: fall back
+      // to the flag for that case only without changing the saved configuration.
+      if (!ordered.length) {
+        const fallback = byKey.get("flag") || unique[0];
+        return fallback ? [fallback] : [];
+      }
+      return ordered;
     }
 
     async function renderDetectiveSilhouette(svgEl, c) {
@@ -20625,6 +20801,7 @@ button,
 
       if (finished) {
         const solved = !!round.solved;
+        detectiveResult.classList.toggle("solved", solved);
         detectiveResult.classList.toggle("missed", !solved);
         detectiveResultKicker.textContent = solved ? "Case solved" : "Case closed";
         detectiveAnswer.textContent = c.name;
@@ -20781,7 +20958,7 @@ button,
       const typed = detectiveInput.value.trim();
       if (!typed) {
         round.feedback = "Type a country first.";
-        round.feedbackType = "wrong";
+        round.feedbackType = "";
         detectiveRenderRound();
         return;
       }
@@ -21346,7 +21523,8 @@ button,
       rapidResultKicker.textContent = correct ? "Correct" : "Answer";
       rapidAnswer.textContent = label || rapidAnswerLabel(round, c);
       rapidResultMeta.textContent = correct ? (state.streak > 1 ? `${state.streak} in a row` : "Clean recall") : "Counted as a miss for review";
-      rapidResult.classList.remove("hidden");
+      rapidResult.classList.remove("hidden", "correct", "wrong");
+      rapidResult.classList.add(correct ? "correct" : "wrong");
       rapidTextPanel.classList.add("hidden");
       rapidChoiceGrid.querySelectorAll(".rapid-choice").forEach(button => {
         button.disabled = true;
@@ -21418,6 +21596,7 @@ button,
       rapidComplete.classList.add("hidden");
       rapidQuestionCard.classList.remove("hidden");
       rapidResult.classList.add("hidden");
+      rapidResult.classList.remove("correct", "wrong");
       rapidRevealBtn.classList.remove("hidden");
       rapidFeedback.textContent = "";
       rapidFeedback.className = "rapid-feedback";
@@ -21441,7 +21620,8 @@ button,
         rapidResultKicker.textContent = round.correct ? "Correct" : "Answer";
         rapidAnswer.textContent = rapidAnswerLabel(round, c);
         rapidResultMeta.textContent = round.correct ? "Clean recall" : "Counted as a miss for review";
-        rapidResult.classList.remove("hidden");
+        rapidResult.classList.remove("hidden", "correct", "wrong");
+        rapidResult.classList.add(round.correct ? "correct" : "wrong");
         rapidNextBtn.textContent = index + 1 >= sessionCountryTotal() ? "See results →" : "Next question →";
         return;
       }
@@ -21567,22 +21747,27 @@ button,
       stageSettingsEl.innerHTML = "";
 
       const matchingMode = settingsModeAtOpen === "matching";
+      const detectiveMode = settingsModeAtOpen === "detective";
       const interactiveContext = settingsModeAtOpen === "interactive";
-      const order = matchingMode ? matchingConfig.order : config.order;
-      const enabled = matchingMode ? matchingConfig.enabled : config.enabled;
+      const order = matchingMode ? matchingConfig.order : detectiveMode ? detectiveConfig.order : config.order;
+      const enabled = matchingMode ? matchingConfig.enabled : detectiveMode ? detectiveConfig.enabled : config.enabled;
 
       order.forEach((key, i) => {
-        const meta = matchingMode ? MATCHING_FIELD_META[key] : STAGE_META[key];
+        const meta = matchingMode ? MATCHING_FIELD_META[key] : detectiveMode ? DETECTIVE_CLUE_META[key] : STAGE_META[key];
         if (!meta) return;
 
         const row = document.createElement("div");
         row.className = "setting-row";
         row.dataset.settingKey = key;
 
-        const name = matchingMode ? meta.label : meta.name;
+        const name = matchingMode || detectiveMode ? meta.label : meta.name;
         const flashOnly = interactiveContext && !INTERACTIVE_STAGES.has(key);
-        const moveAttr = matchingMode ? `data-move-match="${key}"` : `data-move-stage="${key}"`;
-        const toggleAttr = matchingMode ? `data-toggle-match="${key}"` : `data-toggle-stage="${key}"`;
+        const moveAttr = matchingMode
+          ? `data-move-match="${key}"`
+          : detectiveMode ? `data-move-detective="${key}"` : `data-move-stage="${key}"`;
+        const toggleAttr = matchingMode
+          ? `data-toggle-match="${key}"`
+          : detectiveMode ? `data-toggle-detective="${key}"` : `data-toggle-stage="${key}"`;
 
         row.innerHTML = `
           <div class="reorder-controls">
@@ -21667,9 +21852,20 @@ button,
       requestAnimationFrame(() => animateSettingsReorder(previousPositions, field));
     }
 
+    function moveDetectiveClue(key, direction) {
+      const previousPositions = settingsRowPositions();
+      if (!moveOrderedSetting(detectiveConfig.order, key, direction)) return;
+      saveDetectiveConfig();
+      renderSettingsRows();
+      requestAnimationFrame(() => animateSettingsReorder(previousPositions, key));
+      renderTunePresetUI();
+      updatePlayModePicker();
+    }
+
     function tuneModeAtOpen() {
       if (settingsModeAtOpen === "matching") return "matching";
       if (settingsModeAtOpen === "interactive") return "interactive";
+      if (settingsModeAtOpen === "detective") return "detective";
       return "standard";
     }
 
@@ -21684,11 +21880,39 @@ button,
         tuneChallengeSetSummary.dataset.state = state;
       }
 
+      const detectiveMode = mode === "detective";
+      const basicButton = tunePresetPicker.querySelector('[data-challenge-set="basic"]');
+      const expertButton = tunePresetPicker.querySelector('[data-challenge-set="expert"]');
+      if (basicButton) {
+        basicButton.querySelector(".tune-preset-name").textContent = detectiveMode ? "Recommended" : "Basics";
+        basicButton.querySelector(".tune-preset-meta").textContent = detectiveMode ? "Balanced clue order" : "Core challenges";
+      }
+      if (expertButton) {
+        expertButton.querySelector(".tune-preset-name").textContent = detectiveMode ? "All clues" : "Expert";
+        expertButton.querySelector(".tune-preset-meta").textContent = detectiveMode ? "Every clue type" : "All challenges";
+      }
+
       tunePresetPicker.querySelectorAll("[data-challenge-set]").forEach(button => {
         const active = button.dataset.challengeSet === state;
         button.classList.toggle("active", active);
         button.setAttribute("aria-pressed", active ? "true" : "false");
       });
+
+      if (interactiveChoiceSettings) interactiveChoiceSettings.classList.toggle("hidden", mode !== "interactive");
+      interactiveChoiceCountPicker?.querySelectorAll("[data-interactive-choice-count]").forEach(button => {
+        const active = Number(button.dataset.interactiveChoiceCount) === interactiveChoiceCount;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+
+      const setLabel = document.getElementById("tuneChallengeSetLabel");
+      if (setLabel) setLabel.textContent = detectiveMode ? "Clue preset" : "Challenge set";
+      const sectionLabel = document.getElementById("tuneSectionLabel");
+      const orderHelp = document.querySelector(".tune-order-help");
+      if (sectionLabel) sectionLabel.textContent = detectiveMode ? "Clues & order" : "Challenges & order";
+      if (orderHelp) orderHelp.textContent = detectiveMode
+        ? "The first enabled clue appears first. Reorder or switch clues off to shape the case."
+        : "Any order works. Use ↑ ↓ to rearrange, or switch challenges off to focus.";
     }
 
     function applyChallengeSet(setName) {
@@ -21705,6 +21929,13 @@ button,
       if (normalized === "matching") {
         for (const key of universe) matchingConfig.enabled[key] = target.has(key);
         saveMatchingConfig();
+      } else if (normalized === "detective") {
+        detectiveConfig.order = [...DEFAULT_DETECTIVE_CONFIG.order];
+        const detectiveTarget = setName === "basic"
+          ? new Set(DETECTIVE_RECOMMENDED_CLUES)
+          : new Set(DETECTIVE_ALL_CLUES);
+        for (const key of DETECTIVE_ALL_CLUES) detectiveConfig.enabled[key] = detectiveTarget.has(key);
+        saveDetectiveConfig();
       } else if (normalized === "interactive") {
         // Flash-card-only stages keep their existing setting. The preset controls
         // only the challenges Interactive can actually use.
@@ -21723,8 +21954,12 @@ button,
     function shuffleEnabledTuneOrder() {
       const mode = tuneModeAtOpen();
       const normalized = normalizeChallengeMode(mode);
-      const order = normalized === "matching" ? matchingConfig.order : config.order;
-      const enabled = normalized === "matching" ? matchingConfig.enabled : config.enabled;
+      const order = normalized === "matching"
+        ? matchingConfig.order
+        : normalized === "detective" ? detectiveConfig.order : config.order;
+      const enabled = normalized === "matching"
+        ? matchingConfig.enabled
+        : normalized === "detective" ? detectiveConfig.enabled : config.enabled;
       const eligible = normalized === "interactive"
         ? new Set(challengeUniverseForMode("interactive"))
         : new Set(order);
@@ -21739,7 +21974,9 @@ button,
       });
 
       if (values.length < 2) {
-        settingsWarning.textContent = "Turn on at least two challenges to shuffle their order.";
+        settingsWarning.textContent = normalized === "detective"
+          ? "Turn on at least two clues to shuffle their order."
+          : "Turn on at least two challenges to shuffle their order.";
         return;
       }
 
@@ -21760,6 +21997,7 @@ button,
       slots.forEach((slot, index) => { order[slot] = values[index]; });
 
       if (normalized === "matching") saveMatchingConfig();
+      else if (normalized === "detective") saveDetectiveConfig();
       else saveConfig();
       settingsWarning.textContent = "Order shuffled.";
       renderSettingsRows();
@@ -21770,9 +22008,10 @@ button,
     function openSettings(mode = "standard") {
       if (isBrowsingHistory()) returnToLiveState();
 
-      settingsModeAtOpen = ["matching", "interactive"].includes(mode) ? mode : "standard";
+      settingsModeAtOpen = ["matching", "interactive", "detective"].includes(mode) ? mode : "standard";
       settingsConfigAtOpen = JSON.stringify(
-        settingsModeAtOpen === "matching" ? matchingConfig : config
+        settingsModeAtOpen === "matching" ? matchingConfig :
+        settingsModeAtOpen === "detective" ? detectiveConfig : config
       );
 
       const title = document.getElementById("settingsTitle");
@@ -21781,9 +22020,13 @@ button,
         ? "Matching"
         : settingsModeAtOpen === "interactive"
           ? "Interactive"
-          : "Flash card";
+          : settingsModeAtOpen === "detective"
+            ? "Detective"
+            : "Flash card";
       if (title) title.textContent = `Challenge settings — ${modeLabel}`;
-      if (subtitle) subtitle.textContent = "Choose what this mode tests.";
+      if (subtitle) subtitle.textContent = settingsModeAtOpen === "detective"
+        ? "Choose which clues appear and the order they are revealed."
+        : "Choose what this mode tests.";
 
       renderSettingsRows();
       renderTunePresetUI();
@@ -21792,7 +22035,7 @@ button,
 
       if (settingsRestartRunBtn) {
         const hasActiveRun = !!studySession?.mode && studySession?.active !== false;
-        const currentInteraction = ["matching", "interactive"].includes(studySession?.interaction)
+        const currentInteraction = ["matching", "interactive", "detective"].includes(studySession?.interaction)
           ? studySession.interaction
           : "standard";
         const compatible = hasActiveRun && currentInteraction === tuneModeAtOpen();
@@ -21818,11 +22061,17 @@ button,
     function closeSettings() {
       settingsOverlay.classList.remove("open");
 
-      const currentConfig = settingsModeAtOpen === "matching" ? matchingConfig : config;
+      const currentConfig = settingsModeAtOpen === "matching"
+        ? matchingConfig
+        : settingsModeAtOpen === "detective" ? detectiveConfig : config;
       const structureChanged = settingsConfigAtOpen != null &&
         settingsConfigAtOpen !== JSON.stringify(currentConfig);
 
-      if (settingsModeAtOpen !== "matching") {
+      if (settingsModeAtOpen === "detective") {
+        // Apply clue changes from the next case onward. Use the explicit restart
+        // action if the player wants to rebuild the current Detective run.
+        saveDetectiveConfig();
+      } else if (settingsModeAtOpen !== "matching") {
         normalizeCurrentStage();
         saveState();
         if (structureChanged) resetNavigationHistory();
@@ -21849,9 +22098,11 @@ button,
 
       const direction = button.dataset.direction;
       const matchField = button.dataset.moveMatch;
+      const detectiveClue = button.dataset.moveDetective;
       const stage = button.dataset.moveStage;
 
       if (matchField) moveMatchingField(matchField, direction);
+      else if (detectiveClue) moveDetectiveClue(detectiveClue, direction);
       else if (stage) moveStage(stage, direction);
     });
 
@@ -21870,6 +22121,23 @@ button,
         settingsWarning.textContent = "";
         matchingConfig.enabled = proposed;
         saveMatchingConfig();
+        renderTunePresetUI();
+        updatePlayModePicker();
+        return;
+      }
+
+      const detectiveInput = event.target.closest("[data-toggle-detective]");
+      if (detectiveInput) {
+        const key = detectiveInput.dataset.toggleDetective;
+        const proposed = { ...detectiveConfig.enabled, [key]: detectiveInput.checked };
+        if (!Object.values(proposed).some(Boolean)) {
+          detectiveInput.checked = true;
+          settingsWarning.textContent = "Keep at least one clue switched on.";
+          return;
+        }
+        settingsWarning.textContent = "";
+        detectiveConfig.enabled = proposed;
+        saveDetectiveConfig();
         renderTunePresetUI();
         updatePlayModePicker();
         return;
@@ -21900,12 +22168,22 @@ button,
       applyChallengeSet(button.dataset.challengeSet);
     });
 
+    interactiveChoiceCountPicker?.addEventListener("click", event => {
+      const button = event.target.closest("[data-interactive-choice-count]");
+      if (!button) return;
+      const count = Number(button.dataset.interactiveChoiceCount);
+      if (![4, 6, 8].includes(count)) return;
+      interactiveChoiceCount = count;
+      saveInteractiveChoiceCount();
+      renderTunePresetUI();
+    });
+
     tuneShuffleBtn?.addEventListener("click", shuffleEnabledTuneOrder);
 
     function restartRunWithCurrentSettings() {
       if (!studySession?.mode || studySession?.active === false) return;
 
-      const interaction = ["matching", "interactive"].includes(studySession.interaction)
+      const interaction = ["matching", "interactive", "detective"].includes(studySession.interaction)
         ? studySession.interaction
         : "standard";
       // Never restart a run from settings that belong to a different mode.
@@ -21917,6 +22195,7 @@ button,
       settingsOverlay.classList.remove("open");
       startOverlay.classList.remove("open");
       matchingOverlay.classList.remove("open");
+      detectiveOverlay?.classList.remove("open");
 
       startStudySession(mode, limit, interaction, studySession.pool || "random", studySession.countrySet || "world");
     }
