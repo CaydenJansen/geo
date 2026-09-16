@@ -9472,9 +9472,9 @@ button,
 }
 .detective-clue-top {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
 }
 .detective-clue-number {
   color: #8a6a31;
@@ -9483,7 +9483,16 @@ button,
   letter-spacing: .08em;
   text-transform: uppercase;
 }
-.detective-clue-label { color: var(--muted); font-size: .62rem; font-weight: 860; }
+.detective-clue-label {
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(40,100,240,.075);
+  color: var(--accent-dark);
+  font-size: .61rem;
+  font-weight: 900;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
 .detective-clue-value {
   margin-top: 5px;
   font-size: 1rem;
@@ -9643,6 +9652,7 @@ button,
 .detective-feedback.near { color:var(--near); }
 .detective-feedback.correct { color:var(--correct-dark); }
 .detective-give-up {
+  width: 100%;
   margin-top: 3px;
   border:0;
   padding:5px 0;
@@ -9652,6 +9662,16 @@ button,
   font-size:.68rem;
   font-weight:800;
   cursor:pointer;
+}
+.detective-give-up.final-option {
+  min-height: 38px;
+  margin-top: 7px;
+  padding: 0 10px;
+  border: 1px solid rgba(183,75,64,.18);
+  border-radius: 10px;
+  background: rgba(183,75,64,.065);
+  color: var(--incorrect-dark);
+  font-size: .72rem;
 }
 .detective-result {
   margin-top: 11px;
@@ -10695,8 +10715,8 @@ button,
     .ranking-direction { min-width:52px; text-align:right; font-size:.66rem; font-weight:900; color:var(--muted); }
     .ranking-row.correct .ranking-direction { color:var(--correct-dark); }
     .ranking-row.wrong .ranking-direction { color:var(--incorrect-dark); }
-    .ranking-move { display:grid; grid-template-columns:repeat(2,42px); gap:4px; }
-    .ranking-move button { width:42px; height:42px; min-height:42px; padding:0; border-radius:9px; background:rgba(23,23,23,.07); color:var(--text); }
+    .ranking-move { display:grid; grid-template-columns:30px; gap:3px; }
+    .ranking-move button { width:30px; height:26px; min-height:26px; padding:0; border-radius:8px; background:rgba(23,23,23,.07); color:var(--text); font-size:.78rem; line-height:1; }
     .ranking-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
     .ranking-verify, .ranking-new { min-height:47px; border-radius:13px; }
     .ranking-verify { background:var(--accent); color:white; }
@@ -12156,7 +12176,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.35.0";
+    const GEODEN_VERSION = "0.36.0";
     const GEODEN_BUILD_DATE = "2026-09-16";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -12386,6 +12406,7 @@ button,
     const CONFUSION_KEY = "geoden-country-confusions-v1";
     const SESSION_HISTORY_KEY = "geoden-session-history-v1";
     const DAILY_CHALLENGE_KEY = "geoden-daily-challenge-v1";
+    const DAILY_CHALLENGE_CONTENT_VERSION = 2;
     const SPECIAL_GAME_PREFS_KEY = "geoden-special-game-prefs-v1";
     const TERRITORY_PREF_KEY = "geoden-include-major-territories-v1";
 
@@ -12525,21 +12546,21 @@ button,
     };
 
     const DETECTIVE_ALL_CLUES = [
-      "hemisphere", "borderCount", "countryLength", "flagColour", "capitalLength", "capitalLetter",
-      "population", "area", "formation", "government", "neighbours", "languages",
+      "continent", "borderCount", "languages", "neighbours", "countryLength", "capitalLength",
+      "capitalLetter", "flagColour", "population", "area", "formation", "government",
       "silhouette", "largestCity", "currency", "capital", "flag"
     ];
     const DETECTIVE_RECOMMENDED_CLUES = [
-      "hemisphere", "borderCount", "countryLength", "flagColour", "capitalLength", "capitalLetter",
-      "languages", "silhouette", "capital", "flag"
+      "continent", "borderCount", "languages", "neighbours", "countryLength", "capitalLength",
+      "capitalLetter", "flagColour", "silhouette", "capital", "flag"
     ];
     const DETECTIVE_CLUE_META = {
-      hemisphere: { label: "Location" },
+      continent: { label: "Continent" },
       borderCount: { label: "Number of land borders" },
-      countryLength: { label: "Country name length" },
-      flagColour: { label: "Flag colour" },
-      capitalLength: { label: "Capital length" },
-      capitalLetter: { label: "Letter in capital" },
+      countryLength: { label: "Place name" },
+      flagColour: { label: "Flag colours" },
+      capitalLength: { label: "Capital name" },
+      capitalLetter: { label: "Capital name" },
       population: { label: "Population" },
       area: { label: "Area" },
       formation: { label: "Formation date" },
@@ -13597,8 +13618,12 @@ button,
       };
     }
 
-    function dailyChallengeSpec(key = dailyDateKey()) {
-      const seed = hashString32(`GeoDen:${key}:v1`);
+    function dailyChallengeRunKey(date = new Date()) {
+      return `${dailyDateKey(date)}:v${DAILY_CHALLENGE_CONTENT_VERSION}`;
+    }
+
+    function dailyChallengeSpec(key = dailyChallengeRunKey()) {
+      const seed = hashString32(`GeoDen:${key}`);
       const rng = seededRandom(seed);
       const order = countries.map((country, i) => !country.isTerritory ? i : -1).filter(i => i >= 0);
       for (let i = order.length - 1; i > 0; i--) {
@@ -13969,6 +13994,17 @@ button,
         .slice(0, 2);
     }
 
+    function reviewStagePlayableForCountry(c, stage, interaction = "standard") {
+      if (!c || !ALL_STAGES.includes(stage) || stage === "historyFacts" || !config.enabled[stage]) return false;
+      if (c.isTerritory && !countryStageIsAvailable(c, stage)) return false;
+      if (stage === "largestCity" && config.enabled.capital && largestCityIsCapital(c)) return false;
+      if (interaction === "interactive") {
+        if (!INTERACTIVE_STAGES.has(stage)) return false;
+        if (!polishPrefs?.allowGiveawayPrompts && countryStageHasObviousNameAnswer(c, stage)) return false;
+      }
+      return true;
+    }
+
     function recurringConfusionCountriesForSet(set = selectedCountrySet) {
       const allowed = new Set(countrySetIndices(set));
       const weights = new Map();
@@ -13997,11 +14033,15 @@ button,
       const reasons = {};
       const add = (index, reason, stages = []) => {
         if (!Number.isInteger(index) || index < 0 || !allowed.has(index) || seen.has(index)) return;
+        const country = countries[index];
+        const cleanStages = [...new Set(stages)].filter(stage => reviewStagePlayableForCountry(country, stage, interaction));
+        // Review is fact-targeted practice. Do not include a place unless this
+        // mode can actually test at least one of the facts that selected it.
+        if (!cleanStages.length) return;
         seen.add(index);
         indices.push(index);
-        reasons[countries[index].code] = reason;
-        const cleanStages = [...new Set(stages)].filter(stage => ALL_STAGES.includes(stage) && stage !== "historyFacts");
-        if (cleanStages.length) factFocus[countries[index].code] = cleanStages.slice(0, 3);
+        reasons[country.code] = reason;
+        factFocus[country.code] = cleanStages.slice(0, 3);
       };
 
       // 1) Scheduled facts are always first and keep their exact fact-level focus.
@@ -14242,7 +14282,7 @@ button,
       closeCustomCountrySet();
       if (countrySetDisclosure) countrySetDisclosure.open = false;
       updateCountrySetOptions();
-      updateSessionChoiceUI();
+      updatePlayModePicker();
     }
 
     function selectCountrySet(set) {
@@ -14255,7 +14295,7 @@ button,
       localStorage.setItem(COUNTRY_SET_KEY, selectedCountrySet);
       if (countrySetDisclosure) countrySetDisclosure.open = false;
       updateCountrySetOptions();
-      updateSessionChoiceUI();
+      updatePlayModePicker();
     }
 
     function countryPoolAvailableCount(pool = selectedCountryPool, set = selectedCountrySet) {
@@ -14731,6 +14771,11 @@ button,
     }
 
     function updatePlayModePicker() {
+      // Reconcile the study focus before deriving mode availability. Changing
+      // mode/challenges can make Review empty (for example when only a
+      // non-Interactive fact is due). Without this first sync the picker could
+      // keep stale Review-only disabled states after falling back to Random.
+      updateCountryPoolOptions();
       const reviewSelected = selectedCountryPool === "review";
 
       if (reviewSelected && ["matching", "detective", "rapid"].includes(menuPlayMode)) {
@@ -14834,7 +14879,15 @@ button,
       saveSessionChoicePreference();
       localStorage.setItem(COUNTRY_POOL_KEY, selectedCountryPool);
       localStorage.setItem(COUNTRY_SET_KEY, selectedCountrySet);
-      if (["matching", "detective", "rapid"].includes(menuPlayMode)) {
+
+      // Progress → Review should always arrive at a usable Review setup. If the
+      // current Interactive challenge set cannot test any of the suggested
+      // material, fall back to Flash card rather than silently changing Review
+      // itself back to Random when the menu refreshes.
+      const interactiveHasReview = menuPlayMode === "interactive" &&
+        reviewPlanForStudySet("world", "interactive").indices.length > 0;
+      if (["matching", "detective", "rapid"].includes(menuPlayMode) ||
+          (menuPlayMode === "interactive" && !interactiveHasReview)) {
         menuPlayMode = "standard";
         localStorage.setItem(PLAY_MODE_KEY, menuPlayMode);
       }
@@ -14851,7 +14904,11 @@ button,
 
     function renderDailyChallengeCard() {
       if (!dailyChallengeCard || !dailyChallengeBtn || !dailyChallengeTitle || !dailyChallengeMeta) return;
-      const key = dailyDateKey();
+      const key = dailyChallengeRunKey();
+      if (studySession?.active !== false && studySession?.dailyChallenge?.key && studySession.dailyChallenge.key !== key) {
+        studySession.active = false;
+        saveStudySession();
+      }
       const result = dailyChallengeProgress?.days?.[key] || null;
       const activeToday = studySession?.active !== false && studySession?.dailyChallenge?.key === key;
       const rapid = activeToday ? ensureRapidState() : null;
@@ -14883,7 +14940,13 @@ button,
     }
 
     function handleDailyChallengeButton() {
-      const key = dailyDateKey();
+      const key = dailyChallengeRunKey();
+      // Daily question rules are versioned. Never resume a challenge generated
+      // under an older giveaway/filter rule after those rules have changed.
+      if (studySession?.active !== false && studySession?.dailyChallenge?.key && studySession.dailyChallenge.key !== key) {
+        studySession.active = false;
+        saveStudySession();
+      }
       if (studySession?.active !== false && studySession?.dailyChallenge?.key === key) {
         startOverlay.classList.remove("open");
         openRapidMode(true);
@@ -15056,7 +15119,7 @@ button,
         rapid: interaction === "rapid" ? rapidDefaultState() : null,
         dailyChallenge: normalizedPool === "daily" ? (() => {
           const spec = dailyChallengeSpec();
-          return { key: spec.key, seed: spec.seed };
+          return { key: spec.key, seed: spec.seed, version: DAILY_CHALLENGE_CONTENT_VERSION };
         })() : null
       };
       saveStudySession();
@@ -15244,7 +15307,26 @@ button,
           if (!hadFragmentKeys && legacyOrderMatches && legacyEnabledMatches) {
             return { order:[...DEFAULT_DETECTIVE_CONFIG.order], enabled:{...DEFAULT_DETECTIVE_CONFIG.enabled} };
           }
-          const known = saved.order.filter(key => DETECTIVE_ALL_CLUES.includes(key));
+          const previousDefaultOrder = [
+            "hemisphere","borderCount","countryLength","flagColour","capitalLength","capitalLetter",
+            "population","area","formation","government","neighbours","languages",
+            "silhouette","largestCity","currency","capital","flag"
+          ];
+          const previousDefaultRecommended = new Set([
+            "hemisphere","borderCount","countryLength","flagColour","capitalLength","capitalLetter",
+            "languages","silhouette","capital","flag"
+          ]);
+          const previousDefaultOrderMatches = saved.order.length === previousDefaultOrder.length && saved.order.every((key,index) => key === previousDefaultOrder[index]);
+          const previousDefaultEnabledMatches = previousDefaultOrder.every(key => !!saved.enabled[key] === previousDefaultRecommended.has(key));
+          if (previousDefaultOrderMatches && previousDefaultEnabledMatches) {
+            return { order:[...DEFAULT_DETECTIVE_CONFIG.order], enabled:{...DEFAULT_DETECTIVE_CONFIG.enabled} };
+          }
+          const migratedOrder = saved.order.map(key => key === "hemisphere" ? "continent" : key);
+          const migratedEnabled = { ...saved.enabled };
+          if (typeof migratedEnabled.continent !== "boolean" && typeof migratedEnabled.hemisphere === "boolean") {
+            migratedEnabled.continent = migratedEnabled.hemisphere;
+          }
+          const known = migratedOrder.filter(key => DETECTIVE_ALL_CLUES.includes(key));
           const missing = DETECTIVE_ALL_CLUES.filter(key => !known.includes(key));
           const order = [...known];
           const insertBefore = {
@@ -15262,7 +15344,7 @@ button,
           }
           const enabled = { ...DEFAULT_DETECTIVE_CONFIG.enabled };
           for (const key of DETECTIVE_ALL_CLUES) {
-            if (typeof saved.enabled[key] === "boolean") enabled[key] = saved.enabled[key];
+            if (typeof migratedEnabled[key] === "boolean") enabled[key] = migratedEnabled[key];
           }
           if (order.length === DETECTIVE_ALL_CLUES.length && Object.values(enabled).some(Boolean)) {
             return { order, enabled };
@@ -21478,7 +21560,8 @@ button,
       sessionRecapInsight.textContent = insight.join(" ");
 
       const recapSet = studySession?.countrySet || "world";
-      const reviewAvailable = countryPoolAvailableCount("review", recapSet);
+      const recapReviewInteraction = studySession?.interaction === "interactive" ? "interactive" : "standard";
+      const reviewAvailable = reviewPlanForStudySet(recapSet, recapReviewInteraction).indices.length;
       sessionWeakestBtn.disabled = reviewAvailable === 0;
       sessionWeakestBtn.textContent = reviewAvailable ? "Review weak areas →" : "Nothing to review";
     }
@@ -24878,10 +24961,14 @@ button,
           : [];
         const roundCountry = countries.find(country => country.code === state.round.code);
         if (roundCountry && Array.isArray(state.round.clues)) {
-          state.round.clues = state.round.clues.filter(clue =>
-            clue?.visual !== "silhouette" || countryStageIsAvailable(roundCountry, "silhouette")
-          );
-          state.round.revealedCount = Math.max(0, Math.min(Number(state.round.revealedCount) || 0, state.round.clues.length));
+          if (state.round.clues.some(clue => clue?.key === "hemisphere")) {
+            state.round = null;
+          } else {
+            state.round.clues = state.round.clues.filter(clue =>
+              clue?.visual !== "silhouette" || countryStageIsAvailable(roundCountry, "silhouette")
+            );
+            state.round.revealedCount = Math.max(0, Math.min(Number(state.round.revealedCount) || 0, state.round.clues.length));
+          }
         }
       }
       return state;
@@ -24907,10 +24994,20 @@ button,
       ]);
     }
 
-    function detectiveHemisphere(c) {
-      const vertical = Number(c.lat) >= 0 ? "Northern" : "Southern";
-      const horizontal = Number(c.lon) >= 0 ? "Eastern" : "Western";
-      return `${vertical} and ${horizontal} hemispheres`;
+    function detectiveContinent(c) {
+      if (!c?.code) return "";
+      const groups = [
+        ["Europe", "europe"],
+        ["Africa", "africa"],
+        ["Asia", "asia"],
+        ["North America", "northAmerica"],
+        ["South America", "southAmerica"],
+        ["Oceania", "oceania"]
+      ];
+      for (const [label, key] of groups) {
+        if ((COUNTRY_SET_CODES[key] || []).includes(c.code) || (TERRITORY_SET_CODES[key] || []).includes(c.code)) return label;
+      }
+      return "";
     }
 
     function detectiveCurrencies(c) {
@@ -24942,6 +25039,14 @@ button,
       return (String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(/[A-Za-z]/g) || []).length;
     }
 
+    function detectiveNameShape(value) {
+      const text = String(value || "").trim();
+      const letters = detectiveLetterCount(text);
+      const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+      if (!letters) return "";
+      return `${letters} letter${letters === 1 ? "" : "s"} · ${words <= 1 ? "one word" : `${words} words`}`;
+    }
+
     function detectivePrimaryCapital(c) {
       try {
         const names = (getCityFacts(c)?.capitals || []).map(item => item?.name).filter(Boolean);
@@ -24959,7 +25064,7 @@ button,
       const unique = [...new Set(letters)];
       const rarity = "QZXJKVYFWGBCMPHDULRNOTSIAE";
       const chosen = [...rarity].find(letter => unique.includes(letter) && letter !== letters[0]) || unique[Math.floor(unique.length / 2)] || letters[0];
-      return chosen ? `Contains the letter ${chosen}` : "";
+      return chosen ? `Contains “${chosen}”` : "";
     }
 
     function detectiveFlagColourClue(c) {
@@ -25035,13 +25140,14 @@ button,
       if (Number.isFinite(facts?.formationYear)) clues.push({ key: "formation", label: "Modern state formation", value: String(facts.formationYear) });
       const government = facts ? governmentTypeForCountry(c, facts) : "";
       if (government && government !== "Not listed") clues.push({ key: "government", label: "Government", value: government });
-      clues.push({ key: "hemisphere", label: "Location", value: detectiveHemisphere(c) });
+      const continent = detectiveContinent(c);
+      if (continent) clues.push({ key: "continent", label: "Continent", value: continent });
 
       const landBorderCount = Array.isArray(borders?.names) ? borders.names.length : 0;
       clues.push({ key: "borderCount", label: "Land borders", value: landBorderCount ? `${landBorderCount} land border${landBorderCount === 1 ? "" : "s"}` : "No land borders" });
       const countryLetters = detectiveLetterCount(c.name);
-      if (countryLetters) clues.push({ key: "countryLength", label: c.isTerritory ? "Territory name" : "Country name", value: `${countryLetters} letter${countryLetters === 1 ? "" : "s"}` });
-      if (flagColour) clues.push({ key: "flagColour", label: "Flag", value: flagColour });
+      if (countryLetters) clues.push({ key: "countryLength", label: c.isTerritory ? "Territory name" : "Country name", value: detectiveNameShape(c.name) });
+      if (flagColour) clues.push({ key: "flagColour", label: "Flag colours", value: flagColour });
       const primaryCapital = detectivePrimaryCapital(c);
       const capitalNames = (() => {
         try { return (getCityFacts(c)?.capitals || []).map(item => item?.name).filter(Boolean); }
@@ -25051,14 +25157,14 @@ button,
       const capitalLetters = detectiveLetterCount(primaryCapital);
       if (capitalLetters) clues.push({
         key: "capitalLength",
-        label: "Capital",
-        value: `${multipleCapitals ? "One capital has " : ""}${capitalLetters} letter${capitalLetters === 1 ? "" : "s"}`
+        label: "Capital name",
+        value: `${multipleCapitals ? "One capital: " : ""}${detectiveNameShape(primaryCapital)}`
       });
       const capitalLetter = detectiveCapitalLetterClue(c);
       if (capitalLetter) clues.push({
         key: "capitalLetter",
-        label: "Capital",
-        value: multipleCapitals ? `One capital ${capitalLetter.charAt(0).toLowerCase()}${capitalLetter.slice(1)}` : capitalLetter
+        label: "Capital name",
+        value: multipleCapitals ? `One capital: ${capitalLetter.charAt(0).toLowerCase()}${capitalLetter.slice(1)}` : capitalLetter
       });
 
       const languages = detectiveLanguages(c);
@@ -25076,7 +25182,7 @@ button,
       const largest = detectiveLargestCity(c);
       const capital = detectiveCapital(c);
       const silhouetteAvailable = !!(window.d3 && window.topojson) && countryStageIsAvailable(c, "silhouette");
-      if (silhouetteAvailable) clues.push({ key: "silhouette", label: "Silhouette", visual: "silhouette" });
+      if (silhouetteAvailable) clues.push({ key: "silhouette", label: "Outline", visual: "silhouette" });
       if (largest && interactiveLooseNormalize(largest) !== interactiveLooseNormalize(capital)) {
         clues.push({ key: "largestCity", label: "Largest city", value: largest });
       }
@@ -25104,7 +25210,7 @@ button,
       // clues for one country. Never create an unsolvable blank case: fall back
       // to a reliable clue for that case only without changing saved settings.
       if (!ordered.length) {
-        const fallback = byKey.get("hemisphere") || byKey.get("countryLength") || byKey.get("flag") || unique[0];
+        const fallback = byKey.get("continent") || byKey.get("countryLength") || byKey.get("flag") || unique[0];
         return fallback ? [fallback] : [];
       }
       return ordered;
@@ -25317,6 +25423,10 @@ button,
       detectiveInput.disabled = finished;
       detectiveGuessBtn.disabled = finished;
       detectiveGiveUpBtn.disabled = finished;
+      detectiveGiveUpBtn.classList.toggle("final-option", !finished && !canRevealMore);
+      if (!finished) {
+        detectiveGiveUpBtn.textContent = canRevealMore ? "Give up · reveal answer" : "No more clues · reveal answer";
+      }
 
       if (finished) {
         const solved = !!round.solved;
@@ -25548,7 +25658,7 @@ button,
       hapticFeedback("wrong");
       round.feedback = round.revealedCount < round.clues.length
         ? "Not quite — try again, or take another clue."
-        : "Not quite. You’ve seen every clue — try another guess.";
+        : "Not quite. You’ve seen every clue — guess again or reveal the answer.";
       round.feedbackType = "wrong";
       saveStudySession();
       detectiveRenderRound();
@@ -25782,6 +25892,7 @@ button,
         return capitals.some(value => textObviouslyNamesCountry(value, c));
       }
       if (type === "countryLargest") return textObviouslyNamesCountry(largest, c);
+      if (type === "countryCurrency") return rapidCurrencyTargets(c).some(value => textObviouslyNamesCountry(value, c));
       return false;
     }
 
@@ -27341,9 +27452,9 @@ button,
     sessionProgressBtn?.addEventListener("click", () => openMastery());
     sessionWeakestBtn?.addEventListener("click", () => {
       const recapSet = studySession?.countrySet || "world";
-      const available = countryPoolAvailableCount("review", recapSet);
-      if (!available) return;
       const interaction = studySession?.interaction === "interactive" ? "interactive" : "standard";
+      const available = reviewPlanForStudySet(recapSet, interaction).indices.length;
+      if (!available) return;
       startStudySession("finite", Math.min(5, available), interaction, "review", recapSet);
     });
 
@@ -27509,8 +27620,7 @@ button,
       activeGlobeFeatures = null;
       syncTerritoryPreferenceControls();
       updateCountrySetOptions();
-      updateCountryPoolOptions();
-      updateSessionChoiceUI();
+      updatePlayModePicker();
       updateChainSetupHelp?.();
       updateRankingSetupHelp?.();
       if (masteryOverlay?.classList.contains("open")) renderMastery();
@@ -28919,6 +29029,7 @@ button,
     let rankingCount = [5, 8, 10, 15].includes(Number(specialGamePrefs.rankingCount)) ? Number(specialGamePrefs.rankingCount) : 5;
     let rankingSet = chainSetChoices.has(specialGamePrefs.rankingSet) ? specialGamePrefs.rankingSet : "world";
     let rankingState = null;
+    let rankingLastRoundCodes = [];
     let rankingBuildToken = 0;
 
     function updateRankingSetupHelp() {
@@ -28927,7 +29038,7 @@ button,
           borders: "Shared land borders.",
           population: "Population.",
           area: "Total area.",
-          capitalLetters: "Letters only; spaces and punctuation don’t count."
+          capitalLetters: "Count letters only; spaces and punctuation don’t count."
         };
         rankingMetricHelp.textContent = copy[rankingMetric] || "";
       }
@@ -28943,7 +29054,7 @@ button,
       borders: { title:"Most → fewest land borders", format:value => `${value} land border${value === 1 ? "" : "s"}` },
       population: { title:"Largest → smallest population", format:value => formatWholeNumber(value) },
       area: { title:"Largest → smallest area", format:value => formatArea(value) },
-      capitalLetters: { title:"Most → fewest letters in the capital", format:(value,item) => `${value} letters · ${detectivePrimaryCapital(item.c)}` }
+      capitalLetters: { title:"Most → fewest letters in the capital", format:(value,item) => `${detectiveNameShape(detectivePrimaryCapital(item.c))} · ${detectivePrimaryCapital(item.c)}` }
     };
 
     function rankingMetricDisplayName(metric = rankingMetric) {
@@ -29012,8 +29123,12 @@ button,
       return out;
     }
 
-    async function buildRankingItems() {
-      const pool = shuffleRanking(rankingCountriesForSet());
+    async function buildRankingItems(options = {}) {
+      const avoidPrevious = options.avoidPrevious === true;
+      const previous = new Set(avoidPrevious ? rankingLastRoundCodes : []);
+      const all = rankingCountriesForSet();
+      const source = avoidPrevious ? all.filter(c => !previous.has(c.code)) : all;
+      const pool = shuffleRanking(source);
       const wanted = Math.min(rankingCount, pool.length);
       const items = [];
       const batchSize = Math.max(wanted + 4, 10);
@@ -29026,6 +29141,12 @@ button,
         });
       }
       return shuffleRanking(items);
+    }
+
+    function rankingFreshReplayCount() {
+      if (!rankingLastRoundCodes.length) return rankingCountriesForSet().length;
+      const previous = new Set(rankingLastRoundCodes);
+      return rankingCountriesForSet().filter(c => !previous.has(c.code)).length;
     }
 
     function rankingTargetValues() {
@@ -29048,7 +29169,9 @@ button,
       rankingState.revealed = true;
       rankingState.verified = true;
       rankingFeedback.textContent = `Perfect — the whole order is right.${rankingHasTies() ? " Tied places can be in either order." : ""}`;
-      rankingRevealBtn.textContent = "Play again →";
+      const canReplayFresh = rankingFreshReplayCount() >= 2;
+      rankingRevealBtn.textContent = canReplayFresh ? "Play new places →" : "Change setup →";
+      rankingRevealBtn.dataset.rankingAction = canReplayFresh ? "replay" : "setup";
       rankingRevealBtn.classList.remove("hidden");
       rankingVerifyBtn.disabled = true;
       rankingNewBtn.textContent = "Change setup";
@@ -29175,32 +29298,41 @@ button,
       rankingFeedback.textContent = rankingHasTies()
         ? "Here’s one correct order. Tied places can swap."
         : "Here’s the correct order.";
-      rankingRevealBtn.textContent = "Play again →";
+      const canReplayFresh = rankingFreshReplayCount() >= 2;
+      rankingRevealBtn.textContent = canReplayFresh ? "Play new places →" : "Change setup →";
+      rankingRevealBtn.dataset.rankingAction = canReplayFresh ? "replay" : "setup";
       rankingRevealBtn.classList.remove("hidden");
       rankingNewBtn.textContent = "Change setup";
       renderRankingList();
       window.requestAnimationFrame(() => animateRankingReorder(previousPositions));
     }
 
-    async function startRankingGame() {
+    async function startRankingGame(options = {}) {
       const token = ++rankingBuildToken;
+      const replay = options.replay === true;
       rankingSetup.classList.add("hidden"); rankingPlay.classList.add("hidden"); rankingLoading.classList.remove("hidden");
       rankingLoading.textContent = ["population","area"].includes(rankingMetric) ? "Loading current values…" : "Building ranking…";
       rankingFeedback.textContent="";
       try {
-        const items = await buildRankingItems();
+        const items = await buildRankingItems({ avoidPrevious: replay });
         if (token !== rankingBuildToken || !rankingOverlay?.classList.contains("open")) return;
         if (items.length < 2) throw new Error("Not enough values");
         rankingState={ metric:rankingMetric, setKey:rankingSet, items, verified:false, revealed:false };
+        rankingLastRoundCodes = items.map(item => item.c.code);
         rankingNewBtn.textContent = "Change setup";
         rankingRevealBtn.textContent = "Show answer";
+        rankingRevealBtn.dataset.rankingAction = "reveal";
         rankingVerifyBtn.disabled = false;
         rankingVerifyBtn.classList.remove("hidden");
         rankingVerifyBtn.textContent = "Check order";
         rankingPromptTitle.textContent=RANKING_METRICS[rankingMetric].title;
         const requestedCount = Math.min(rankingCount, rankingCountriesForSet(rankingSet).length);
-        const availabilityNote = items.length < requestedCount ? " · available data only" : "";
-        rankingPromptMeta.textContent = `${items.length} places · ${countrySetDisplayName(rankingSet)}${availabilityNote} · rank 1 is highest`;
+        const availabilityNote = items.length < requestedCount
+          ? (replay ? " · new places only" : " · available data only")
+          : "";
+        rankingPromptMeta.textContent = rankingMetric === "capitalLetters"
+          ? `${items.length} places · letters only; spaces don’t count${availabilityNote} · rank 1 is highest`
+          : `${items.length} places · ${countrySetDisplayName(rankingSet)}${availabilityNote} · rank 1 is highest`;
         rankingLoading.classList.add("hidden"); rankingPlay.classList.remove("hidden");
         rankingRevealBtn.classList.add("hidden"); renderRankingList();
       } catch (err) {
@@ -29218,7 +29350,8 @@ button,
 
     function resetRankingToSetup() {
       rankingBuildToken += 1;
-      rankingState=null; rankingLoading.classList.add("hidden"); rankingLoading.textContent="Loading values…"; rankingPlay.classList.add("hidden"); rankingSetup.classList.remove("hidden"); rankingFeedback.textContent=""; rankingVerifyBtn.disabled=false; rankingVerifyBtn.classList.remove("hidden"); rankingVerifyBtn.textContent="Check order"; rankingNewBtn.textContent="Change setup";
+      rankingState=null;
+      rankingLastRoundCodes=[]; rankingLoading.classList.add("hidden"); rankingLoading.textContent="Loading values…"; rankingPlay.classList.add("hidden"); rankingSetup.classList.remove("hidden"); rankingFeedback.textContent=""; rankingVerifyBtn.disabled=false; rankingVerifyBtn.classList.remove("hidden"); rankingVerifyBtn.textContent="Check order"; rankingNewBtn.textContent="Change setup";
     }
     function openRanking() {
       resetRankingToSetup();
@@ -29243,7 +29376,11 @@ button,
     rankingStartBtn?.addEventListener("click",startRankingGame);
     rankingNewBtn?.addEventListener("click", resetRankingToSetup);
     rankingVerifyBtn?.addEventListener("click",verifyRanking);
-    rankingRevealBtn?.addEventListener("click", () => { if (rankingState?.revealed) startRankingGame(); else revealRanking(); });
+    rankingRevealBtn?.addEventListener("click", () => {
+      if (!rankingState?.revealed) { revealRanking(); return; }
+      if (rankingRevealBtn.dataset.rankingAction === "setup") { resetRankingToSetup(); return; }
+      startRankingGame({ replay: true });
+    });
     rankingList?.addEventListener("click",event=>{const b=event.target.closest("[data-ranking-move]");if(!b)return;const index=Number(b.dataset.rankingIndex);rankingMove(index,b.dataset.rankingMove==="up"?-1:1);});
 
     window.addEventListener("keydown", event => {
