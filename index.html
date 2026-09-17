@@ -9668,6 +9668,11 @@ button,
 }
 .detective-suggestion.active,
 .detective-suggestion:hover { background:rgba(40,100,240,.09); }
+.detective-prior-guesses { display:flex; align-items:flex-start; gap:7px; margin-top:7px; min-width:0; }
+.detective-prior-guesses.hidden { display:none; }
+.detective-prior-label { flex:0 0 auto; padding-top:4px; color:var(--muted); font-size:.62rem; font-weight:900; letter-spacing:.04em; text-transform:uppercase; }
+.detective-prior-chips { min-width:0; display:flex; flex-wrap:wrap; gap:5px; }
+.detective-prior-chip { max-width:100%; padding:3px 7px; border:1px solid rgba(183,75,64,.14); border-radius:999px; background:rgba(183,75,64,.06); color:var(--incorrect-dark); font-size:.66rem; line-height:1.2; font-weight:820; overflow-wrap:anywhere; }
 .detective-feedback { min-height: 20px; margin-top: 7px; font-size:.72rem; font-weight:820; line-height:1.25; }
 .detective-feedback.wrong { color:var(--incorrect-dark); }
 .detective-feedback.near { color:var(--near); }
@@ -10688,17 +10693,31 @@ button,
     .chain-country.available { fill:#8fb1fb; stroke:#2864f0; stroke-width:1.35; }
     .chain-country.partial { fill:#e4ab42; stroke:#fff; stroke-width:1.35; }
     .chain-country.filled { fill:#2f7d4d; stroke:#fff; stroke-width:1.05; }
-    .chain-marker { stroke:#f7f4ed; stroke-width:1.6; vector-effect:non-scaling-stroke; }
-    .chain-marker.locked { fill:#aaa9a3; }
+    .chain-marker { stroke:#f7f4ed; stroke-width:2; vector-effect:non-scaling-stroke; transition:fill 140ms ease, opacity 140ms ease; }
+    .chain-marker.locked { fill:#8f8e89; }
     .chain-marker.weakened { fill:#b48b42; }
     .chain-marker.available { fill:#2864f0; }
     .chain-marker.partial { fill:#e4ab42; }
     .chain-marker.filled { fill:#2f7d4d; }
+    .chain-marker-halo { fill:none; stroke:#6d6961; stroke-width:1.6; vector-effect:non-scaling-stroke; opacity:0; pointer-events:none; transition:opacity 140ms ease; }
+    .chain-marker-halo.emphasis { opacity:.72; }
+    .chain-marker-halo.locked { stroke:#6d6961; }
+    .chain-marker-halo.weakened { stroke:#8a641d; }
+    .chain-marker-halo.available { stroke:#2864f0; }
+    .chain-marker-halo.partial { stroke:#b77a13; }
     .chain-legend { display:flex; flex-wrap:wrap; gap:9px 14px; padding:8px 2px 2px; color:var(--muted); font-size:.65rem; font-weight:780; }
     .chain-legend-item { display:inline-flex; align-items:center; gap:5px; }
     .chain-legend-dot { width:10px; height:10px; border-radius:999px; }
-    .chain-input-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; margin-top:10px; }
+    .chain-input-wrap { position:relative; margin-top:10px; }
+    .chain-input-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; margin-top:0; }
     .chain-input { width:100%; min-height:48px; border:1px solid rgba(23,23,23,.13); border-radius:13px; background:white; color:var(--text); padding:0 13px; font:inherit; font-size:.94rem; font-weight:750; outline:none; }
+    .chain-suggestions { position:absolute; left:0; right:100px; bottom:calc(100% + 4px); z-index:8; max-height:min(230px,34dvh); overflow:auto; border:1px solid rgba(23,23,23,.12); border-radius:12px; padding:5px; background:#fbfaf6; box-shadow:0 14px 34px rgba(0,0,0,.16); }
+    .chain-suggestions.hidden { display:none; }
+    .chain-suggestion { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; width:100%; min-height:38px; border:0; border-radius:9px; padding:7px 9px; background:transparent; color:var(--text); text-align:left; font:inherit; cursor:pointer; }
+    .chain-suggestion:hover, .chain-suggestion.active { background:rgba(40,100,240,.09); }
+    .chain-suggestion-answer { min-width:0; font-size:.78rem; font-weight:850; overflow-wrap:anywhere; }
+    .chain-suggestion-kind { color:var(--muted); font-size:.61rem; font-weight:850; letter-spacing:.04em; text-transform:uppercase; }
+    @media (max-width:520px) { .chain-suggestions { right:0; } }
     .chain-input:focus { border-color:rgba(40,100,240,.5); box-shadow:0 0 0 3px rgba(40,100,240,.09); }
     .chain-submit { min-width:92px; min-height:48px; border-radius:13px; background:var(--accent); color:white; }
     .chain-feedback { min-height:22px; margin-top:7px; font-size:.74rem; line-height:1.3; font-weight:820; }
@@ -10706,13 +10725,14 @@ button,
     .chain-feedback.bad { color:var(--incorrect-dark); }
     .chain-feedback.near { color:var(--near); }
     .chain-help-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:3px; }
-    .chain-hint, .chain-spelling-help {
+    .chain-hint, .chain-give-up, .chain-spelling-help {
       width:max-content; max-width:100%; min-height:34px; margin:0; padding:0 10px;
       border:1px solid rgba(138,100,29,.18); border-radius:10px;
       background:rgba(138,100,29,.08); color:var(--near); font-size:.7rem; font-weight:840;
     }
     .chain-hint { border-color:rgba(40,100,240,.18); background:rgba(40,100,240,.07); color:var(--accent-dark); }
-    .chain-hint:disabled { opacity:.42; cursor:default; }
+    .chain-give-up { border-color:rgba(183,75,64,.18); background:rgba(183,75,64,.07); color:var(--incorrect-dark); }
+    .chain-hint:disabled, .chain-give-up:disabled { opacity:.42; cursor:default; }
     .chain-progress-track { height:6px; overflow:hidden; border-radius:999px; background:rgba(23,23,23,.09); margin-top:8px; }
     .chain-progress-fill { height:100%; width:0; background:var(--correct); border-radius:inherit; transition:width 180ms ease; }
     .chain-finish { margin-top:10px; padding:13px; border:1px solid rgba(47,125,77,.25); border-radius:14px; background:var(--correct-soft); text-align:center; }
@@ -11222,6 +11242,587 @@ button,
 
     @media (max-width: 520px) and (max-height: 620px) {
       .rating-question { display: none; }
+    }
+  </style>
+
+
+  <style id="mobile-v0452">
+    /* v0.45.2 — consolidated mobile layout pass.
+       This sits after the historical phone rules so the final mobile behaviour
+       is predictable across narrow and short devices. */
+    @media (max-width: 520px) {
+      html, body {
+        width: 100%;
+        max-width: 100%;
+        overscroll-behavior: none;
+      }
+
+      body {
+        padding:
+          max(6px, env(safe-area-inset-top))
+          max(8px, env(safe-area-inset-right))
+          max(6px, env(safe-area-inset-bottom))
+          max(8px, env(safe-area-inset-left));
+      }
+
+      .shell,
+      .card,
+      .stage-area,
+      .stage,
+      .topbar,
+      .top-actions,
+      .controls,
+      .rating-controls,
+      .start-session-card,
+      .today-focus-card,
+      .daily-goal-card,
+      .session-customize-disclosure,
+      .mastery-grid,
+      .matching-board,
+      .rapid-question-card,
+      .detective-card,
+      .country-profile-body {
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      /* Keep the game chrome compact enough that the learning content remains
+         the largest thing on screen. Targets still meet a comfortable phone size. */
+      .topbar {
+        min-height: 44px;
+        gap: 6px;
+        margin-bottom: 4px;
+      }
+      .top-actions { gap: 5px; }
+      .settings-open,
+      .menu-open {
+        min-height: 44px !important;
+        height: 44px !important;
+        border-radius: 13px !important;
+      }
+      .settings-open { padding-inline: 11px !important; }
+      .menu-open {
+        width: auto !important;
+        min-width: 52px !important;
+        padding-inline: 11px !important;
+        font-size: .78rem !important;
+      }
+      .progress-track { margin-bottom: 5px; }
+
+      .controls { gap: 8px; margin-top: 6px; }
+      .controls > button,
+      .rating-controls > button {
+        min-height: 58px !important;
+        height: 58px !important;
+        padding-inline: 12px !important;
+        border-radius: 17px !important;
+        font-size: clamp(.92rem, 4.2vw, 1.04rem) !important;
+      }
+      .rating-controls { gap: 8px; }
+
+      .hint-button,
+      .stage[data-stage="capital"] .hint-button,
+      .stage[data-stage="largestCity"] .hint-button {
+        min-height: 50px !important;
+        height: 50px !important;
+        margin-top: 10px !important;
+        padding-inline: 16px !important;
+        border-radius: 15px !important;
+        font-size: .88rem !important;
+      }
+
+      .stage[data-stage="globe"] .globe-zoom-button,
+      .globe-zoom-button {
+        width: 46px !important;
+        min-width: 46px !important;
+        height: 46px !important;
+        min-height: 46px !important;
+        border-radius: 14px !important;
+        font-size: 1.4rem !important;
+      }
+      .stage[data-stage="globe"] .globe-zoom-controls,
+      .globe-zoom-controls { gap: 7px !important; }
+
+      /* Prevent iOS Safari from zooming the page when a quiz/search field is focused. */
+      input[type="text"],
+      input[type="search"],
+      input[type="email"],
+      input[type="number"],
+      textarea,
+      select,
+      .interactive-input,
+      .rapid-input,
+      .country-search-input,
+      .custom-set-search {
+        font-size: 16px !important;
+      }
+
+      /* Every full-screen surface follows the same safe-area + scrolling model. */
+      .start-overlay,
+      .custom-set-overlay,
+      .mastery-overlay,
+      .mastery-map-overlay,
+      .matching-overlay,
+      .detective-overlay,
+      .rapid-overlay,
+      .country-profile-overlay,
+      .search-overlay,
+      .settings-overlay,
+      .profile-onboarding-overlay,
+      .chain-overlay,
+      .ranking-overlay {
+        align-items: flex-start !important;
+        overflow: hidden !important;
+        padding:
+          max(6px, env(safe-area-inset-top))
+          max(6px, env(safe-area-inset-right))
+          max(6px, env(safe-area-inset-bottom))
+          max(6px, env(safe-area-inset-left)) !important;
+      }
+
+      .start-panel,
+      .custom-set-panel,
+      .mastery-panel,
+      .mastery-map-panel,
+      .matching-panel,
+      .detective-panel,
+      .rapid-panel,
+      .country-profile-panel,
+      .search-panel,
+      .settings-panel,
+      .profile-onboarding-panel,
+      .chain-panel,
+      .ranking-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 0 !important;
+        max-height: calc(100dvh - max(12px, env(safe-area-inset-top) + env(safe-area-inset-bottom))) !important;
+        margin: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior-y: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-gutter: auto;
+      }
+
+      /* Keep dialog chrome compact and consistent. */
+      .start-head,
+      .settings-head,
+      .custom-set-head,
+      .mastery-head,
+      .mastery-map-head,
+      .matching-head,
+      .detective-head,
+      .rapid-head,
+      .country-profile-head,
+      .chain-head,
+      .ranking-head {
+        gap: 9px;
+        margin-bottom: 10px;
+      }
+
+      .search-close,
+      .settings-close,
+      .custom-set-close,
+      .mastery-close,
+      .mastery-map-close,
+      .matching-close,
+      .detective-menu,
+      .rapid-menu,
+      .country-profile-close,
+      .chain-menu,
+      .ranking-menu,
+      .start-close {
+        min-height: 44px !important;
+        height: 44px !important;
+        padding-inline: 12px !important;
+        border-radius: 13px !important;
+      }
+
+      .country-search-input,
+      .custom-set-search {
+        min-height: 50px !important;
+        height: 50px !important;
+        border-radius: 14px !important;
+        padding-inline: 13px !important;
+      }
+
+      .country-search-result { min-height: 58px !important; }
+
+      /* Settings had inherited the very large generic thumb sizing. Keep the
+         rows roomy while showing more than a handful of controls per screen. */
+      .setting-row { min-height: 66px !important; }
+      .move-button {
+        width: 38px !important;
+        min-width: 38px !important;
+        min-height: 36px !important;
+        height: 36px !important;
+      }
+      .settings-footer button,
+      .done-settings {
+        min-height: 52px !important;
+        height: 52px !important;
+        border-radius: 15px !important;
+      }
+
+      /* Long labels and dynamic country names must wrap instead of widening a
+         grid or forcing horizontal scrolling. */
+      .session-step-value,
+      .start-session-summary-secondary,
+      .start-session-summary-challenges,
+      .country-set-name,
+      .country-pool-name,
+      .play-mode-name,
+      .play-mode-meta,
+      .mastery-row-label,
+      .matching-card-text,
+      .detective-clue-value,
+      .ranking-item-name,
+      .country-profile-fact-value {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .new-session-warning-actions,
+      .ranking-actions,
+      .chain-actions {
+        min-width: 0;
+      }
+    }
+
+    /* Short phones need vertical economy more than extra-large targets. */
+    @media (max-width: 520px) and (max-height: 700px) {
+      .topbar { min-height: 40px; }
+      .settings-open,
+      .menu-open {
+        min-height: 40px !important;
+        height: 40px !important;
+      }
+      .controls > button,
+      .rating-controls > button {
+        min-height: 54px !important;
+        height: 54px !important;
+      }
+      .hint-button,
+      .stage[data-stage="capital"] .hint-button,
+      .stage[data-stage="largestCity"] .hint-button {
+        min-height: 46px !important;
+        height: 46px !important;
+        margin-top: 7px !important;
+      }
+      .stage[data-stage="globe"] .globe-zoom-button,
+      .globe-zoom-button {
+        width: 44px !important;
+        min-width: 44px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+      }
+      .country-search-result { min-height: 54px !important; }
+      .setting-row { min-height: 60px !important; }
+      .settings-footer button,
+      .done-settings { min-height: 48px !important; height: 48px !important; }
+
+      /* The daily card is secondary context on a short phone. Removing its
+         explanatory line keeps Study now + Start session above the fold. */
+      .daily-goal-card-compact .today-daily-meta { display: none !important; }
+      .today-daily-challenge { align-items: center; }
+      .today-focus-card { padding-block: 9px !important; }
+      .start-session-card { padding-block: 11px !important; }
+    }
+
+    @media (max-width: 360px) {
+      .topbar { gap: 4px; }
+      .top-actions { gap: 4px; }
+      .title { font-size: .86rem !important; }
+      .progress-text { font-size: .68rem !important; }
+      .settings-open { padding-inline: 8px !important; font-size: .66rem !important; }
+      .menu-open { min-width: 48px !important; padding-inline: 8px !important; font-size: .72rem !important; }
+
+      .controls { grid-template-columns: minmax(0,.76fr) minmax(0,1.6fr) !important; }
+      .controls > button,
+      .rating-controls > button { padding-inline: 8px !important; }
+
+      .today-focus-card,
+      .today-daily-challenge { min-width: 0; }
+      .today-daily-button { min-width: 64px; }
+
+      .new-session-warning-actions,
+      .ranking-actions,
+      .chain-actions {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (max-width: 340px) {
+      .settings-open,
+      .menu-open {
+        min-height: 38px !important;
+        height: 38px !important;
+      }
+      .settings-open { padding-inline: 7px !important; }
+      .menu-open { min-width: 46px !important; }
+      .controls > button,
+      .rating-controls > button {
+        min-height: 50px !important;
+        height: 50px !important;
+      }
+      .start-panel,
+      .custom-set-panel,
+      .mastery-panel,
+      .mastery-map-panel,
+      .matching-panel,
+      .detective-panel,
+      .rapid-panel,
+      .country-profile-panel,
+      .search-panel,
+      .settings-panel,
+      .profile-onboarding-panel,
+      .chain-panel,
+      .ranking-panel {
+        border-radius: 17px !important;
+      }
+    }
+
+    /* Landscape phones: allow dialogs to scroll, and shrink only the chrome;
+       do not shrink answer text into unreadability. */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .topbar { min-height: 36px; }
+      .settings-open,
+      .menu-open { min-height: 36px !important; height: 36px !important; }
+      .controls > button,
+      .rating-controls > button { min-height: 46px !important; height: 46px !important; }
+      .country-header { min-height: 40px !important; }
+      .stage-area { padding-block: 4px !important; }
+    }
+  </style>
+
+
+  <style id="mobile-landscape-v0452">
+    /* Phone landscape cannot be detected by width alone: modern phones are
+       commonly 650–930 CSS px wide when rotated. Use the short viewport as the
+       deciding signal and keep the core game in one screen. */
+    @media (max-width: 950px) and (max-height: 500px) and (orientation: landscape) {
+      html, body {
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        overflow: hidden;
+      }
+      body {
+        height: 100dvh;
+        min-height: 100dvh;
+        padding:
+          max(4px, env(safe-area-inset-top))
+          max(8px, env(safe-area-inset-right))
+          max(4px, env(safe-area-inset-bottom))
+          max(8px, env(safe-area-inset-left));
+      }
+      .shell {
+        width: min(900px, 100%);
+        height: 100%;
+        min-height: 0;
+        margin: 0 auto;
+        display: grid;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+      }
+      .topbar {
+        min-height: 36px;
+        margin-bottom: 2px;
+        gap: 7px;
+      }
+      .title { font-size: .92rem; }
+      .top-actions { gap: 5px; }
+      .progress-text { font-size: .72rem; }
+      .settings-open,
+      .menu-open {
+        min-height: 36px !important;
+        height: 36px !important;
+        border-radius: 11px !important;
+        padding-inline: 10px !important;
+        font-size: .7rem !important;
+      }
+      .menu-open { width: auto !important; min-width: 48px !important; }
+      .progress-track { height: 4px; margin-bottom: 3px; }
+
+      .card {
+        min-height: 0;
+        height: 100%;
+        border-radius: 18px;
+      }
+      .country-header {
+        min-height: 40px !important;
+        padding: 4px 10px !important;
+        gap: 8px;
+      }
+      .header-flag-wrap { width: 38px; height: 26px; }
+      .header-kicker { font-size: .56rem; }
+      .header-country { font-size: .98rem; }
+
+      .stage-area {
+        min-height: 0;
+        padding: 4px 10px !important;
+        overflow: hidden;
+      }
+      .stage {
+        min-height: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      .stage-label { margin-bottom: 4px; font-size: .6rem; }
+      .prompt-question { font-size: clamp(1.25rem, 3.5vw, 1.95rem); }
+      .prompt-note { margin-top: 5px; font-size: .7rem; }
+      .answer-big { font-size: clamp(1.65rem, 4.6vw, 2.55rem); }
+      .capital-hint-text { margin-top: 7px; font-size: clamp(1.05rem, 3.3vw, 1.55rem); }
+      .languages-answer { font-size: clamp(1rem, 3vw, 1.55rem); gap: 7px; }
+      .currency-name { font-size: clamp(1.15rem, 3.3vw, 1.75rem); }
+      .stage-foot { margin-top: 4px; font-size: .66rem; }
+
+      .flag-large-wrap {
+        width: min(390px, 72vw);
+        height: min(43dvh, 170px) !important;
+        min-height: 90px;
+      }
+      .globe-wrap,
+      .stage[data-stage="globe"] .globe-wrap {
+        width: min(44dvh, 185px) !important;
+        height: min(44dvh, 185px) !important;
+      }
+      .silhouette-wrap,
+      .stage[data-stage="silhouette"][data-phase="revealed"] .silhouette-wrap {
+        width: min(360px, 67vw) !important;
+        height: min(42dvh, 165px) !important;
+        aspect-ratio: auto;
+      }
+      .stage[data-stage="cityMap"] .city-map-wrap {
+        width: min(330px, 62vw, calc(44dvh * 1.3125)) !important;
+      }
+
+      .hint-button,
+      .stage[data-stage="capital"] .hint-button,
+      .stage[data-stage="largestCity"] .hint-button {
+        min-height: 42px !important;
+        height: 42px !important;
+        margin-top: 6px !important;
+        padding-inline: 14px !important;
+        border-radius: 13px !important;
+        font-size: .78rem !important;
+      }
+      .controls { gap: 7px; margin-top: 4px; }
+      .controls > button,
+      .rating-controls > button {
+        min-height: 46px !important;
+        height: 46px !important;
+        padding-inline: 11px !important;
+        border-radius: 14px !important;
+        font-size: .84rem !important;
+      }
+      .rating-question { display: none !important; }
+      .stage[data-stage="globe"] .globe-zoom-button,
+      .globe-zoom-button {
+        width: 40px !important;
+        min-width: 40px !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        border-radius: 12px !important;
+      }
+
+      /* Dialogs remain scrollable in landscape instead of trying to compress
+         complex setup/progress screens into the short height. */
+      .start-overlay,
+      .custom-set-overlay,
+      .mastery-overlay,
+      .mastery-map-overlay,
+      .matching-overlay,
+      .detective-overlay,
+      .rapid-overlay,
+      .country-profile-overlay,
+      .search-overlay,
+      .settings-overlay,
+      .profile-onboarding-overlay,
+      .chain-overlay,
+      .ranking-overlay {
+        align-items: flex-start !important;
+        overflow: hidden !important;
+        padding:
+          max(4px, env(safe-area-inset-top))
+          max(6px, env(safe-area-inset-right))
+          max(4px, env(safe-area-inset-bottom))
+          max(6px, env(safe-area-inset-left)) !important;
+      }
+      .start-panel,
+      .custom-set-panel,
+      .mastery-panel,
+      .mastery-map-panel,
+      .matching-panel,
+      .detective-panel,
+      .rapid-panel,
+      .country-profile-panel,
+      .search-panel,
+      .settings-panel,
+      .profile-onboarding-panel,
+      .chain-panel,
+      .ranking-panel {
+        max-height: calc(100dvh - max(8px, env(safe-area-inset-top) + env(safe-area-inset-bottom))) !important;
+        margin-top: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior-y: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+      input[type="text"], input[type="search"], textarea, select,
+      .interactive-input, .rapid-input, .country-search-input, .custom-set-search {
+        font-size: 16px !important;
+      }
+    }
+  </style>
+
+
+  <style id="mobile-landscape-home-v0452">
+    @media (min-width: 600px) and (max-width: 950px) and (max-height: 500px) and (orientation: landscape) {
+      .start-panel {
+        width: min(900px, 100%) !important;
+        display: grid;
+        grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+        align-content: start;
+        align-items: start;
+        gap: 8px 12px;
+        padding: 10px 12px !important;
+      }
+      .start-head {
+        grid-column: 1 / -1;
+        margin-bottom: 0 !important;
+      }
+      .start-title { font-size: 1.65rem !important; }
+      .menu-header-tools { gap: 6px; }
+      .menu-header-tool { min-width: 40px !important; width: 40px !important; min-height: 40px !important; height: 40px !important; }
+
+      .daily-goal-card-compact,
+      .today-focus-card,
+      .active-session-resume {
+        grid-column: 1;
+        margin: 0 !important;
+      }
+      .daily-goal-card-compact { grid-row: 2; padding: 9px 10px !important; }
+      .today-focus-card { grid-row: 3; padding: 9px 10px !important; }
+      .active-session-resume { grid-row: 4; }
+      .daily-goal-card-compact .daily-goal-meta,
+      .daily-goal-card-compact .today-daily-meta { display: none !important; }
+      .today-daily-challenge { margin-top: 7px !important; padding-top: 7px !important; }
+      .today-focus-title { font-size: 1.05rem !important; }
+      .today-focus-meta { font-size: .7rem !important; line-height: 1.25 !important; }
+      .today-focus-button { min-height: 40px !important; }
+
+      .start-session-card {
+        grid-column: 2;
+        grid-row: 2 / span 4;
+        align-self: start;
+        margin: 0 !important;
+        padding: 11px 12px !important;
+      }
+      .start-session-title { font-size: clamp(1.25rem, 3vw, 1.75rem) !important; }
+      .start-session-summary { margin-bottom: 8px !important; }
+      .session-customize-summary { min-height: 44px !important; }
+      .start-session-button { min-height: 48px !important; }
     }
   </style>
 
@@ -11919,6 +12520,10 @@ button,
             <button class="detective-guess-button" id="detectiveGuessBtn" type="button">Guess</button>
           </div>
           <div class="detective-suggestions hidden" id="detectiveSuggestions" role="listbox" aria-label="Place suggestions"></div>
+          <div class="detective-prior-guesses hidden" id="detectivePriorGuesses" aria-label="Previous guesses">
+            <span class="detective-prior-label">Already guessed</span>
+            <div class="detective-prior-chips" id="detectivePriorGuessChips"></div>
+          </div>
           <div class="detective-feedback" id="detectiveFeedback" aria-live="polite"></div>
           <button class="detective-give-up" id="detectiveGiveUpBtn" type="button">Reveal answer · 0 pts</button>
         </div>
@@ -12287,6 +12892,10 @@ button,
             <button class="special-game-option" type="button" data-chain-answer="both">Place + capital</button>
           </div>
           <div class="special-game-help" id="chainAnswerHelp">Enter any available place.</div>
+          <label class="territory-inline-toggle">
+            <input id="chainAutocompleteToggle" type="checkbox" checked />
+            <span class="territory-inline-toggle-copy"><strong>Typeahead suggestions</strong><span class="territory-inline-toggle-meta">Suggest playable place or capital names after 3 letters</span></span>
+          </label>
         </div>
         <div class="special-game-field">
           <div class="special-game-label">Rules</div>
@@ -12324,13 +12933,17 @@ button,
           <span class="chain-legend-item hidden" id="chainWeakenedLegend"><span class="chain-legend-dot" style="background:#cfcbc0"></span>Needs more land neighbours</span>
         </div>
         <div class="chain-progress-track" aria-hidden="true"><div class="chain-progress-fill" id="chainProgressFill"></div></div>
-        <div class="chain-input-row">
-          <input class="chain-input" id="chainGuessInput" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Name an available place…" aria-label="Chain Fill answer" />
-          <button class="chain-submit" id="chainGuessBtn" type="button">Add</button>
+        <div class="chain-input-wrap">
+          <div class="chain-input-row">
+            <input class="chain-input" id="chainGuessInput" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Name an available place…" aria-label="Chain Fill answer" aria-autocomplete="list" aria-controls="chainSuggestions" aria-expanded="false" />
+            <button class="chain-submit" id="chainGuessBtn" type="button">Add</button>
+          </div>
+          <div class="chain-suggestions hidden" id="chainSuggestions" role="listbox" aria-label="Available answer suggestions"></div>
         </div>
         <div class="chain-feedback" id="chainFeedback" aria-live="polite"></div>
         <div class="chain-help-row">
-          <button class="chain-hint" id="chainHintBtn" type="button">Hint · show one answer</button>
+          <button class="chain-hint" id="chainHintBtn" type="button">Hint · first letter</button>
+          <button class="chain-give-up" id="chainGiveUpBtn" type="button">Give up · reveal one</button>
           <button class="chain-spelling-help hidden" id="chainSpellingBtn" type="button">Use correct spelling</button>
         </div>
         <div class="chain-finish hidden" id="chainFinish">
@@ -12412,7 +13025,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.45.1";
+    const GEODEN_VERSION = "0.45.7";
     const GEODEN_BUILD_DATE = "2026-09-17";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -12782,12 +13395,12 @@ button,
     };
 
     const DETECTIVE_ALL_CLUES = [
-      "continent", "neighbours", "borderCount", "languages", "flagColour", "silhouette",
+      "continent", "borderCount", "neighbours", "languages", "flagColour", "silhouette",
       "currency", "largestCity", "countryLength", "capitalLength", "capitalLetter",
       "population", "area", "formation", "government", "capital", "flag"
     ];
     const DETECTIVE_RECOMMENDED_CLUES = [
-      "continent", "neighbours", "borderCount", "languages", "flagColour", "silhouette",
+      "continent", "borderCount", "neighbours", "languages", "flagColour", "silhouette",
       "currency", "largestCity", "capital", "flag"
     ];
     const DETECTIVE_CLUE_META = {
@@ -14459,6 +15072,40 @@ button,
       return { order: [...primary, ...rest], count: primary.length };
     }
 
+    function diversifyDetectiveCountryOrder(order, primaryCount) {
+      const count = Math.max(0, Math.min(Number(primaryCount) || 0, order.length));
+      if (count < 3) return order;
+      const primary = order.slice(0, count);
+      const rest = order.slice(count);
+      const buckets = new Map();
+      for (const countryIndex of primary) {
+        const country = countries[countryIndex];
+        const group = detectiveContinent(country) || "Other";
+        if (!buckets.has(group)) buckets.set(group, []);
+        buckets.get(group).push(countryIndex);
+      }
+      if (buckets.size < 2) return order;
+
+      // Keep a little geographic distance between cases. Prefer a continent not
+      // seen in the previous two cases, then at least avoid an immediate repeat.
+      const output = [];
+      const recentGroups = [];
+      while (output.length < primary.length) {
+        const availableGroups = [...buckets.entries()].filter(([, items]) => items.length);
+        if (!availableGroups.length) break;
+        let choices = availableGroups.filter(([group]) => !recentGroups.includes(group));
+        if (!choices.length) choices = availableGroups.filter(([group]) => group !== recentGroups.at(-1));
+        if (!choices.length) choices = availableGroups;
+        const maxRemaining = Math.max(...choices.map(([, items]) => items.length));
+        const balanced = choices.filter(([, items]) => items.length >= Math.max(1, maxRemaining - 1));
+        const [group, items] = balanced[randomInt(balanced.length)] || choices[0];
+        output.push(items.shift());
+        recentGroups.push(group);
+        if (recentGroups.length > 2) recentGroups.shift();
+      }
+      return [...output, ...rest];
+    }
+
     function updateCountrySetOptions() {
       countrySetPicker?.querySelectorAll("[data-country-set]").forEach(button => {
         const set = button.dataset.countrySet;
@@ -15458,6 +16105,11 @@ button,
           if (!poolCount) return;
         }
 
+        localStorage.setItem(COUNTRY_ORDER_KEY, JSON.stringify(countryOrder));
+      }
+
+      if (interaction === "detective" && poolCount > 1) {
+        countryOrder = diversifyDetectiveCountryOrder(countryOrder, poolCount);
         localStorage.setItem(COUNTRY_ORDER_KEY, JSON.stringify(countryOrder));
       }
 
@@ -25921,6 +26573,8 @@ button,
     const detectiveInput = document.getElementById("detectiveInput");
     const detectiveGuessBtn = document.getElementById("detectiveGuessBtn");
     const detectiveSuggestions = document.getElementById("detectiveSuggestions");
+    const detectivePriorGuesses = document.getElementById("detectivePriorGuesses");
+    const detectivePriorGuessChips = document.getElementById("detectivePriorGuessChips");
     const detectiveFeedback = document.getElementById("detectiveFeedback");
     const detectiveGiveUpBtn = document.getElementById("detectiveGiveUpBtn");
     const detectiveResult = document.getElementById("detectiveResult");
@@ -25985,6 +26639,20 @@ button,
         state.round.wrongGuessKeys = Array.isArray(state.round.wrongGuessKeys)
           ? [...new Set(state.round.wrongGuessKeys.map(normalizeWrongGuessKey).filter(Boolean))]
           : [];
+        if (Array.isArray(state.round.guesses)) {
+          state.round.guesses = state.round.guesses
+            .map(value => String(value || "").trim())
+            .filter(Boolean)
+            .filter((value, idx, arr) => arr.findIndex(other => interactiveLooseNormalize(other) === interactiveLooseNormalize(value)) === idx)
+            .slice(-12);
+        } else {
+          state.round.guesses = state.round.wrongGuessKeys.map(key => {
+            const countryMatch = String(key).match(/^country:([A-Z]{2})$/);
+            if (countryMatch) return countries.find(country => country.code === countryMatch[1])?.name || countryMatch[1];
+            const textMatch = String(key).match(/^text:(.+)$/);
+            return textMatch ? textMatch[1] : "";
+          }).filter(Boolean).slice(-12);
+        }
         const roundCountry = countries.find(country => country.code === state.round.code);
         if (roundCountry && Array.isArray(state.round.clues)) {
           if (state.round.clues.some(clue => clue?.key === "hemisphere")) {
@@ -26469,6 +27137,16 @@ button,
       }
       detectiveGuessCard.classList.toggle("hidden", finished);
       detectiveResult.classList.toggle("hidden", !finished);
+      const priorGuesses = Array.isArray(round.guesses) ? round.guesses.filter(Boolean) : [];
+      detectivePriorGuessChips?.replaceChildren();
+      for (const guess of priorGuesses) {
+        const chip = document.createElement("span");
+        chip.className = "detective-prior-chip";
+        chip.textContent = guess;
+        detectivePriorGuessChips?.appendChild(chip);
+      }
+      detectivePriorGuesses?.classList.toggle("hidden", !priorGuesses.length || finished);
+
       detectiveFeedback.textContent = round.feedback || "";
       detectiveFeedback.className = `detective-feedback${round.feedbackType ? ` ${round.feedbackType}` : ""}`;
       detectiveInput.disabled = finished;
@@ -26542,6 +27220,7 @@ button,
         revealedCount: Math.min(1, clues.length),
         wrongGuesses: 0,
         wrongGuessKeys: [],
+        guesses: [],
         solved: false,
         finished: false,
         points: 0,
@@ -26719,6 +27398,12 @@ button,
         return;
       }
       if (wrongKey) round.wrongGuessKeys.push(wrongKey);
+      if (!Array.isArray(round.guesses)) round.guesses = [];
+      const guessLabel = confusedWith && confusedWith.code !== c.code ? confusedWith.name : typed;
+      if (guessLabel && !round.guesses.some(value => interactiveLooseNormalize(value) === interactiveLooseNormalize(guessLabel))) {
+        round.guesses.push(guessLabel);
+        round.guesses = round.guesses.slice(-12);
+      }
       round.wrongGuesses = Math.max(0, Number(round.wrongGuesses) || 0) + 1;
       detectiveInput.value = "";
       detectiveSuggestions.classList.add("hidden");
@@ -29533,6 +30218,7 @@ button,
     const chainSetOptions = document.getElementById("chainSetOptions");
     const chainAnswerOptions = document.getElementById("chainAnswerOptions");
     const chainAnswerHelp = document.getElementById("chainAnswerHelp");
+    const chainAutocompleteToggle = document.getElementById("chainAutocompleteToggle");
     const chainRuleOptions = document.getElementById("chainRuleOptions");
     const chainRuleHelp = document.getElementById("chainRuleHelp");
     const chainStatusTitle = document.getElementById("chainStatusTitle");
@@ -29548,8 +30234,10 @@ button,
     const chainProgressFill = document.getElementById("chainProgressFill");
     const chainGuessInput = document.getElementById("chainGuessInput");
     const chainGuessBtn = document.getElementById("chainGuessBtn");
+    const chainSuggestions = document.getElementById("chainSuggestions");
     const chainFeedback = document.getElementById("chainFeedback");
     const chainHintBtn = document.getElementById("chainHintBtn");
+    const chainGiveUpBtn = document.getElementById("chainGiveUpBtn");
     const chainSpellingBtn = document.getElementById("chainSpellingBtn");
     const chainFinish = document.getElementById("chainFinish");
     const chainFinishTitle = document.getElementById("chainFinishTitle");
@@ -29568,7 +30256,7 @@ button,
     function saveSpecialGamePrefs() {
       try {
         localStorage.setItem(SPECIAL_GAME_PREFS_KEY, JSON.stringify({
-          chainSet, chainAnswerMode, chainRuleMode, rankingMetric, rankingCount, rankingSet, rankingLastRoundCodes
+          chainSet, chainAnswerMode, chainRuleMode, chainAutocompleteEnabled, rankingMetric, rankingCount, rankingSet, rankingLastRoundCodes
         }));
       } catch (_) {}
     }
@@ -29578,10 +30266,12 @@ button,
     let chainSet = chainSetChoices.has(specialGamePrefs.chainSet) ? specialGamePrefs.chainSet : "world";
     let chainAnswerMode = ["country", "capital", "both"].includes(specialGamePrefs.chainAnswerMode) ? specialGamePrefs.chainAnswerMode : "country";
     let chainRuleMode = ["open", "fortified"].includes(specialGamePrefs.chainRuleMode) ? specialGamePrefs.chainRuleMode : "open";
+    let chainAutocompleteEnabled = specialGamePrefs.chainAutocompleteEnabled !== false;
     let chainState = null;
     let chainTimerId = null;
     let chainBuildToken = 0;
     let chainSpellingSuggestion = null;
+    let chainSuggestionIndex = -1;
     let chainPreviousStartCode = null;
 
     function updateChainSetupHelp() {
@@ -29599,6 +30289,7 @@ button,
       }
       chainPartialLegend?.classList.toggle("hidden", chainAnswerMode !== "both");
       chainWeakenedLegend?.classList.toggle("hidden", chainRuleMode !== "fortified");
+      if (chainAutocompleteToggle) chainAutocompleteToggle.checked = !!chainAutocompleteEnabled;
     }
 
     function chainStartInstruction() {
@@ -29793,10 +30484,14 @@ button,
         });
         weakened = landFrontier.filter(code => !available.includes(code));
 
-        // Escape hatch: if land routes exist but all are still fortified, expose
-        // the easiest land route rather than jumping to an island bridge.
+        // Escape hatch: when no country meets the normal fortified threshold,
+        // only weaken a country that directly borders the place most recently
+        // completed. Filling DRC, for example, can never make Kenya the fallback
+        // route because Kenya does not share a border with DRC.
         if (!available.length && landFrontier.length) {
-          const candidates = landFrontier.filter(code => !partial.has(code));
+          const origin = chainState.lastFilledCode || chainState.startCode;
+          const direct = new Set(landGraph?.get(origin) || []);
+          const candidates = landFrontier.filter(code => !partial.has(code) && direct.has(code));
           const best = [...candidates].sort((a,b) => {
             const da = Math.max(1, landGraph?.get(a)?.size || 1);
             const db = Math.max(1, landGraph?.get(b)?.size || 1);
@@ -29816,37 +30511,52 @@ button,
           }
         }
 
-        // Only cross a synthetic bridge when there is no unfinished land route
-        // touching the territory. This keeps continental play coherent, while
-        // still allowing islands and disconnected clusters to be reached.
+        // Synthetic bridges are likewise local: only a bridge touching the last
+        // completed place may open the next disconnected/island route.
         if (!available.length && !landFrontier.length && bridgeFrontier.length) {
-          available = [...bridgeFrontier];
+          const origin = chainState.lastFilledCode || chainState.startCode;
+          const directBridges = new Set(chainState.graph?.bridgeGraph?.get(origin) || []);
+          available = bridgeFrontier.filter(code => directBridges.has(code));
           weakened = [];
         }
       }
 
       if (!available.length && incomplete.length && filled.size) {
-        // Last-resort repair for unexpected map/data gaps. Prefer a real land
-        // neighbour before falling back to simple geographic distance.
-        const landCandidates = incomplete.filter(code =>
-          [...(landGraph?.get(code) || [])].some(done => filled.has(done))
-        );
-        if (landCandidates.length) {
-          available = [landCandidates[0]];
-        } else {
-          let best = null;
-          let bestDistance = Infinity;
-          for (const code of incomplete) {
-            const c = countryByCode(code);
-            if (!c) continue;
-            for (const done of filled) {
-              const other = countryByCode(done);
-              if (!other) continue;
-              const distance = greatCircleDistanceKm(c, other);
-              if (distance < bestDistance) { bestDistance = distance; best = code; }
-            }
+        // Last-resort repair for unexpected map/data gaps. Fortified mode never
+        // jumps across the map: it may only continue through an edge touching
+        // the most recently completed place. Connected mode keeps the broader
+        // geographic repair so old/custom datasets remain traversable.
+        if (chainState.ruleMode === "fortified") {
+          const origin = chainState.lastFilledCode || chainState.startCode;
+          const directLand = new Set(landGraph?.get(origin) || []);
+          const localLand = incomplete.find(code => directLand.has(code));
+          if (localLand) available = [localLand];
+          else {
+            const directBridge = new Set(chainState.graph?.bridgeGraph?.get(origin) || []);
+            const localBridge = incomplete.find(code => directBridge.has(code));
+            if (localBridge) available = [localBridge];
           }
-          if (best) available = [best];
+        } else {
+          const landCandidates = incomplete.filter(code =>
+            [...(landGraph?.get(code) || [])].some(done => filled.has(done))
+          );
+          if (landCandidates.length) {
+            available = [landCandidates[0]];
+          } else {
+            let best = null;
+            let bestDistance = Infinity;
+            for (const code of incomplete) {
+              const c = countryByCode(code);
+              if (!c) continue;
+              for (const done of filled) {
+                const other = countryByCode(done);
+                if (!other) continue;
+                const distance = greatCircleDistanceKm(c, other);
+                if (distance < bestDistance) { bestDistance = distance; best = code; }
+              }
+            }
+            if (best) available = [best];
+          }
         }
       }
 
@@ -29895,6 +30605,36 @@ button,
       return "locked";
     }
 
+    function refreshChainMarkerEmphasis(availability = chainAvailability()) {
+      if (!chainState || !chainWorldMap || !window.d3) return;
+      const unresolved = Math.max(0, chainState.codes.length - availability.filled.size);
+      const k = Math.max(1, Number(chainState.zoomTransform?.k) || 1);
+      const lateGame = unresolved > 0 && unresolved <= 5;
+      const finalPair = unresolved > 0 && unresolved <= 2;
+      const svg = d3.select(chainWorldMap);
+
+      svg.selectAll(".chain-marker").each(function() {
+        const code = this.getAttribute("data-chain-code");
+        const status = chainStatusClass(code, availability);
+        const screenRadius = status === "filled"
+          ? 4.8
+          : finalPair ? 10.5
+          : lateGame ? 8.2
+          : 6.2;
+        d3.select(this).attr("r", screenRadius / k);
+      });
+
+      svg.selectAll(".chain-marker-halo").each(function() {
+        const code = this.getAttribute("data-chain-halo-code");
+        const status = chainStatusClass(code, availability);
+        const emphasise = lateGame && status !== "filled";
+        const markerRadius = finalPair ? 10.5 : 8.2;
+        d3.select(this)
+          .attr("class", `chain-marker-halo ${status}${emphasise ? " emphasis" : ""}`)
+          .attr("r", (markerRadius + (finalPair ? 5.5 : 4.2)) / k);
+      });
+    }
+
     function updateChainZoomButtons() {
       const k = Number(chainState?.zoomTransform?.k) || 1;
       if (chainZoomOutBtn) chainZoomOutBtn.disabled = k <= 1.001;
@@ -29924,8 +30664,7 @@ button,
           if (!chainState) return;
           chainState.zoomTransform = event.transform;
           layer.attr("transform", event.transform.toString());
-          const k = Math.max(1, Number(event.transform.k) || 1);
-          layer.selectAll(".chain-marker").attr("r", 4.6 / k);
+          refreshChainMarkerEmphasis();
           updateChainZoomButtons();
         });
       chainState.zoom = zoom;
@@ -29968,6 +30707,8 @@ button,
         chainWorldMap.setAttribute("aria-label", `${countrySetDisplayName(chainState.setKey)} Chain Fill map. ${filledCount} of ${total} filled; ${ready} place${ready === 1 ? "" : "s"} ready.`);
       }
       if (chainProgressFill) chainProgressFill.style.width = `${total ? filledCount / total * 100 : 0}%`;
+      if (chainGiveUpBtn) chainGiveUpBtn.disabled = !!chainState.finishedAt || availability.available.size === 0;
+      refreshChainMarkerEmphasis(availability);
       if (chainGuessInput) {
         chainGuessInput.placeholder = chainState.answerMode === "capital"
           ? "Capital of an available place…"
@@ -30021,12 +30762,23 @@ button,
           return code;
         });
       const markerCountries = chainState.codes.map(countryByCode).filter(c => c && (!represented.has(c.code) || tiny.has(c.code)));
+      const markerPoints = markerCountries.map(c => {
+        const point = projection([c.lon, c.lat]);
+        return { country:c, x:point?.[0] ?? -20, y:point?.[1] ?? -20 };
+      });
       layer.append("g").selectAll("circle")
-        .data(markerCountries).join("circle")
-        .attr("data-chain-code", c => c.code)
-        .attr("cx", c => projection([c.lon,c.lat])?.[0] ?? -20)
-        .attr("cy", c => projection([c.lon,c.lat])?.[1] ?? -20)
-        .attr("r", 4.6);
+        .data(markerPoints).join("circle")
+        .attr("class", "chain-marker-halo")
+        .attr("data-chain-halo-code", d => d.country.code)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .attr("r", 0);
+      layer.append("g").selectAll("circle")
+        .data(markerPoints).join("circle")
+        .attr("data-chain-code", d => d.country.code)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .attr("r", 6.2);
       chainState.projection = projection;
       attachChainZoom(svg, layer, width, height);
       updateChainMapStates();
@@ -30125,6 +30877,38 @@ button,
       return candidates;
     }
 
+    function chainHintKey(item) {
+      return item ? `${item.code}|${item.kind}|${interactiveLooseNormalize(item.answer)}` : "";
+    }
+
+    function chainHintLabel(item) {
+      if (chainState?.answerMode === "country") return "place name";
+      if (chainState?.answerMode === "capital") return "capital";
+      if (item?.kind === "country") return "place name";
+      if (item?.kind === "capital") return "capital";
+      return "answer";
+    }
+
+    function activeChainHintCandidate(candidates = chainHintCandidates()) {
+      const active = chainState?.activeHint;
+      if (!active?.key) return null;
+      return candidates.find(item => chainHintKey(item) === active.key) || null;
+    }
+
+    function updateChainHintButton() {
+      if (!chainHintBtn) return;
+      if (!chainState || chainState.finishedAt) {
+        chainHintBtn.textContent = "Hint · first letter";
+        return;
+      }
+      const candidate = activeChainHintCandidate();
+      const count = Math.max(0, Number(chainState.activeHint?.count) || 0);
+      const total = candidate ? countLetters(candidate.answer) : 0;
+      chainHintBtn.textContent = candidate && count > 0 && count < total
+        ? "Hint · another letter"
+        : "Hint · first letter";
+    }
+
     function giveChainHint() {
       if (!chainState || chainState.finishedAt) return;
       const candidates = chainHintCandidates();
@@ -30134,31 +30918,185 @@ button,
         return;
       }
 
-      if (!(chainState.hintedAnswers instanceof Set)) chainState.hintedAnswers = new Set();
-      // In Place + capital mode, finish a part-filled place before revealing
-      // an unrelated new route. That makes each hint more useful.
-      const finishers = candidates.filter(item => item.finishes);
-      const preferred = finishers.length ? finishers : candidates;
-      let fresh = preferred.filter(item => !chainState.hintedAnswers.has(`${item.code}|${item.kind}|${interactiveLooseNormalize(item.answer)}`));
-      if (!fresh.length) fresh = preferred;
-      const hint = fresh[randomInt(fresh.length)] || fresh[0];
-      const key = `${hint.code}|${hint.kind}|${interactiveLooseNormalize(hint.answer)}`;
-      chainState.hintedAnswers.add(key);
-      chainState.hintsUsed = Math.max(0, Number(chainState.hintsUsed) || 0) + 1;
-      if (chainHintBtn) chainHintBtn.textContent = "Hint · another answer";
-
-      if (hint.finishes && hint.kind === "country") {
-        chainFeedback.textContent = `Hint: ${hint.answer} will finish this part-filled place.`;
-      } else if (hint.finishes && hint.kind === "capital") {
-        chainFeedback.textContent = `Hint: ${hint.answer} will finish ${hint.country.name}.`;
-      } else if (hint.kind === "capital") {
-        chainFeedback.textContent = `Hint: ${hint.answer} is a capital you can enter now.`;
-      } else {
-        chainFeedback.textContent = `Hint: ${hint.answer} is available.`;
+      let hint = activeChainHintCandidate(candidates);
+      if (!hint) {
+        // In Place + capital mode, prefer helping finish a place the player has
+        // already started, but never reveal which country is currently playable.
+        const finishers = candidates.filter(item => item.finishes);
+        const preferred = finishers.length ? finishers : candidates;
+        hint = preferred[randomInt(preferred.length)] || preferred[0];
+        chainState.activeHint = { key:chainHintKey(hint), count:0 };
       }
+
+      const total = countLetters(hint.answer);
+      if (!total) return;
+      const previous = Math.max(0, Number(chainState.activeHint?.count) || 0);
+      const next = Math.min(total, previous + 1);
+      chainState.activeHint = { key:chainHintKey(hint), count:next };
+      chainState.hintsUsed = Math.max(0, Number(chainState.hintsUsed) || 0) + 1;
+
+      const label = chainHintLabel(hint);
+      chainFeedback.textContent = next >= total
+        ? `Hint · one ${label} is ${hint.answer}.`
+        : `Hint · one ${label} starts with ${capitalPrefix(hint.answer, next)}…`;
       chainFeedback.className = "chain-feedback near";
+
+      // Once the full answer has been shown, the next tap should begin a fresh
+      // letter hint rather than repeatedly exposing the same answer.
+      if (next >= total) chainState.activeHint = null;
+      updateChainHintButton();
       hapticFeedback?.("tap");
       refocusChainInput();
+    }
+
+    function giveUpOneChainCountry() {
+      if (!chainState || chainState.finishedAt) return;
+      const availability = chainAvailability();
+      const playable = [...availability.available].filter(code => !chainIsComplete(code));
+      if (!playable.length) {
+        chainFeedback.textContent = "There isn’t a country available to reveal right now.";
+        chainFeedback.className = "chain-feedback near";
+        return;
+      }
+
+      // Prefer a genuinely new place. If the only playable option is already
+      // part-filled in Place + capital mode, finish that one instead.
+      const fresh = playable.filter(code => !chainIsPartial(code));
+      const pool = fresh.length ? fresh : playable;
+      const code = pool[randomInt(pool.length)] || pool[0];
+      const c = countryByCode(code);
+      if (!c) return;
+
+      const part = chainPartState(code);
+      if (chainState.answerMode === "country") {
+        part.country = true;
+      } else if (chainState.answerMode === "capital") {
+        part.capital = true;
+      } else {
+        part.country = true;
+        part.capital = true;
+      }
+
+      chainState.lastFilledCode = code;
+      chainState.activeHint = null;
+      chainState.giveUpsUsed = Math.max(0, Number(chainState.giveUpsUsed) || 0) + 1;
+      clearChainSpellingHelp();
+      clearChainSuggestions();
+      if (chainGuessInput) chainGuessInput.value = "";
+      updateChainGuessButtonState();
+
+      const capitals = chainCapitalNames(c);
+      const detail = chainState.answerMode === "capital"
+        ? (capitals[0] ? ` — ${capitals[0]}` : "")
+        : chainState.answerMode === "both"
+          ? (capitals[0] ? ` — capital: ${capitals[0]}` : "")
+          : "";
+      chainFeedback.textContent = `Revealed ${c.name}${detail}.`;
+      chainFeedback.className = "chain-feedback near";
+      hapticFeedback?.("warning");
+      updateChainMapStates();
+      updateChainHintButton();
+      refocusChainInput();
+    }
+
+    function clearChainSuggestions() {
+      chainSuggestionIndex = -1;
+      chainSuggestions?.replaceChildren();
+      chainSuggestions?.classList.add("hidden");
+      chainGuessInput?.setAttribute("aria-expanded", "false");
+    }
+
+    function chainSuggestionEntries() {
+      if (!chainState || chainState.finishedAt) return [];
+      const availability = chainAvailability();
+      const allowed = new Set([...availability.available, ...availability.partial]);
+      const entries = [];
+      for (const code of allowed) {
+        const country = countryByCode(code);
+        if (!country) continue;
+        const part = chainPartState(code);
+        if ((chainState.answerMode === "country" || chainState.answerMode === "both") && !part.country) {
+          entries.push({ answer: country.name, kind: "Place", country });
+        }
+        if ((chainState.answerMode === "capital" || chainState.answerMode === "both") && !part.capital) {
+          for (const capital of chainCapitalNames(country)) entries.push({ answer: capital, kind: "Capital", country });
+        }
+      }
+      return entries;
+    }
+
+    function updateChainSuggestions() {
+      if (!chainAutocompleteEnabled || !chainGuessInput || !chainSuggestions || !chainState || chainGuessInput.disabled) {
+        clearChainSuggestions();
+        return;
+      }
+      const query = interactiveLooseNormalize(chainGuessInput.value);
+      if (query.length < 3) {
+        clearChainSuggestions();
+        return;
+      }
+      const matches = chainSuggestionEntries()
+        .map(entry => {
+          const answer = interactiveLooseNormalize(entry.answer);
+          let rank = 99;
+          if (answer === query) rank = 0;
+          else if (answer.startsWith(query)) rank = 1;
+          else if (answer.includes(` ${query}`)) rank = 2;
+          return { ...entry, rank };
+        })
+        .filter(entry => entry.rank < 99)
+        .sort((a,b) => a.rank - b.rank || a.answer.localeCompare(b.answer))
+        .filter((entry, index, arr) => arr.findIndex(other => interactiveLooseNormalize(other.answer) === interactiveLooseNormalize(entry.answer) && other.kind === entry.kind) === index)
+        .slice(0, 6);
+
+      chainSuggestions.replaceChildren();
+      chainSuggestionIndex = -1;
+      if (!matches.length) {
+        clearChainSuggestions();
+        return;
+      }
+      for (const entry of matches) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "chain-suggestion";
+        button.dataset.chainSuggestion = entry.answer;
+        const answer = document.createElement("span");
+        answer.className = "chain-suggestion-answer";
+        answer.textContent = entry.answer;
+        const kind = document.createElement("span");
+        kind.className = "chain-suggestion-kind";
+        kind.textContent = entry.kind;
+        button.append(answer, kind);
+        button.addEventListener("pointerdown", event => event.preventDefault());
+        button.addEventListener("click", () => {
+          chainGuessInput.value = entry.answer;
+          clearChainSuggestions();
+          updateChainGuessButtonState();
+          chainGuessInput.focus({ preventScroll:true });
+        });
+        chainSuggestions.appendChild(button);
+      }
+      chainSuggestions.classList.remove("hidden");
+      chainGuessInput.setAttribute("aria-expanded", "true");
+    }
+
+    function moveChainSuggestion(delta) {
+      const options = [...(chainSuggestions?.querySelectorAll(".chain-suggestion") || [])];
+      if (!options.length || chainSuggestions.classList.contains("hidden")) return false;
+      chainSuggestionIndex = (chainSuggestionIndex + delta + options.length) % options.length;
+      options.forEach((button, index) => button.classList.toggle("active", index === chainSuggestionIndex));
+      options[chainSuggestionIndex]?.scrollIntoView?.({ block:"nearest" });
+      return true;
+    }
+
+    function chooseChainSuggestion() {
+      const options = [...(chainSuggestions?.querySelectorAll(".chain-suggestion") || [])];
+      const button = options[chainSuggestionIndex];
+      if (!button) return false;
+      chainGuessInput.value = button.dataset.chainSuggestion || button.textContent || "";
+      clearChainSuggestions();
+      updateChainGuessButtonState();
+      return true;
     }
 
     function chainAvailableMatch(raw) {
@@ -30312,8 +31250,11 @@ button,
       chainGuessInput.value = "";
       updateChainGuessButtonState();
       const completedNow = chainIsComplete(c.code);
+      if (completedNow) chainState.lastFilledCode = c.code;
       hapticFeedback?.("correct");
+      clearChainSuggestions();
       updateChainMapStates();
+      updateChainHintButton();
       if (!chainState.finishedAt) {
         if (completedNow) {
           const ready = chainAvailability().available.size;
@@ -30339,12 +31280,15 @@ button,
         const answerLabel = chainState.answerMode === "country" ? "place names" : chainState.answerMode === "capital" ? "capital names" : "place + capital";
         const rules = chainState.ruleMode === "fortified" ? "Fortified" : "Connected";
         const hints = Math.max(0, Number(chainState.hintsUsed) || 0);
+        const giveUps = Math.max(0, Number(chainState.giveUpsUsed) || 0);
         const hintText = hints ? ` · ${hints} hint${hints === 1 ? "" : "s"}` : "";
-        chainFinishMeta.textContent = `${formatChainTime(chainElapsedMs())} · ${chainState.codes.length} places · ${answerLabel} · ${rules}${hintText}`;
+        const giveUpText = giveUps ? ` · ${giveUps} revealed` : "";
+        chainFinishMeta.textContent = `${formatChainTime(chainElapsedMs())} · ${chainState.codes.length} places · ${answerLabel} · ${rules}${hintText}${giveUpText}`;
       }
       chainGuessInput.disabled = true;
       chainGuessBtn.disabled = true;
       if (chainHintBtn) chainHintBtn.disabled = true;
+      if (chainGiveUpBtn) chainGiveUpBtn.disabled = true;
       clearChainSpellingHelp();
       hapticFeedback?.("success");
       window.setTimeout(() => chainPlayAgainBtn?.focus({ preventScroll: true }), 20);
@@ -30372,10 +31316,12 @@ button,
       chainGuessBtn.disabled = true;
       if (chainHintBtn) {
         chainHintBtn.disabled = false;
-        chainHintBtn.textContent = "Hint · show one answer";
+        chainHintBtn.textContent = "Hint · first letter";
       }
+      if (chainGiveUpBtn) chainGiveUpBtn.disabled = false;
       chainFeedback.textContent = "";
       clearChainSpellingHelp();
+      clearChainSuggestions();
 
       try {
         const codes = chainCodesForSet(chainSet);
@@ -30394,8 +31340,10 @@ button,
           graph,
           parts:new Map(),
           hintsUsed:0,
-          hintedAnswers:new Set(),
+          giveUpsUsed:0,
+          activeHint:null,
           startCode,
+          lastFilledCode:startCode,
           startedAt:Date.now(),
           finishedAt:null,
           projection:null
@@ -30440,10 +31388,12 @@ button,
       if (chainGuessBtn) chainGuessBtn.disabled = true;
       if (chainHintBtn) {
         chainHintBtn.disabled = false;
-        chainHintBtn.textContent = "Hint · show one answer";
+        chainHintBtn.textContent = "Hint · first letter";
       }
+      if (chainGiveUpBtn) chainGiveUpBtn.disabled = false;
       if (chainFeedback) chainFeedback.textContent = "";
       clearChainSpellingHelp();
+      clearChainSuggestions();
     }
 
     function openChainFill() {
@@ -30484,8 +31434,30 @@ button,
     chainPlayAgainBtn?.addEventListener("click", startChainGame);
     chainGuessBtn?.addEventListener("click", submitChainGuess);
     chainHintBtn?.addEventListener("click", giveChainHint);
-    chainGuessInput?.addEventListener("input", () => { clearChainSpellingHelp(); updateChainGuessButtonState(); });
-    chainGuessInput?.addEventListener("keydown", event => { if (event.key === "Enter") { event.preventDefault(); if (chainGuessInput.value.trim()) submitChainGuess(); } });
+    chainGiveUpBtn?.addEventListener("click", giveUpOneChainCountry);
+    chainAutocompleteToggle?.addEventListener("change", () => {
+      chainAutocompleteEnabled = !!chainAutocompleteToggle.checked;
+      saveSpecialGamePrefs();
+      if (!chainAutocompleteEnabled) clearChainSuggestions();
+    });
+    chainGuessInput?.addEventListener("input", () => {
+      clearChainSpellingHelp();
+      updateChainGuessButtonState();
+      updateChainSuggestions();
+    });
+    chainGuessInput?.addEventListener("keydown", event => {
+      if (event.key === "ArrowDown") {
+        if (moveChainSuggestion(1)) event.preventDefault();
+      } else if (event.key === "ArrowUp") {
+        if (moveChainSuggestion(-1)) event.preventDefault();
+      } else if (event.key === "Escape") {
+        clearChainSuggestions();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        chooseChainSuggestion();
+        if (chainGuessInput.value.trim()) submitChainGuess();
+      }
+    });
     chainSpellingBtn?.addEventListener("click", () => {
       const suggestion = chainSpellingSuggestion;
       if (!suggestion || !chainGuessInput || chainGuessInput.disabled) return;
