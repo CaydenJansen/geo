@@ -10634,7 +10634,7 @@ button,
 }
 
 
-    /* ---------- v0.30 Chain Fill + Ranking ---------- */
+    /* ---------- v0.30 Map Crawl + Ranking ---------- */
     .game-lab {
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -10910,7 +10910,7 @@ button,
 
 
   <style id="home-cleanup-v0311">
-    /* v0.31.2 — Chain Fill and Ranking promoted into the main mode picker. */
+    /* v0.31.2 — Map Crawl and Ranking promoted into the main mode picker. */
     .start-panel { padding-bottom:18px; }
 
     /* Today is status, not a competing feature card. */
@@ -11021,7 +11021,7 @@ button,
       .home-quick-card { min-height:64px; }
     }
   
-    /* v0.31.2 — Daily lives inside Today; Chain Fill and Ranking are main modes. */
+    /* v0.31.2 — Daily lives inside Today; Map Crawl and Ranking are main modes. */
     .today-daily-challenge {
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       margin-top:10px; padding-top:9px; border-top:1px solid rgba(23,23,23,.08);
@@ -11040,7 +11040,7 @@ button,
       .today-daily-button { min-height:30px; }
     }
 
-    /* v0.31.6 — State/message consistency audit across Chain Fill, Ranking, Detective and session setup. */
+    /* v0.31.6 — State/message consistency audit across Map Crawl, Ranking, Detective and session setup. */
     .session-step[data-session-step="mode"] .session-step-body {
       padding-top:9px !important;
       padding-bottom:10px !important;
@@ -11941,6 +11941,50 @@ button,
       box-shadow:0 24px 80px rgba(0,0,0,.18);
       padding:16px;
     }
+    .map-hunt-overlay.playing {
+      align-items:stretch;
+      padding:0;
+      background:var(--panel);
+      backdrop-filter:none;
+    }
+    .map-hunt-overlay.playing .map-hunt-panel {
+      width:100%;
+      height:100dvh;
+      max-height:100dvh;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+    }
+    .map-hunt-overlay.playing .special-game-head {
+      flex:0 0 auto;
+      margin-bottom:5px;
+    }
+    .map-hunt-overlay.playing .special-game-subtitle { display:none; }
+    .map-hunt-overlay.playing #mapHuntPlay {
+      flex:1 1 auto;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+    }
+    .map-hunt-overlay.playing .map-hunt-toolbar { flex:0 0 auto; }
+    .map-hunt-overlay.playing .map-hunt-prompt { flex:0 0 auto; }
+    .map-hunt-overlay.playing .map-hunt-map-wrap {
+      flex:1 1 auto;
+      min-height:0;
+    }
+    .map-hunt-overlay.playing .map-hunt-map {
+      width:100%;
+      height:100%;
+      min-height:0;
+      aspect-ratio:auto;
+    }
+    .map-hunt-overlay.playing .map-hunt-progress-track,
+    .map-hunt-overlay.playing .map-hunt-feedback,
+    .map-hunt-overlay.playing .map-hunt-finish { flex:0 0 auto; }
     .map-hunt-toolbar {
       display:grid;
       grid-template-columns:minmax(0,1fr) auto;
@@ -12037,7 +12081,7 @@ button,
     .map-hunt-country.try-3 { fill:#dc8434; stroke:#fff; stroke-width:1; }
     .map-hunt-country.try-4 { fill:#c95845; stroke:#fff; stroke-width:1.05; }
     .map-hunt-country.revealed { fill:#8f342e; stroke:#fff; stroke-width:1.7; }
-    .map-hunt-country.miss-flash { fill:#b74b40 !important; stroke:#fff !important; stroke-width:2 !important; }
+    .map-hunt-country.wrong-tap { fill:#9fa5a2 !important; stroke:#f7f4ed !important; stroke-width:1.35 !important; }
     .map-hunt-marker {
       stroke:#f7f4ed;
       stroke-width:2;
@@ -12052,7 +12096,7 @@ button,
     .map-hunt-marker.try-3 { fill:#dc8434; }
     .map-hunt-marker.try-4 { fill:#c95845; }
     .map-hunt-marker.revealed { fill:#8f342e; stroke-width:3; }
-    .map-hunt-marker.miss-flash { fill:#b74b40 !important; stroke-width:3 !important; }
+    .map-hunt-marker.wrong-tap { fill:#626866 !important; stroke-width:2.5 !important; }
     .map-hunt-marker-hit { fill:transparent; stroke:none; cursor:pointer; }
     .map-hunt-reveal-halo {
       fill:none;
@@ -12063,6 +12107,29 @@ button,
       opacity:0;
     }
     .map-hunt-reveal-halo.visible { opacity:.9; }
+    .map-hunt-country-label,
+    .map-hunt-temp-label {
+      fill:#171717;
+      stroke:rgba(247,244,237,.96);
+      stroke-width:3px;
+      paint-order:stroke fill;
+      stroke-linejoin:round;
+      text-anchor:middle;
+      dominant-baseline:middle;
+      font-family:inherit;
+      font-weight:900;
+      letter-spacing:-.02em;
+      pointer-events:none;
+      user-select:none;
+    }
+    .map-hunt-country-label {
+      fill:#187443;
+      font-weight:950;
+    }
+    .map-hunt-temp-label {
+      fill:#343937;
+      font-weight:850;
+    }
     .map-hunt-zoom-controls {
       position:absolute;
       right:9px;
@@ -12145,6 +12212,14 @@ button,
         padding:max(6px,env(safe-area-inset-top)) 6px max(6px,env(safe-area-inset-bottom));
       }
       .map-hunt-panel { max-height:calc(100dvh - 12px); border-radius:19px; padding:11px; }
+      .map-hunt-overlay.playing { padding:0 !important; }
+      .map-hunt-overlay.playing .map-hunt-panel {
+        height:100dvh !important;
+        max-height:100dvh !important;
+        border-radius:0 !important;
+        padding:max(6px,env(safe-area-inset-top)) max(7px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left)) !important;
+      }
+      .map-hunt-overlay.playing .map-hunt-map { min-height:0 !important; aspect-ratio:auto !important; }
       .map-hunt-prompt { min-height:68px; padding:8px 10px; }
       .map-hunt-prompt-text { font-size:clamp(1.15rem,6vw,1.65rem); }
       .map-hunt-prompt-flag { max-height:62px; }
@@ -12441,6 +12516,184 @@ button,
     }
   </style>
 
+
+  <style id="maphunt-v0490-final">
+    /* v0.49 — Map Hunt is an immersive map-first game once play begins. */
+    .map-hunt-legend { display:none !important; }
+    .map-hunt-overlay.playing {
+      align-items:stretch !important;
+      justify-content:stretch !important;
+      padding:0 !important;
+    }
+    .map-hunt-overlay.playing .map-hunt-panel {
+      width:100vw !important;
+      height:100dvh !important;
+      max-width:none !important;
+      max-height:100dvh !important;
+      margin:0 !important;
+      border:0 !important;
+      border-radius:0 !important;
+      box-shadow:none !important;
+      overflow:hidden !important;
+    }
+    .map-hunt-overlay.playing #mapHuntPlay {
+      flex:1 1 auto !important;
+      min-height:0 !important;
+    }
+    .map-hunt-overlay.playing .map-hunt-map-wrap {
+      flex:1 1 auto !important;
+      min-height:0 !important;
+    }
+    .map-hunt-overlay.playing .map-hunt-map {
+      width:100% !important;
+      height:100% !important;
+      min-height:0 !important;
+      max-height:none !important;
+      aspect-ratio:auto !important;
+    }
+  </style>
+
+  <style id="maphunt-ranking-v0491">
+    /* v0.49.3 — Map Hunt persistent reveal guidance + strict Ranking values. */
+    .map-hunt-country.try-1 { fill:#2f7d4d; }
+    .map-hunt-country.try-2 { fill:#69a34f; }
+    .map-hunt-country.try-3 { fill:#a7b94b; }
+    .map-hunt-country.try-4 { fill:#d6b63b; }
+    .map-hunt-country.revealed { fill:#d6b63b; stroke:#8a641d; stroke-width:1.35; stroke-dasharray:2.5 1.8; }
+    .map-hunt-marker.try-1 { fill:#2f7d4d; }
+    .map-hunt-marker.try-2 { fill:#69a34f; }
+    .map-hunt-marker.try-3 { fill:#a7b94b; }
+    .map-hunt-marker.try-4 { fill:#d6b63b; }
+    .map-hunt-marker.revealed { fill:#d6b63b; stroke:#8a641d; stroke-width:2.6; stroke-dasharray:2.5 1.8; }
+
+    .map-hunt-country.reveal-flash {
+      fill:#c95845 !important;
+      stroke:#fff !important;
+      stroke-width:2 !important;
+      animation:mapHuntCountryRevealPulse 760ms ease-in-out infinite alternate;
+    }
+    .map-hunt-marker.reveal-flash {
+      fill:#c95845 !important; stroke:#fff !important; stroke-width:3 !important;
+      transform-box:fill-box; transform-origin:center;
+      animation:mapHuntMarkerRevealPulse 760ms cubic-bezier(.18,.85,.24,1) infinite alternate;
+    }
+    .map-hunt-reveal-halo.reveal-flash {
+      opacity:1 !important;
+      stroke:#c95845 !important;
+      stroke-width:3 !important;
+      animation:mapHuntHaloRevealPulse 760ms ease-in-out infinite alternate;
+    }
+
+    .map-hunt-marker.wrong-tap {
+      fill:#626866 !important; stroke-width:2.5 !important;
+      transform-box:fill-box; transform-origin:center;
+      animation:mapHuntMarkerTapPop 380ms cubic-bezier(.18,.9,.25,1);
+    }
+    @keyframes mapHuntMarkerTapPop {
+      0% { transform:scale(1); }
+      38% { transform:scale(1.9); }
+      67% { transform:scale(1.35); }
+      100% { transform:scale(1); }
+    }
+    @keyframes mapHuntCountryRevealPulse {
+      from { opacity:.48; filter:brightness(.92); }
+      to { opacity:1; filter:brightness(1.08); }
+    }
+    @keyframes mapHuntMarkerRevealPulse {
+      from { transform:scale(1.15); opacity:.62; }
+      to { transform:scale(2.05); opacity:1; }
+    }
+    @keyframes mapHuntHaloRevealPulse {
+      from { opacity:.22; }
+      to { opacity:.92; }
+    }
+
+    .map-hunt-map-wrap { position:relative; }
+    .map-hunt-prompt {
+      position:absolute; left:10px; top:10px; z-index:5;
+      width:max-content; max-width:min(330px, calc(100% - 74px)); min-height:0;
+      margin:0; padding:8px 11px; display:grid; place-items:start; gap:3px;
+      border:1px solid rgba(23,23,23,.11); border-radius:13px;
+      background:rgba(248,245,238,.94); box-shadow:0 7px 20px rgba(25,22,16,.12);
+      text-align:left; backdrop-filter:blur(6px); pointer-events:none;
+    }
+    .map-hunt-prompt-kicker { font-size:.55rem; }
+    .map-hunt-prompt-text { font-size:clamp(1.05rem,3vw,1.42rem); line-height:1.04; text-align:left; }
+    .map-hunt-prompt-flag { max-width:min(145px,48vw); max-height:64px; }
+    .map-hunt-feedback:empty { display:none; }
+
+    .map-hunt-country-label,
+    .map-hunt-temp-label,
+    .map-hunt-reveal-label {
+      paint-order:stroke; stroke:#f7f4ed; stroke-linejoin:round;
+      text-anchor:middle; dominant-baseline:central; pointer-events:none; font-weight:900;
+    }
+    .map-hunt-country-label { fill:#187443; }
+    .map-hunt-reveal-label { fill:#8f342e; }
+
+    /* Desktop remains a conventional GeoDen map dialog. */
+    @media (min-width:521px) {
+      .map-hunt-overlay.playing {
+        align-items:center !important; justify-content:center !important; padding:14px !important;
+        background:rgba(25,22,16,.30) !important; backdrop-filter:blur(8px) !important;
+      }
+      .map-hunt-overlay.playing .map-hunt-panel {
+        width:min(820px,100%) !important; height:auto !important; max-width:820px !important;
+        max-height:calc(100dvh - 28px) !important; margin:0 !important; padding:16px !important;
+        overflow:auto !important; border:1px solid rgba(23,23,23,.12) !important;
+        border-radius:24px !important; box-shadow:0 24px 80px rgba(0,0,0,.18) !important;
+      }
+      .map-hunt-overlay.playing #mapHuntPlay { display:block !important; }
+      .map-hunt-overlay.playing .map-hunt-map-wrap { min-height:0 !important; }
+      .map-hunt-overlay.playing .map-hunt-map {
+        width:100% !important; height:auto !important; min-height:300px !important; aspect-ratio:1.8/1 !important;
+      }
+    }
+
+    /* Phones devote the available play area to the map. */
+    @media (max-width:520px) {
+      .map-hunt-overlay.playing {
+        align-items:stretch !important; justify-content:stretch !important; padding:0 !important;
+        background:var(--panel) !important; backdrop-filter:none !important;
+      }
+      .map-hunt-overlay.playing .map-hunt-panel {
+        width:100vw !important; height:100dvh !important; max-width:none !important; max-height:100dvh !important;
+        margin:0 !important;
+        padding:max(6px,env(safe-area-inset-top)) max(7px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left)) !important;
+        overflow:hidden !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
+      }
+      .map-hunt-overlay.playing #mapHuntPlay {
+        flex:1 1 auto !important; min-height:0 !important; display:flex !important; flex-direction:column !important;
+      }
+      .map-hunt-overlay.playing .map-hunt-map-wrap { flex:1 1 auto !important; min-height:0 !important; }
+      .map-hunt-overlay.playing .map-hunt-map {
+        width:100% !important; height:100% !important; min-height:0 !important; aspect-ratio:auto !important;
+      }
+      .map-hunt-prompt { left:7px; top:7px; max-width:calc(100% - 58px); padding:6px 9px; border-radius:11px; }
+      .map-hunt-prompt-text { font-size:clamp(.98rem,5vw,1.28rem); }
+      .map-hunt-prompt-flag { max-height:54px; }
+      .map-hunt-toolbar { margin-bottom:5px; }
+      .map-hunt-progress-track { margin-top:5px; }
+      .map-hunt-feedback { margin-top:5px; min-height:0; }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .map-hunt-marker.wrong-tap,
+      .map-hunt-marker.reveal-flash,
+      .map-hunt-country.reveal-flash,
+      .map-hunt-reveal-halo.reveal-flash { animation:none !important; }
+    }
+  </style>
+
+
+  <style id="maphunt-label-fix-v0492">
+    .map-hunt-country-label,
+    .map-hunt-temp-label,
+    .map-hunt-reveal-label {
+      font-size: inherit; /* actual size is set inline by the zoom scaler */
+      letter-spacing: -0.01em;
+    }
+  </style>
 </head>
 
 <body>
@@ -12729,7 +12982,7 @@ button,
                     <span class="play-mode-meta">Find places on the map</span>
                   </button>
                   <button class="play-mode-button chain-mode-button" id="chainModeBtn" type="button" data-play-mode="chain" aria-pressed="false">
-                    <span class="play-mode-name">Chain Fill</span>
+                    <span class="play-mode-name">Map Crawl</span>
                     <span class="play-mode-meta">Build across the map</span>
                   </button>
                   <button class="play-mode-button ranking-mode-button" id="rankingModeBtn" type="button" data-play-mode="ranking" aria-pressed="false">
@@ -13483,7 +13736,7 @@ button,
     <div class="chain-panel">
       <div class="special-game-head">
         <div>
-          <h2 class="special-game-title" id="chainFillTitle">Chain Fill</h2>
+          <h2 class="special-game-title" id="chainFillTitle">Map Crawl</h2>
           <p class="special-game-subtitle">Start somewhere and expand across the map.</p>
         </div>
         <button class="special-game-close" id="chainFillCloseBtn" type="button">Menu</button>
@@ -13520,13 +13773,13 @@ button,
         </div>
         <div class="special-game-field">
           <div class="special-game-label">Rules</div>
-          <div class="special-game-options" id="chainRuleOptions" role="group" aria-label="Choose Chain Fill rules">
+          <div class="special-game-options" id="chainRuleOptions" role="group" aria-label="Choose Map Crawl rules">
             <button class="special-game-option active" type="button" data-chain-rule="open">Connected</button>
             <button class="special-game-option" type="button" data-chain-rule="fortified">Fortified</button>
           </div>
           <div class="special-game-help" id="chainRuleHelp">Choose any available place.</div>
         </div>
-        <button class="special-game-start" id="chainFillStartBtn" type="button">Start Chain Fill →</button>
+        <button class="special-game-start" id="chainFillStartBtn" type="button">Start Map Crawl →</button>
       </div>
       <div class="special-game-loading hidden" id="chainFillLoading">Building the map…</div>
       <div class="special-game-play hidden" id="chainFillPlay">
@@ -13539,7 +13792,7 @@ button,
           <button class="chain-restart" id="chainRestartBtn" type="button">Change setup</button>
         </div>
         <div class="chain-map-wrap">
-          <svg class="chain-map" id="chainWorldMap" role="img" aria-label="Chain Fill map"></svg>
+          <svg class="chain-map" id="chainWorldMap" role="img" aria-label="Map Crawl map"></svg>
           <div class="chain-zoom-hint hidden" aria-hidden="true"></div>
           <div class="chain-zoom-controls" aria-label="Map zoom controls">
             <button class="chain-zoom-button" id="chainZoomOutBtn" type="button" aria-label="Zoom out">−</button>
@@ -13556,7 +13809,7 @@ button,
         <div class="chain-progress-track" aria-hidden="true"><div class="chain-progress-fill" id="chainProgressFill"></div></div>
         <div class="chain-input-wrap">
           <div class="chain-input-row">
-            <input class="chain-input" id="chainGuessInput" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Name an available place…" aria-label="Chain Fill answer" aria-autocomplete="list" aria-controls="chainSuggestions" aria-expanded="false" />
+            <input class="chain-input" id="chainGuessInput" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Name an available place…" aria-label="Map Crawl answer" aria-autocomplete="list" aria-controls="chainSuggestions" aria-expanded="false" />
             <button class="chain-submit" id="chainGuessBtn" type="button">Add</button>
           </div>
           <div class="chain-suggestions hidden" id="chainSuggestions" role="listbox" aria-label="Available answer suggestions"></div>
@@ -13629,13 +13882,12 @@ button,
           <button class="map-hunt-restart" id="mapHuntRestartBtn" type="button">Change setup</button>
         </div>
 
-        <div class="map-hunt-prompt" id="mapHuntPromptCard">
-          <div class="map-hunt-prompt-kicker" id="mapHuntPromptKicker">Find this place</div>
-          <div class="map-hunt-prompt-text" id="mapHuntPromptText">Zimbabwe</div>
-          <img class="map-hunt-prompt-flag hidden" id="mapHuntPromptFlag" alt="Flag clue" />
-        </div>
-
         <div class="map-hunt-map-wrap">
+          <div class="map-hunt-prompt" id="mapHuntPromptCard">
+            <div class="map-hunt-prompt-kicker" id="mapHuntPromptKicker">Find this place</div>
+            <div class="map-hunt-prompt-text" id="mapHuntPromptText">Zimbabwe</div>
+            <img class="map-hunt-prompt-flag hidden" id="mapHuntPromptFlag" alt="Flag clue" />
+          </div>
           <svg class="map-hunt-map" id="mapHuntMap" role="img" aria-label="Clickable geography map"></svg>
           <div class="map-hunt-zoom-controls" aria-label="Map zoom controls">
             <button class="map-hunt-zoom-button" id="mapHuntZoomOutBtn" type="button" aria-label="Zoom out">−</button>
@@ -13644,15 +13896,8 @@ button,
           </div>
         </div>
 
-        <div class="map-hunt-legend" aria-label="Map Hunt result legend">
-          <span class="map-hunt-legend-item"><span class="map-hunt-legend-dot" style="background:#2f7d4d"></span>1 try</span>
-          <span class="map-hunt-legend-item"><span class="map-hunt-legend-dot" style="background:#d6b63b"></span>2 tries</span>
-          <span class="map-hunt-legend-item"><span class="map-hunt-legend-dot" style="background:#dc8434"></span>3 tries</span>
-          <span class="map-hunt-legend-item"><span class="map-hunt-legend-dot" style="background:#c95845"></span>4 tries</span>
-          <span class="map-hunt-legend-item"><span class="map-hunt-legend-dot" style="background:#8f342e"></span>Revealed</span>
-        </div>
         <div class="map-hunt-progress-track" aria-hidden="true"><div class="map-hunt-progress-fill" id="mapHuntProgressFill"></div></div>
-        <div class="map-hunt-feedback" id="mapHuntFeedback" aria-live="polite">Click the place on the map.</div>
+        <div class="map-hunt-feedback" id="mapHuntFeedback" aria-live="polite"></div>
 
         <div class="map-hunt-finish hidden" id="mapHuntFinish">
           <div class="map-hunt-finish-title" id="mapHuntFinishTitle">Map complete.</div>
@@ -13741,7 +13986,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.48.16";
+    const GEODEN_VERSION = "0.49.5";
     const GEODEN_BUILD_DATE = "2026-09-18";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -16245,7 +16490,7 @@ button,
       if (mode === "detective") return "Detective";
       if (mode === "rapid") return "Quiz · Rapid Fire";
       if (mode === "maphunt") return "Map Hunt";
-      if (mode === "chain") return "Chain Fill";
+      if (mode === "chain") return "Map Crawl";
       if (mode === "ranking") return "Ranking";
       return "Flash card";
     }
@@ -16532,7 +16777,7 @@ button,
       if (["chain", "ranking", "maphunt"].includes(menuPlayMode)) {
         startConfirmBtn.disabled = false;
         startConfirmBtn.textContent = menuPlayMode === "chain"
-          ? "Start new Chain Fill →"
+          ? "Start new Map Crawl →"
           : menuPlayMode === "maphunt"
             ? (hasResumableMapHunt()
                 ? (mapHuntState?.finished ? "View Map Hunt results →" : "Resume Map Hunt →")
@@ -32009,7 +32254,7 @@ button,
     });
 
 
-    /* ---------- Chain Fill ---------- */
+    /* ---------- Map Crawl ---------- */
     const chainFillOverlay = document.getElementById("chainFillOverlay");
     const chainFillCloseBtn = document.getElementById("chainFillCloseBtn");
     const chainFillSetup = document.getElementById("chainFillSetup");
@@ -32215,7 +32460,7 @@ button,
       }
 
       // Keep the edge types alongside the normal graph without changing the
-      // rest of Chain Fill's Map-based API.
+      // rest of Map Crawl's Map-based API.
       graph.landGraph = landGraph;
       graph.bridgeGraph = bridgeGraph;
       return graph;
@@ -32530,7 +32775,7 @@ button,
       }
       if (chainWorldMap) {
         const ready = availability.available.size;
-        chainWorldMap.setAttribute("aria-label", `${countrySetDisplayName(chainState.setKey)} Chain Fill map. ${filledCount} of ${total} filled; ${ready} place${ready === 1 ? "" : "s"} ready.`);
+        chainWorldMap.setAttribute("aria-label", `${countrySetDisplayName(chainState.setKey)} Map Crawl map. ${filledCount} of ${total} filled; ${ready} place${ready === 1 ? "" : "s"} ready.`);
       }
       if (chainProgressFill) chainProgressFill.style.width = `${total ? filledCount / total * 100 : 0}%`;
       if (chainGiveUpBtn) chainGiveUpBtn.disabled = !!chainState.finishedAt || availability.available.size === 0;
@@ -33255,7 +33500,7 @@ button,
         updateChainSetupHelp();
         if (chainRuleHelp) chainRuleHelp.textContent = "That map couldn’t be built. Try again, or choose another map when you’re online.";
         window.setTimeout(() => chainFillStartBtn?.focus({ preventScroll: true }), 0);
-        console.warn("GeoDen Chain Fill", err);
+        console.warn("GeoDen Map Crawl", err);
       }
     }
 
@@ -33416,6 +33661,8 @@ button,
     let mapHuntState = null;
     let mapHuntBuildToken = 0;
     let mapHuntAdvanceTimer = null;
+    let mapHuntWrongFeedbackTimer = null;
+    let mapHuntRevealTimer = null;
 
     function mapHuntShuffle(items) {
       const copy = [...items];
@@ -33465,10 +33712,8 @@ button,
           return `${base} ${mapHuntResultClass(code)}`;
         });
       svg.selectAll("[data-map-hunt-halo]")
-        .attr("class", function() {
-          const code = this.getAttribute("data-map-hunt-halo");
-          return `map-hunt-reveal-halo${mapHuntState.results.get(code)?.revealed ? " visible" : ""}`;
-        });
+        .attr("class", "map-hunt-reveal-halo");
+      updateMapHuntResultLabels();
 
       const done = mapHuntState.results.size;
       const total = mapHuntState.roundCodes.length;
@@ -33538,7 +33783,7 @@ button,
             mapHuntState.promptFallbackToName = false;
             mapHuntState.locked = false;
             if (mapHuntFeedback) {
-              mapHuntFeedback.textContent = "Click the place on the map.";
+              mapHuntFeedback.textContent = "";
               mapHuntFeedback.className = "map-hunt-feedback";
             }
           };
@@ -33552,18 +33797,109 @@ button,
           mapHuntPromptText.textContent = mapHuntPromptMode === "capital" ? mapHuntCapitalDisplay(c) : c.name;
         }
         if (mapHuntFeedback) {
-          mapHuntFeedback.textContent = "Click the place on the map.";
+          mapHuntFeedback.textContent = "";
           mapHuntFeedback.className = "map-hunt-feedback";
         }
       }
     }
 
-    function mapHuntFlashWrong(code) {
-      if (!code || !mapHuntMap || !window.d3) return;
+    function mapHuntLabelPoint(code) {
+      return mapHuntState?.labelPoints?.get(code) || null;
+    }
+
+    function updateMapHuntResultLabels() {
+      if (!mapHuntState?.layer || !window.d3) return;
+      let group = mapHuntState.layer.select("g.map-hunt-result-labels");
+      if (group.empty()) group = mapHuntState.layer.append("g").attr("class", "map-hunt-result-labels");
+      const codes = [...mapHuntState.results.keys()].filter(code => mapHuntLabelPoint(code));
+      group.selectAll("text.map-hunt-country-label")
+        .data(codes, code => code)
+        .join(
+          enter => enter.append("text").attr("class", "map-hunt-country-label"),
+          update => update,
+          exit => exit.remove()
+        )
+        .attr("x", code => mapHuntLabelPoint(code).x)
+        .attr("y", code => mapHuntLabelPoint(code).y)
+        .text(code => countryByCode(code)?.name || code);
+      updateMapHuntMarkerScale(mapHuntState.zoomTransform || d3.zoomIdentity);
+    }
+
+    function clearMapHuntWrongFeedback() {
+      if (mapHuntWrongFeedbackTimer) {
+        window.clearTimeout(mapHuntWrongFeedbackTimer);
+        mapHuntWrongFeedbackTimer = null;
+      }
+      if (!mapHuntMap || !window.d3) return;
       const svg = d3.select(mapHuntMap);
-      const nodes = svg.selectAll(`[data-map-hunt-code="${code}"]`);
-      nodes.classed("miss-flash", true);
-      window.setTimeout(() => nodes.classed("miss-flash", false), 430);
+      svg.selectAll("[data-map-hunt-code]").classed("wrong-tap", false);
+      svg.selectAll("text.map-hunt-temp-label").remove();
+    }
+
+    function showMapHuntWrongFeedback(code) {
+      if (!code || !mapHuntMap || !window.d3) return;
+      clearMapHuntWrongFeedback();
+      const c = countryByCode(code);
+      const point = mapHuntLabelPoint(code);
+      const svg = d3.select(mapHuntMap);
+      const clicked = svg.selectAll(`[data-map-hunt-code="${code}"]`);
+      clicked.classed("wrong-tap", false);
+      clicked.each(function() { try { void this.getBoundingClientRect(); } catch (_) {} });
+      clicked.classed("wrong-tap", true);
+      if (c && point && mapHuntState?.layer) {
+        let group = mapHuntState.layer.select("g.map-hunt-temp-labels");
+        if (group.empty()) group = mapHuntState.layer.append("g").attr("class", "map-hunt-temp-labels");
+        group.append("text")
+          .attr("class", "map-hunt-temp-label")
+          .attr("x", point.x)
+          .attr("y", point.y)
+          .text(c.name);
+        updateMapHuntMarkerScale(mapHuntState.zoomTransform || d3.zoomIdentity);
+      }
+      mapHuntWrongFeedbackTimer = window.setTimeout(() => {
+        mapHuntWrongFeedbackTimer = null;
+        if (!mapHuntMap || !window.d3) return;
+        const currentSvg = d3.select(mapHuntMap);
+        currentSvg.selectAll(`[data-map-hunt-code="${code}"]`).classed("wrong-tap", false);
+        currentSvg.selectAll("text.map-hunt-temp-label").remove();
+      }, 950);
+    }
+
+    function clearMapHuntRevealFlash() {
+      if (mapHuntRevealTimer) {
+        window.clearTimeout(mapHuntRevealTimer);
+        mapHuntRevealTimer = null;
+      }
+      if (!mapHuntMap || !window.d3) return;
+      const svg = d3.select(mapHuntMap);
+      svg.selectAll("[data-map-hunt-code]").classed("reveal-flash", false);
+      svg.selectAll("[data-map-hunt-halo]").classed("reveal-flash", false);
+      svg.selectAll("text.map-hunt-reveal-label").remove();
+    }
+
+    function flashMapHuntTargetReveal(code) {
+      if (!code || !mapHuntMap || !window.d3 || !mapHuntState) return;
+      clearMapHuntRevealFlash();
+      const point = mapHuntLabelPoint(code);
+      const c = countryByCode(code);
+      const svg = d3.select(mapHuntMap);
+      const target = svg.selectAll(`[data-map-hunt-code="${code}"]`);
+      target.classed("reveal-flash", true);
+      target.each(function() { try { void this.getBoundingClientRect(); } catch (_) {} });
+      svg.selectAll(`[data-map-hunt-halo="${code}"]`).classed("reveal-flash", true);
+      if (c && point && mapHuntState.layer) {
+        let group = mapHuntState.layer.select("g.map-hunt-reveal-labels");
+        if (group.empty()) group = mapHuntState.layer.append("g").attr("class", "map-hunt-reveal-labels");
+        group.append("text")
+          .attr("class", "map-hunt-reveal-label")
+          .attr("x", point.x)
+          .attr("y", point.y)
+          .text(c.name);
+        updateMapHuntMarkerScale(mapHuntState.zoomTransform || d3.zoomIdentity);
+      }
+      // This is a persistent teaching state, not a one-off flash. It remains
+      // visible until the learner clicks the revealed target (or leaves/resets
+      // the round), so GeoDen never makes them hunt for the answer again.
     }
 
     function mapHuntScheduleNext(delay = 650) {
@@ -33571,8 +33907,11 @@ button,
       mapHuntAdvanceTimer = window.setTimeout(() => {
         mapHuntAdvanceTimer = null;
         if (!mapHuntState) return;
+        clearMapHuntWrongFeedback();
+        clearMapHuntRevealFlash();
         mapHuntState.cursor += 1;
         mapHuntState.misses = 0;
+        mapHuntState.awaitingRevealClick = false;
         mapHuntState.locked = false;
         if (mapHuntState.cursor >= mapHuntState.roundCodes.length) finishMapHuntRound();
         else if (mapHuntOverlay?.classList.contains("open")) renderMapHuntPrompt();
@@ -33606,53 +33945,65 @@ button,
 
     function handleMapHuntGuess(code) {
       if (!mapHuntState || mapHuntState.finished || mapHuntState.locked) return;
-      // Open water is not a geography guess. Ignore ocean/background taps so a
-      // harmless misclick never consumes one of the player's four attempts.
       if (!code) return;
       const target = mapHuntCurrentCountry();
       if (!target) return;
 
       if (code === target.code) {
-        const tries = Math.min(4, mapHuntState.misses + 1);
-        const result = { tries, revealed:false };
+        clearMapHuntWrongFeedback();
+        clearMapHuntRevealFlash();
+        const revealed = !!mapHuntState.awaitingRevealClick;
+        const tries = revealed ? 5 : Math.min(4, mapHuntState.misses + 1);
+        const result = { tries, revealed };
         mapHuntState.results.set(target.code, result);
         recordMapHuntMastery(target, result);
+        mapHuntState.awaitingRevealClick = false;
         mapHuntState.locked = true;
         updateMapHuntMapStates();
-        mapHuntFeedback.textContent = tries === 1
-          ? `Correct · ${target.name} · first try ✓`
-          : `Correct · ${target.name} · ${tries} tries`;
+        mapHuntFeedback.textContent = revealed
+          ? "Found it after the reveal."
+          : tries === 1
+            ? "Correct · first try ✓"
+            : `Correct · ${tries} tries`;
         mapHuntFeedback.className = "map-hunt-feedback good";
-        if (mapHuntRoundMeta) mapHuntRoundMeta.textContent = tries === 1 ? "First try" : `${tries} tries`;
+        if (mapHuntRoundMeta) {
+          mapHuntRoundMeta.textContent = revealed
+            ? "Found after reveal"
+            : tries === 1 ? "First try" : `${tries} tries`;
+        }
         hapticFeedback?.("success");
-        mapHuntScheduleNext(tries === 1 ? 560 : 720);
+        mapHuntScheduleNext(revealed ? 820 : (tries === 1 ? 560 : 720));
+        return;
+      }
+
+      const wrong = countryByCode(code);
+      if (wrong) recordCountryConfusion(target.code, wrong.code, "globe");
+      showMapHuntWrongFeedback(code);
+
+      if (mapHuntState.awaitingRevealClick) {
+        flashMapHuntTargetReveal(target.code);
+        mapHuntFeedback.textContent = "Not that one · find the revealed place.";
+        mapHuntFeedback.className = "map-hunt-feedback near";
+        if (mapHuntRoundMeta) mapHuntRoundMeta.textContent = "Tap the revealed place";
+        hapticFeedback?.("warning");
         return;
       }
 
       mapHuntState.misses += 1;
-      if (code) mapHuntFlashWrong(code);
-      const wrong = countryByCode(code);
-      if (wrong) recordCountryConfusion(target.code, wrong.code, "globe");
-
       if (mapHuntState.misses >= 4) {
-        const result = { tries:5, revealed:true };
-        mapHuntState.results.set(target.code, result);
-        recordMapHuntMastery(target, result);
-        mapHuntState.locked = true;
-        updateMapHuntMapStates();
-        mapHuntFeedback.textContent = `That was ${target.name}. GeoDen has highlighted it for you.`;
-        mapHuntFeedback.className = "map-hunt-feedback bad";
-        if (mapHuntRoundMeta) mapHuntRoundMeta.textContent = "Revealed after 4 misses";
+        mapHuntState.misses = 4;
+        mapHuntState.awaitingRevealClick = true;
+        flashMapHuntTargetReveal(target.code);
+        mapHuntFeedback.textContent = "Four misses · the correct place will keep flashing until you tap it.";
+        mapHuntFeedback.className = "map-hunt-feedback near";
+        if (mapHuntRoundMeta) mapHuntRoundMeta.textContent = "Revealed · tap the flashing place";
         hapticFeedback?.("warning");
-        mapHuntScheduleNext(1250);
         return;
       }
 
       const left = 4 - mapHuntState.misses;
-      mapHuntFeedback.textContent = wrong
-        ? `That was ${wrong.name} — ${left} guess${left === 1 ? "" : "es"} left.`
-        : `${left} guess${left === 1 ? "" : "es"} left.`;
-      mapHuntFeedback.className = "map-hunt-feedback bad";
+      mapHuntFeedback.textContent = `Not quite · ${left} guess${left === 1 ? "" : "es"} left.`;
+      mapHuntFeedback.className = "map-hunt-feedback";
       if (mapHuntRoundMeta) mapHuntRoundMeta.textContent = `${left} guess${left === 1 ? "" : "es"} left`;
       hapticFeedback?.("warning");
     }
@@ -33722,6 +34073,21 @@ button,
       svg.selectAll("circle.map-hunt-marker").attr("r", 6.3 / k);
       svg.selectAll("circle.map-hunt-marker-hit").attr("r", 14 / k);
       svg.selectAll("circle.map-hunt-reveal-halo").attr("r", 10 / k);
+      // Keep labels genuinely map-sized rather than headline-sized. CSS used
+      // to override the SVG font-size attribute, which made labels enormous.
+      // Use inline styles so zoom compensation always wins.
+      const resultLabelPx = k < 1.5 ? 10.2 : k < 3 ? 10.9 : 11.6;
+      const tempLabelPx = k < 1.5 ? 9.2 : k < 3 ? 9.9 : 10.6;
+      const revealLabelPx = k < 1.5 ? 10.4 : k < 3 ? 11.1 : 11.8;
+      svg.selectAll("text.map-hunt-country-label")
+        .style("font-size", `${resultLabelPx / k}px`)
+        .style("stroke-width", `${2.45 / k}px`);
+      svg.selectAll("text.map-hunt-temp-label")
+        .style("font-size", `${tempLabelPx / k}px`)
+        .style("stroke-width", `${2.2 / k}px`);
+      svg.selectAll("text.map-hunt-reveal-label")
+        .style("font-size", `${revealLabelPx / k}px`)
+        .style("stroke-width", `${2.55 / k}px`);
     }
 
     function attachMapHuntZoom(svg, layer, width, height) {
@@ -33791,6 +34157,17 @@ button,
       }
       const represented = new Set();
       const tiny = new Set();
+      mapHuntState.labelPoints = new Map();
+      for (const feature of selectedFeatures) {
+        const code = feature.properties?.__geodenCode || "";
+        if (!code) continue;
+        try {
+          const centroid = path.centroid(feature);
+          if (Number.isFinite(centroid?.[0]) && Number.isFinite(centroid?.[1])) {
+            mapHuntState.labelPoints.set(code, { x:centroid[0], y:centroid[1] });
+          }
+        } catch (_) {}
+      }
       layer.append("g").selectAll("path")
         .data(selectedFeatures).join("path")
         .attr("class", "map-hunt-country unanswered")
@@ -33816,6 +34193,11 @@ button,
         const point = projection([c.lon, c.lat]);
         return { country:c, x:point?.[0] ?? -20, y:point?.[1] ?? -20 };
       });
+      for (const point of markerPoints) {
+        if (Number.isFinite(point.x) && Number.isFinite(point.y)) {
+          mapHuntState.labelPoints.set(point.country.code, { x:point.x, y:point.y });
+        }
+      }
       const markers = layer.append("g").attr("class", "map-hunt-markers");
       markers.selectAll("circle.map-hunt-reveal-halo")
         .data(markerPoints).join("circle")
@@ -33841,6 +34223,9 @@ button,
           if (!event.defaultPrevented) handleMapHuntGuess(d.country.code);
         });
 
+      layer.append("g").attr("class", "map-hunt-result-labels");
+      layer.append("g").attr("class", "map-hunt-temp-labels");
+      layer.append("g").attr("class", "map-hunt-reveal-labels");
       mapHuntState.projection = projection;
       attachMapHuntZoom(svg, layer, width, height);
       updateMapHuntMapStates();
@@ -33856,6 +34241,7 @@ button,
         results:new Map(),
         cursor:0,
         misses:0,
+        awaitingRevealClick:false,
         revision:!!revision,
         finished:false,
         locked:false,
@@ -33864,12 +34250,20 @@ button,
         svg:null,
         layer:null,
         zoomTransform:null,
+        labelPoints:new Map(),
         needsRender:false
       };
     }
 
+    function setMapHuntPlayLayout(playing) {
+      mapHuntOverlay?.classList.toggle("playing", !!playing);
+    }
+
     async function startMapHuntGame() {
       const token = ++mapHuntBuildToken;
+      setMapHuntPlayLayout(true);
+      clearMapHuntWrongFeedback();
+      clearMapHuntRevealFlash();
       if (mapHuntAdvanceTimer) { window.clearTimeout(mapHuntAdvanceTimer); mapHuntAdvanceTimer = null; }
       mapHuntSetup?.classList.add("hidden");
       mapHuntPlay?.classList.add("hidden");
@@ -33888,6 +34282,7 @@ button,
       } catch (err) {
         if (token !== mapHuntBuildToken || !mapHuntOverlay?.classList.contains("open")) return;
         mapHuntState = null;
+        setMapHuntPlayLayout(false);
         mapHuntLoading?.classList.add("hidden");
         mapHuntPlay?.classList.add("hidden");
         mapHuntSetup?.classList.remove("hidden");
@@ -33898,6 +34293,8 @@ button,
 
     function startMapHuntRevision() {
       if (!mapHuntState) return;
+      setMapHuntPlayLayout(true);
+      clearMapHuntWrongFeedback();
       const struggled = mapHuntStruggledCodes();
       if (!struggled.length) return;
       const allCodes = [...mapHuntState.allCodes];
@@ -33906,12 +34303,14 @@ button,
       const oldLayer = mapHuntState.layer;
       const oldProjection = mapHuntState.projection;
       const oldTransform = mapHuntState.zoomTransform;
+      const oldLabelPoints = mapHuntState.labelPoints;
       mapHuntState = makeMapHuntState(allCodes, struggled, true);
       mapHuntState.svg = oldSvg;
       mapHuntState.zoom = oldZoom;
       mapHuntState.layer = oldLayer;
       mapHuntState.projection = oldProjection;
       mapHuntState.zoomTransform = oldTransform;
+      mapHuntState.labelPoints = oldLabelPoints || new Map();
       mapHuntFinish?.classList.add("hidden");
       updateMapHuntMapStates();
       renderMapHuntPrompt();
@@ -33920,6 +34319,9 @@ button,
 
     function resetMapHuntToSetup(focusSetup = false) {
       mapHuntBuildToken += 1;
+      setMapHuntPlayLayout(false);
+      clearMapHuntWrongFeedback();
+      clearMapHuntRevealFlash();
       if (mapHuntAdvanceTimer) { window.clearTimeout(mapHuntAdvanceTimer); mapHuntAdvanceTimer = null; }
       if (mapHuntState?.svg) mapHuntState.svg.on(".zoom", null);
       mapHuntState = null;
@@ -33936,6 +34338,7 @@ button,
       updateMapHuntSetupHelp();
       const canResume = !!(mapHuntState?.svg && mapHuntMap?.childNodes?.length);
       if (canResume) {
+        setMapHuntPlayLayout(true);
         mapHuntSetup?.classList.add("hidden");
         mapHuntLoading?.classList.add("hidden");
         mapHuntPlay?.classList.remove("hidden");
@@ -33949,6 +34352,7 @@ button,
         }
       } else {
         resetMapHuntToSetup();
+        setMapHuntPlayLayout(false);
         mapHuntOverlay?.classList.add("open");
       }
       window.setTimeout(() => mapHuntCloseBtn?.focus({ preventScroll:true }), 20);
@@ -34208,9 +34612,10 @@ button,
     }
 
     function rankingSelectVariedItems(candidates, wanted, metric) {
-      if (candidates.length <= wanted) return [...candidates];
+      const uniqueValueCount = new Set(candidates.map(item => item.value)).size;
+      if (candidates.length <= wanted && uniqueValueCount === candidates.length) return [...candidates];
       const context = gameVarietyContext(candidates.map(item => item.c));
-      const sortedByValue = [...candidates].sort((a,b) => a.value - b.value);
+      const sortedByValue = [...candidates].sort((a,b) => a.value - b.value || a.c.name.localeCompare(b.c.name));
       const valueBand = item => {
         const index = sortedByValue.indexOf(item);
         const ratio = sortedByValue.length <= 1 ? 0 : index / (sortedByValue.length - 1);
@@ -34218,20 +34623,21 @@ button,
       };
       const selected = [];
       const chosenCodes = new Set();
+      const chosenValues = new Set();
       const add = item => {
-        if (!item || chosenCodes.has(item.c.code) || selected.length >= wanted) return false;
+        if (!item || chosenCodes.has(item.c.code) || chosenValues.has(item.value) || selected.length >= wanted) return false;
         selected.push(item);
         chosenCodes.add(item.c.code);
+        chosenValues.add(item.value);
         return true;
       };
 
-      // Every board gets at least one deliberate close comparison. Prefer that
-      // close pair to come from different geographic groups, so difficulty comes
-      // from the statistic rather than two neighbouring/similar-looking places.
+      // Keep a deliberate close comparison, but never an exact tie. For
+      // example, two islands with 0 land borders do not create a real ordering.
       for (const item of rankingChooseClosePair(candidates, metric, context)) add(item);
 
       while (selected.length < wanted) {
-        const remaining = candidates.filter(item => !chosenCodes.has(item.c.code));
+        const remaining = candidates.filter(item => !chosenCodes.has(item.c.code) && !chosenValues.has(item.value));
         if (!remaining.length) break;
         const groupCounts = new Map();
         const bandCounts = new Map();
@@ -34294,13 +34700,11 @@ button,
       if (candidates.length < 2) throw new Error("not-enough-values");
       if (new Set(candidates.map(item => item.value)).size < 2) throw new Error("not-enough-distinct-values");
 
-      let selected = rankingSelectVariedItems(candidates, wanted, metric);
-      if (new Set(selected.map(item => item.value)).size < 2) {
-        const different = candidates.find(item => !selected.some(chosen => chosen.c.code === item.c.code) && item.value !== selected[0]?.value);
-        if (different && selected.length) selected[selected.length - 1] = different;
+      const selected = rankingSelectVariedItems(candidates, wanted, metric);
+      if (selected.length < 2) throw new Error("not-enough-distinct-values");
+      if (new Set(selected.map(item => item.value)).size !== selected.length) {
+        throw new Error("ranking-tie-selection");
       }
-
-      if (new Set(selected.map(item => item.value)).size < 2) throw new Error("not-enough-distinct-values");
       return rankingShuffleForPlay(selected);
     }
 
