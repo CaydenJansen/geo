@@ -10363,6 +10363,7 @@ button,
       line-height: 1;
       font-size: 0 !important;
       transform-origin: 50% 50%;
+      transition: transform 180ms var(--ease-out, ease);
     }
 
     .session-step-chevron::before,
@@ -10378,6 +10379,22 @@ button,
     .session-step[open] > .session-step-summary > .session-step-chevron,
     .session-customize-disclosure[open] > .session-customize-summary > .session-customize-chevron {
       transform: rotate(180deg);
+    }
+    .session-step.is-closing > .session-step-summary > .session-step-chevron,
+    .session-customize-disclosure.is-closing > .session-customize-summary > .session-customize-chevron {
+      transform: rotate(0deg);
+    }
+    .session-step.is-menu-animating,
+    .session-customize-disclosure.is-menu-animating {
+      overflow: hidden !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .session-step-chevron,
+      .session-customize-chevron,
+      .home-mode-browser-chevron {
+        transition: none !important;
+      }
     }
   </style>
   <style id="home-session-flow-polish-v3">
@@ -12285,18 +12302,74 @@ button,
     }
     .home-mode-browser-head {
       display:flex; align-items:end; justify-content:space-between; gap:12px; padding:0 2px;
+      cursor:pointer; list-style:none; user-select:none;
     }
+    .home-mode-browser-head::-webkit-details-marker { display:none; }
+    .home-mode-browser-head::marker { content:""; }
+    .home-mode-browser-head > div { min-width:0; text-align:left; }
+    .home-mode-browser-chevron {
+      width:20px;
+      height:20px;
+      min-width:20px;
+      display:inline-grid;
+      place-items:center;
+      align-self:center;
+      flex:0 0 auto;
+      color:var(--muted);
+      font-size:0 !important;
+      line-height:1;
+      transform-origin:50% 50%;
+      transition:transform 180ms var(--ease-out, ease);
+    }
+    .home-mode-browser-chevron::before {
+      content:"";
+      width:7px;
+      height:7px;
+      border-right:2px solid currentColor;
+      border-bottom:2px solid currentColor;
+      transform:rotate(45deg) translate(-1px,-1px);
+    }
+    .home-mode-browser[open] .home-mode-browser-chevron { transform:rotate(180deg); }
+    .home-mode-browser.is-closing .home-mode-browser-chevron { transform:rotate(0deg); }
+    .home-mode-browser.is-animating { overflow:hidden; }
     .home-mode-browser-eyebrow {
       color:var(--accent); font-size:.61rem; line-height:1; font-weight:900; letter-spacing:.12em; text-transform:uppercase;
     }
     .home-mode-browser-title { margin:3px 0 0; font-size:1.2rem; line-height:1; letter-spacing:-.035em; }
     .home-mode-browser-meta { max-width:23ch; color:var(--muted); font-size:.66rem; line-height:1.25; font-weight:700; text-align:right; }
-    .home-mode-browser .play-mode-picker { display:grid !important; grid-template-columns:1fr !important; gap:10px !important; margin:0 !important; }
+    .home-mode-browser .play-mode-picker {
+      display:grid !important;
+      grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+      gap:12px !important;
+      margin:10px 0 0 !important;
+      align-items:start;
+    }
     .home-mode-browser .mode-discovery-group { padding:10px; gap:8px; background:rgba(255,255,255,.35); }
+    .home-mode-browser .mode-discovery-options,
+    .home-mode-browser .mode-discovery-options-three,
+    .home-mode-browser .mode-discovery-options-four {
+      grid-template-columns: 1fr !important;
+      gap: 8px;
+    }
     .home-mode-browser .mode-discovery-options .play-mode-button {
-      min-height:68px !important; padding:9px 10px !important; border-radius:14px !important;
-      border:1px solid rgba(23,23,23,.11) !important; background:rgba(247,244,237,.72) !important;
-      box-shadow:none !important; text-align:center !important;
+      min-height:64px !important;
+      padding:10px 14px !important;
+      border-radius:16px !important;
+      border:1px solid rgba(23,23,23,.11) !important;
+      background:rgba(247,244,237,.72) !important;
+      box-shadow:none !important;
+      text-align:left !important;
+      align-items:center !important;
+      align-content:center !important;
+      justify-items:start !important;
+      justify-content:stretch !important;
+    }
+    .home-mode-browser .mode-discovery-heading,
+    .home-mode-browser .mode-discovery-title,
+    .home-mode-browser .play-mode-name,
+    .home-mode-browser .play-mode-meta {
+      justify-self:start !important;
+      text-align:left !important;
     }
     .home-mode-browser .play-mode-button:hover { background:rgba(255,255,255,.88) !important; }
     .home-mode-browser .play-mode-button.active {
@@ -12304,8 +12377,22 @@ button,
       box-shadow:0 0 0 1px rgba(40,100,240,.06) inset !important;
     }
     .home-mode-browser .play-mode-button.active .play-mode-name { color:var(--accent-dark) !important; }
-    .home-mode-browser .play-mode-name { font-size:.9rem !important; line-height:1.08 !important; font-weight:900 !important; }
-    .home-mode-browser .play-mode-meta { display:block !important; margin-top:3px; font-size:.58rem !important; line-height:1.18 !important; color:var(--muted) !important; }
+    .home-mode-browser .play-mode-name {
+      width:100%;
+      font-size:.94rem !important;
+      line-height:1.08 !important;
+      font-weight:900 !important;
+      text-align:left !important;
+    }
+    .home-mode-browser .play-mode-meta {
+      display:block !important;
+      width:100%;
+      margin-top:4px;
+      font-size:.62rem !important;
+      line-height:1.2 !important;
+      color:var(--muted) !important;
+      text-align:left !important;
+    }
     .home-mode-browser .quiz-style-picker { margin-top:8px; }
     .home-mode-browser .quiz-style-help { margin-top:5px; }
     .home-mode-browser .mode-availability-note { margin-top:0; }
@@ -12330,13 +12417,11 @@ button,
       .home-mode-browser { margin-bottom:9px; padding:10px; border-radius:17px; gap:8px; }
       .home-mode-browser-head { align-items:start; }
       .home-mode-browser-title { font-size:1.05rem; }
-      .home-mode-browser-meta { font-size:.59rem; max-width:18ch; }
+      .home-mode-browser .play-mode-picker { grid-template-columns:1fr !important; gap:10px !important; }
       .home-mode-browser .mode-discovery-group { padding:8px; }
-      .home-mode-browser .mode-discovery-options-three { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
-      .home-mode-browser .mode-discovery-options-four { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
-      .home-mode-browser .mode-discovery-options .play-mode-button { min-height:62px !important; padding:7px 6px !important; }
-      .home-mode-browser .play-mode-name { font-size:.8rem !important; }
-      .home-mode-browser .play-mode-meta { font-size:.52rem !important; }
+      .home-mode-browser .mode-discovery-options .play-mode-button { min-height:60px !important; padding:9px 12px !important; }
+      .home-mode-browser .play-mode-name { font-size:.84rem !important; }
+      .home-mode-browser .play-mode-meta { font-size:.56rem !important; }
       #startSessionCard { padding:11px !important; }
       #startSessionCard .start-session-title { font-size:1.22rem !important; }
       #startSessionCard .start-session-summary-secondary,
@@ -12344,10 +12429,7 @@ button,
     }
     @media (max-width:360px) {
       .home-mode-browser-head { display:block; }
-      .home-mode-browser-meta { margin-top:4px; max-width:none; text-align:left; }
-      .home-mode-browser .mode-discovery-options-three { grid-template-columns:1fr !important; }
-      .home-mode-browser .mode-discovery-options-four { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
-      .home-mode-browser .mode-discovery-options .play-mode-button { min-height:58px !important; }
+      .home-mode-browser .mode-discovery-options .play-mode-button { min-height:56px !important; padding:8px 10px !important; }
     }
 
     /* Landscape phones: keep launcher left, selected setup right. */
@@ -12604,14 +12686,14 @@ button,
         <span class="active-session-resume-action" id="activeSessionResumeAction">Resume →</span>
       </button>
 
-      <section class="home-mode-browser" id="homeModeBrowser" aria-labelledby="homeModeBrowserTitle">
-        <div class="home-mode-browser-head">
+      <details class="home-mode-browser" id="homeModeBrowser" aria-labelledby="homeModeBrowserTitle" open>
+        <summary class="home-mode-browser-head">
           <div>
             <div class="home-mode-browser-eyebrow">Choose what to do</div>
             <h3 class="home-mode-browser-title" id="homeModeBrowserTitle">Pick a mode</h3>
           </div>
-          <div class="home-mode-browser-meta">Set the details after you choose.</div>
-        </div>
+          <span class="home-mode-browser-chevron" aria-hidden="true">⌄</span>
+        </summary>
         <div class="play-mode-picker" id="playModePicker" role="group" aria-label="Choose a study or game mode">
               <section class="mode-discovery-group" aria-labelledby="modeGroupStudy">
                 <div class="mode-discovery-heading">
@@ -12658,7 +12740,7 @@ button,
               </section>
             </div>
             <div class="mode-availability-note hidden" id="modeAvailabilityNote" role="note"></div>
-      </section>
+      </details>
 
       <section class="start-session-card current-session-card hidden" id="startSessionCard" aria-labelledby="startSummaryPrimary">
         <div class="start-session-eyebrow" id="startSessionEyebrow">Set up session</div>
@@ -13659,7 +13741,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.48.10";
+    const GEODEN_VERSION = "0.48.16";
     const GEODEN_BUILD_DATE = "2026-09-18";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -16858,6 +16940,8 @@ button,
       if (sessionCustomizeDisclosure) sessionCustomizeDisclosure.open = false;
       if (countrySetDisclosure) countrySetDisclosure.open = false;
       startOverlay.dataset.modeArmed = revealSetup ? "true" : "false";
+      // Leave the mode disclosure exactly as the learner left it. It starts
+      // open on first load, but selecting/setup actions should never collapse it.
       document.getElementById("startSessionCard")?.classList.toggle("hidden", !revealSetup);
       updateCountrySetOptions();
       updateCountryPoolOptions();
@@ -16876,24 +16960,127 @@ button,
       resumeCurrentSessionFromMenu();
     }
 
+    function setupAnimatedMenuDetails(details, summary, options = {}) {
+      if (!details || !summary || details.dataset.menuAnimationReady === "true") return null;
+      details.dataset.menuAnimationReady = "true";
+      let animation = null;
+      const durationOpen = Number(options.durationOpen) || 220;
+      const durationClose = Number(options.durationClose) || 190;
+      const easing = "cubic-bezier(.2,.8,.2,1)";
+      const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
+      function collapsedHeight() {
+        const styles = getComputedStyle(details);
+        const extra = [styles.paddingTop, styles.paddingBottom, styles.borderTopWidth, styles.borderBottomWidth]
+          .reduce((sum, value) => sum + (parseFloat(value) || 0), 0);
+        return Math.max(summary.getBoundingClientRect().height + extra, summary.getBoundingClientRect().height);
+      }
+
+      function cleanup() {
+        details.classList.remove("is-menu-animating", "is-closing");
+        details.style.height = "";
+        animation = null;
+      }
+
+      function cancelAnimation() {
+        if (!animation) return;
+        animation.cancel();
+        cleanup();
+      }
+
+      function setOpen(nextOpen, { animate = true } = {}) {
+        const next = !!nextOpen;
+        if (!animation && details.open === next) return Promise.resolve();
+        cancelAnimation();
+
+        if (!animate || reduceMotion()) {
+          details.open = next;
+          cleanup();
+          return Promise.resolve();
+        }
+
+        const startHeight = details.getBoundingClientRect().height;
+        details.classList.add("is-menu-animating");
+
+        if (next) {
+          details.open = true;
+          const endHeight = details.scrollHeight;
+          details.style.height = `${startHeight}px`;
+          animation = details.animate(
+            [{ height: `${startHeight}px`, opacity: .985 }, { height: `${endHeight}px`, opacity: 1 }],
+            { duration: durationOpen, easing }
+          );
+        } else {
+          const endHeight = collapsedHeight();
+          details.classList.add("is-closing");
+          details.style.height = `${startHeight}px`;
+          animation = details.animate(
+            [{ height: `${startHeight}px`, opacity: 1 }, { height: `${endHeight}px`, opacity: .985 }],
+            { duration: durationClose, easing }
+          );
+        }
+
+        return new Promise(resolve => {
+          animation.onfinish = () => {
+            if (!next) details.open = false;
+            cleanup();
+            resolve();
+          };
+          animation.oncancel = () => {
+            cleanup();
+            resolve();
+          };
+        });
+      }
+
+      summary.addEventListener("click", event => {
+        // Dedicated game setup buttons reuse the Customize summary as a launch
+        // control. Their earlier handler prevents the native disclosure action.
+        if (event.defaultPrevented) return;
+        event.preventDefault();
+        setOpen(!details.open);
+      });
+
+      details.__geoDenSetOpen = setOpen;
+      return setOpen;
+    }
+
+    function setMenuDetailsOpen(details, nextOpen, options = {}) {
+      if (!details) return Promise.resolve();
+      if (typeof details.__geoDenSetOpen === "function") return details.__geoDenSetOpen(nextOpen, options);
+      details.open = !!nextOpen;
+      return Promise.resolve();
+    }
+
     function setupSessionStepFlow() {
       const disclosure = document.getElementById("sessionCustomizeDisclosure");
       if (!disclosure || disclosure.dataset.flowReady === "true") return;
       disclosure.dataset.flowReady = "true";
       const steps = [...disclosure.querySelectorAll(".session-step")];
+      const summary = disclosure.querySelector(".session-customize-summary");
+
+      // Every nested setting row shares the same motion language as Pick a mode.
+      // The parent Customize handler is attached after the special-game launch
+      // handler below so those games can reuse the row as a button without also
+      // opening the disclosure behind their setup overlay.
+      for (const step of steps) {
+        setupAnimatedMenuDetails(step, step.querySelector(".session-step-summary"), { durationOpen: 205, durationClose: 175 });
+      }
 
       steps.forEach(step => {
         step.addEventListener("toggle", () => {
           if (!step.open) return;
           for (const other of steps) {
-            if (other !== step) other.open = false;
+            if (other !== step && other.open) setMenuDetailsOpen(other, false);
           }
         });
       });
 
       disclosure.addEventListener("toggle", () => {
         if (!disclosure.open) {
-          for (const step of steps) step.open = false;
+          // The parent has already animated shut, so child state can reset
+          // instantly without producing a second invisible animation.
+          for (const step of steps) setMenuDetailsOpen(step, false, { animate: false });
         }
       });
 
@@ -16902,26 +17089,81 @@ button,
         if (!choice || choice.disabled) return;
         const step = choice.closest(".session-step");
         if (!step) return;
-        // Mode is a browse-and-compare choice now. Keep it open so selecting a
-        // mode never makes the page jump away from the picker. Other compact
-        // choices still collapse once selected.
         if (choice.matches("[data-play-mode]")) return;
-        window.setTimeout(() => { step.open = false; }, 90);
+        window.setTimeout(() => setMenuDetailsOpen(step, false), 90);
       });
 
-      const summary = disclosure.querySelector(".session-customize-summary");
       summary?.addEventListener("click", event => {
         if (!["chain", "ranking", "maphunt"].includes(menuPlayMode)) return;
         event.preventDefault();
         event.stopPropagation();
-        disclosure.open = false;
+        setMenuDetailsOpen(disclosure, false, { animate: false });
         if (menuPlayMode === "chain") openChainFill();
         else if (menuPlayMode === "maphunt") openMapHunt();
         else if (menuPlayMode === "ranking") openRanking();
       });
+
+      setupAnimatedMenuDetails(disclosure, summary);
     }
 
     setupSessionStepFlow();
+
+    function setupAnimatedHomeModeDisclosure() {
+      const details = document.getElementById("homeModeBrowser");
+      const summary = details?.querySelector(".home-mode-browser-head");
+      if (!details || !summary || details.dataset.animatedDisclosure === "true") return;
+      details.dataset.animatedDisclosure = "true";
+      let animation = null;
+
+      const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+      const cleanup = () => {
+        details.classList.remove("is-animating", "is-closing");
+        details.style.height = "";
+        animation = null;
+      };
+
+      summary.addEventListener("click", event => {
+        event.preventDefault();
+        if (animation) {
+          animation.cancel();
+          cleanup();
+        }
+
+        if (reduceMotion()) {
+          details.open = !details.open;
+          return;
+        }
+
+        const startHeight = details.getBoundingClientRect().height;
+        if (details.open) {
+          const endHeight = summary.getBoundingClientRect().height + 28;
+          details.classList.add("is-animating", "is-closing");
+          details.style.height = `${startHeight}px`;
+          animation = details.animate(
+            [{ height: `${startHeight}px`, opacity: 1 }, { height: `${endHeight}px`, opacity: .98 }],
+            { duration: 190, easing: "cubic-bezier(.2,.8,.2,1)" }
+          );
+          animation.onfinish = () => {
+            details.open = false;
+            cleanup();
+          };
+          animation.oncancel = cleanup;
+        } else {
+          details.open = true;
+          const endHeight = details.scrollHeight;
+          details.classList.add("is-animating");
+          details.style.height = `${startHeight}px`;
+          animation = details.animate(
+            [{ height: `${startHeight}px`, opacity: .985 }, { height: `${endHeight}px`, opacity: 1 }],
+            { duration: 220, easing: "cubic-bezier(.2,.8,.2,1)" }
+          );
+          animation.onfinish = cleanup;
+          animation.oncancel = cleanup;
+        }
+      });
+    }
+
+    setupAnimatedHomeModeDisclosure();
 
     function startStudySession(mode, requestedLimit = null, interaction = menuPlayMode, pool = selectedCountryPool, countrySet = selectedCountrySet, practiceOverride = null) {
       matchingBuildToken += 1;
