@@ -12783,12 +12783,6 @@ button,
     }
   </style>
 
-
-  <style id="ranking-known-correct-v0501">
-    .ranking-row.correct .ranking-direction { font-weight:900; }
-    .ranking-row.correct .ranking-direction:not(:empty) { white-space:nowrap; }
-  </style>
-
 </head>
 
 <body>
@@ -14081,7 +14075,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.50.1";
+    const GEODEN_VERSION = "0.50.0";
     const GEODEN_BUILD_DATE = "2026-09-19";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -34903,11 +34897,6 @@ function rankingTargetValues() {
       return new Set(rankingState.items.filter((item, index) => item.value === target[index]).map(item => item.c.code));
     }
 
-    function rankingTargetIndexForItem(item) {
-      if (!rankingState || !item) return -1;
-      return rankingTargetValues().indexOf(item.value);
-    }
-
     function recordRankingMastery(revealed = false) {
       if (!rankingState || rankingState.masteryRecorded) return;
       rankingState.masteryRecorded = true;
@@ -34937,8 +34926,6 @@ function rankingTargetValues() {
       rankingState.revealed = true;
       rankingState.verified = true;
       rankingState.checkedCorrectCodes = new Set(rankingState.items.map(item => item.c.code));
-      rankingState.knownCorrectCodes = new Set(rankingState.items.map(item => item.c.code));
-      rankingState.newlyConfirmedCodes = new Set();
       recordRankingMastery(false);
       const checks = Math.max(1, Number(rankingState.checks) || 1);
       rankingFeedback.textContent = `Perfect — solved in ${checks} check${checks === 1 ? "" : "s"}.`;
@@ -34954,17 +34941,12 @@ function rankingTargetValues() {
     }
 
     function rankingRowAssessment(item, index) {
-      if (!rankingState || !item) return { cls:"", text:"" };
-      const known = rankingState.knownCorrectCodes instanceof Set
-        ? rankingState.knownCorrectCodes
-        : new Set(rankingState.knownCorrectCodes || []);
-      if (!known.has(item.c.code)) return { cls:"", text:"" };
-      const targetIndex = rankingTargetIndexForItem(item);
-      if (targetIndex !== index) return { cls:"", text:"" };
-      const newly = rankingState.newlyConfirmedCodes instanceof Set
-        ? rankingState.newlyConfirmedCodes
-        : new Set(rankingState.newlyConfirmedCodes || []);
-      return { cls:"correct", text:newly.has(item.c.code) ? "Correct" : "Already correct" };
+      const checked = rankingState?.checkedCorrectCodes instanceof Set
+        ? rankingState.checkedCorrectCodes
+        : new Set(rankingState?.checkedCorrectCodes || []);
+      if (!checked.size) return { cls:"", text:"" };
+      if (checked.has(item.c.code)) return { cls:"correct", text:"Correct" };
+      return { cls:"", text:"" };
     }
 
     function rankingRowPositions() {
@@ -35029,12 +35011,10 @@ function rankingTargetValues() {
       const previousPositions = rankingRowPositions();
       [rankingState.items[index],rankingState.items[next]]=[rankingState.items[next],rankingState.items[index]];
 
-      // Moving anything ends the current check, but previously confirmed correct
-      // slots remain useful knowledge for the rest of the round. A known item
-      // only stays green while it is actually back in its confirmed position.
+      // Moving anything ends the previous check. Correct markers disappear until
+      // the learner explicitly checks the new arrangement again.
       rankingState.verified = false;
       rankingState.checkedCorrectCodes = null;
-      rankingState.newlyConfirmedCodes = new Set();
       rankingVerifyBtn.disabled = false;
       rankingVerifyBtn.classList.remove("hidden");
       rankingFeedback.textContent = "Check again when you’re ready.";
@@ -35053,14 +35033,7 @@ function rankingTargetValues() {
       rankingState.checks = Math.max(0, Number(rankingState.checks) || 0) + 1;
       const correctCodes = rankingCorrectCodes();
       if (!rankingState.firstCheckCorrectCodes) rankingState.firstCheckCorrectCodes = [...correctCodes];
-      const knownBefore = rankingState.knownCorrectCodes instanceof Set
-        ? new Set(rankingState.knownCorrectCodes)
-        : new Set(rankingState.knownCorrectCodes || []);
-      const newlyConfirmed = new Set([...correctCodes].filter(code => !knownBefore.has(code)));
-      const knownCorrect = new Set([...knownBefore, ...correctCodes]);
       rankingState.checkedCorrectCodes = correctCodes;
-      rankingState.knownCorrectCodes = knownCorrect;
-      rankingState.newlyConfirmedCodes = newlyConfirmed;
       rankingState.verified = true;
       renderRankingList();
 
@@ -35094,12 +35067,7 @@ function rankingTargetValues() {
         verifyRanking();
         return;
       }
-      const known = rankingState.knownCorrectCodes instanceof Set
-        ? rankingState.knownCorrectCodes
-        : new Set(rankingState.knownCorrectCodes || []);
-      const unknownMisplaced = misplaced.filter(entry => !known.has(entry.item.c.code));
-      const hintPool = unknownMisplaced.length ? unknownMisplaced : misplaced;
-      const pick = hintPool[randomInt(hintPool.length)];
+      const pick = misplaced[randomInt(misplaced.length)];
       const direction = pick.targetIndex < pick.index ? "up" : "down";
       rankingFeedback.textContent = `Hint · move ${pick.item.c.name} ${direction}.`;
       rankingRevealBtn.textContent = "Another hint";
@@ -35124,7 +35092,7 @@ function rankingTargetValues() {
         const items = await buildRankingItems({ avoidPrevious, metric: roundMetric });
         if (token !== rankingBuildToken || !rankingOverlay?.classList.contains("open")) return;
         if (items.length < 2) throw new Error("Not enough values");
-        rankingState={ metric:roundMetric, setKey:rankingSet, items, verified:false, revealed:false, checks:0, firstCheckCorrectCodes:null, checkedCorrectCodes:null, knownCorrectCodes:new Set(), newlyConfirmedCodes:new Set(), hints:0, masteryRecorded:false };
+        rankingState={ metric:roundMetric, setKey:rankingSet, items, verified:false, revealed:false, checks:0, firstCheckCorrectCodes:null, checkedCorrectCodes:null, hints:0, masteryRecorded:false };
         rankingLastRoundCodes = items.map(item => item.c.code);
         saveSpecialGamePrefs();
         rankingNewBtn.textContent = "Change setup";
