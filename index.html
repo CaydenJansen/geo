@@ -179,10 +179,20 @@
       align-items: center;
       justify-content: center;
       flex: 0 0 auto;
+      padding: 4px;
+      border-radius: 10px;
+      background: var(--flag-surface);
+      box-shadow: inset 0 0 0 1px var(--flag-surface-border);
+      box-sizing: border-box;
     }
 
     .header-flag-wrap.visible {
       display: flex;
+    }
+
+    :root {
+      --flag-surface: #d8d3c9;
+      --flag-surface-border: rgba(23,23,23,.13);
     }
 
     .header-flag {
@@ -280,6 +290,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 14px 16px;
+      border-radius: 24px;
+      background: rgba(216,211,201,.88);
+      box-shadow: inset 0 0 0 1px var(--flag-surface-border);
+      box-sizing: border-box;
     }
 
     .flag-large {
@@ -4052,11 +4067,12 @@
     .matching-card.flag-card img {
       max-width: 104px;
       max-height: 62px;
-      padding: 0;
-      background: transparent;
+      padding: 4px;
+      background: rgba(247,244,237,.24);
       border: 0;
-      border-radius: 2px;
-      box-shadow: none;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 1px rgba(23,23,23,.08);
+      box-sizing: border-box;
     }
 
     @media (max-width: 720px) {
@@ -4935,6 +4951,11 @@
       max-width: 92%;
       max-height: 92px;
       object-fit: contain;
+      padding: 6px;
+      border-radius: 10px;
+      background: var(--flag-surface);
+      box-shadow: inset 0 0 0 1px var(--flag-surface-border);
+      box-sizing: border-box;
     }
 
     .interactive-choice svg {
@@ -9816,7 +9837,7 @@ button,
   margin-top:13px; min-height:152px; display:grid; place-items:center; overflow:hidden; border-radius:16px; background:rgba(242,244,248,.78);
 }
 .rapid-cue-text { padding:20px 12px; font-size:clamp(1.65rem,9vw,3.1rem); font-weight:950; line-height:1.02; text-align:center; letter-spacing:-.045em; overflow-wrap:anywhere; }
-.rapid-cue img { display:block; max-width:min(340px,88%); max-height:190px; object-fit:contain; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.10); }
+.rapid-cue img { display:block; max-width:min(340px,88%); max-height:190px; object-fit:contain; border-radius:12px; padding:8px; background:var(--flag-surface); box-shadow:inset 0 0 0 1px var(--flag-surface-border), 0 8px 24px rgba(0,0,0,.10); box-sizing:border-box; }
 .rapid-cue svg { width:100%; height:210px; display:block; }
 .rapid-answer-area { margin-top:13px; }
 .rapid-text-panel { position:relative; min-width:0; overflow:visible; }
@@ -9839,7 +9860,7 @@ button,
 .rapid-choice {
   position:relative; min-width:0; min-height:118px; border:1px solid rgba(23,23,23,.11); border-radius:15px; padding:9px; background:rgba(255,255,255,.66); cursor:pointer; display:grid; place-items:center; gap:6px; overflow:hidden;
 }
-.rapid-choice img { width:100%; max-height:92px; object-fit:contain; border-radius:7px; }
+.rapid-choice img { width:100%; max-height:92px; object-fit:contain; border-radius:10px; padding:6px; background:var(--flag-surface); box-shadow:inset 0 0 0 1px var(--flag-surface-border); box-sizing:border-box; }
 .rapid-choice svg { width:100%; height:92px; display:block; }
 .rapid-choice-label { display:none; max-width:100%; color:var(--muted); font-size:.66rem; font-weight:900; text-align:center; overflow-wrap:anywhere; }
 .rapid-choice-grid.reveal-labels .rapid-choice-label { display:block; }
@@ -10363,27 +10384,27 @@ button,
     /* Returning users should see continuation and configuration as two separate actions. */
     .active-session-resume {
       width:100%;
-      min-height:78px;
-      margin:0 0 10px;
-      padding:13px 15px;
+      min-height:50px;
+      margin:0 0 8px;
+      padding:8px 10px;
       display:grid;
       grid-template-columns:minmax(0,1fr) auto;
       align-items:center;
-      gap:14px;
-      border:1px solid rgba(40,100,240,.28);
-      border-radius:18px;
-      background:linear-gradient(135deg, rgba(40,100,240,.12), rgba(255,255,255,.58));
+      gap:10px;
+      border:1px solid rgba(23,23,23,.10);
+      border-radius:13px;
+      background:rgba(255,255,255,.30);
       color:var(--text);
-      box-shadow:0 8px 24px rgba(40,100,240,.07);
+      box-shadow:none;
       text-align:left;
     }
-    .active-session-resume:hover { background:linear-gradient(135deg, rgba(40,100,240,.16), rgba(255,255,255,.68)); }
-    .active-session-resume:focus-visible { outline:3px solid rgba(40,100,240,.22); outline-offset:2px; }
-    .active-session-resume-copy { min-width:0; display:grid; gap:3px; }
-    .active-session-resume-eyebrow { color:var(--accent-dark); font-size:.59rem; font-weight:950; letter-spacing:.10em; text-transform:uppercase; }
-    .active-session-resume-title { min-width:0; font-size:1.08rem; line-height:1.08; font-weight:900; letter-spacing:-.025em; overflow-wrap:anywhere; }
-    .active-session-resume-meta { min-width:0; color:#5f5b54; font-size:.71rem; line-height:1.28; font-weight:720; overflow-wrap:anywhere; }
-    .active-session-resume-action { color:var(--accent-dark); font-size:.78rem; font-weight:900; white-space:nowrap; }
+    .active-session-resume:hover { background:rgba(255,255,255,.52); border-color:rgba(40,100,240,.18); }
+    .active-session-resume:focus-visible { outline:3px solid rgba(40,100,240,.20); outline-offset:2px; }
+    .active-session-resume-copy { min-width:0; display:grid; gap:1px; }
+    .active-session-resume-eyebrow { display:none; }
+    .active-session-resume-title { min-width:0; font-size:.94rem; line-height:1.08; font-weight:900; letter-spacing:-.015em; overflow-wrap:anywhere; }
+    .active-session-resume-meta { min-width:0; color:#68645d; font-size:.62rem; line-height:1.22; font-weight:680; overflow-wrap:anywhere; }
+    .active-session-resume-action { color:var(--accent-dark); font-size:.72rem; font-weight:850; white-space:nowrap; }
 
     /* Settings stay generously tappable but use less dead space when nested. */
     .current-session-card .session-customize-body { padding:8px !important; }
@@ -10428,10 +10449,10 @@ button,
     .start-option-meta { color:#625e57; }
 
     @media (max-width:520px) {
-      .active-session-resume { min-height:72px; padding:11px 12px; border-radius:16px; gap:9px; }
-      .active-session-resume-title { font-size:1rem; }
-      .active-session-resume-meta { font-size:.66rem; }
-      .active-session-resume-action { font-size:.72rem; }
+      .active-session-resume { min-height:46px; padding:7px 9px; border-radius:12px; gap:8px; }
+      .active-session-resume-title { font-size:.90rem; }
+      .active-session-resume-meta { font-size:.59rem; }
+      .active-session-resume-action { font-size:.68rem; }
       .current-session-card .session-customize-body { padding:7px !important; }
       .current-session-card .session-step-summary { min-height:48px !important; }
       .new-session-warning-actions { grid-template-columns:1fr; }
@@ -10534,7 +10555,11 @@ button,
   height: 48px;
   flex: 0 0 auto;
   object-fit: contain;
-  filter: drop-shadow(0 5px 8px rgba(0,0,0,.09));
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--flag-surface);
+  box-shadow: inset 0 0 0 1px var(--flag-surface-border), 0 5px 8px rgba(0,0,0,.09);
+  box-sizing: border-box;
 }
 .country-profile-kicker { color: var(--muted); font-size: .65rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
 .country-profile-name { margin: 2px 0 0; font-size: clamp(1.5rem,5vw,2.15rem); letter-spacing: -.04em; line-height: 1.05; }
@@ -10658,6 +10683,8 @@ button,
       font-weight:850;
     }
     .special-game-option.active { border-color:rgba(40,100,240,.35); background:rgba(40,100,240,.10); color:var(--accent-dark); }
+    .ranking-panel #rankingMetricOptions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .ranking-random-toggle { margin-top:7px; }
     .special-game-start { min-height:50px; border-radius:14px; background:var(--accent); color:white; }
     .special-game-loading { padding:28px 8px; color:var(--muted); text-align:center; font-size:.82rem; }
     .special-game-loading.hidden, .special-game-setup.hidden, .special-game-play.hidden { display:none !important; }
@@ -11866,6 +11893,14 @@ button,
       text-wrap:balance;
     }
     .quiz-style-help.hidden { display:none !important; }
+    .quiz-style-step-body .quiz-style-picker {
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      margin-top:0;
+    }
+    .quiz-style-step-body .quiz-style-help {
+      margin-top:8px;
+      padding:0 2px;
+    }
 
     .map-hunt-overlay {
       position:fixed;
@@ -11940,7 +11975,11 @@ button,
       max-width:min(170px,60vw);
       max-height:76px;
       object-fit:contain;
-      filter:drop-shadow(0 6px 10px rgba(0,0,0,.09));
+      padding:6px;
+      border-radius:12px;
+      background:var(--flag-surface);
+      box-shadow:inset 0 0 0 1px var(--flag-surface-border), 0 6px 10px rgba(0,0,0,.09);
+      box-sizing:border-box;
     }
     .map-hunt-prompt-flag.hidden, .map-hunt-prompt-text.hidden { display:none !important; }
     .map-hunt-map-wrap {
@@ -12127,6 +12166,196 @@ button,
         margin-top:0 !important;
       }
       .map-hunt-map { min-height:250px; }
+    }
+  </style>
+
+
+  <style id="polish-v04611">
+    /* v0.46.11 — make Daily GeoDen feel like a small event while keeping the
+       surrounding Today card calm. */
+    .today-daily-challenge {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0,1fr) auto;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 10px 11px;
+      border: 1px solid rgba(40,100,240,.20);
+      border-radius: 13px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(255,209,102,.28), transparent 48%),
+        linear-gradient(135deg, rgba(40,100,240,.10), rgba(255,255,255,.52));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.58), 0 6px 16px rgba(40,100,240,.055);
+    }
+    .today-daily-challenge::before {
+      content: "✦";
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: .92rem;
+      font-weight: 950;
+      line-height: 1;
+      box-shadow: 0 5px 12px rgba(40,100,240,.17);
+    }
+    .today-daily-copy { min-width: 0; display: grid; gap: 2px; }
+    .today-daily-title {
+      font-size: .82rem;
+      line-height: 1.08;
+      font-weight: 920;
+      letter-spacing: -.015em;
+    }
+    .today-daily-meta { font-size: .64rem; line-height: 1.22; }
+    .today-daily-button {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 5px 12px rgba(40,100,240,.13);
+    }
+    .today-daily-button:hover { background: var(--accent-dark); }
+    .today-daily-challenge[data-state="active"] {
+      border-color: rgba(40,100,240,.34);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(255,209,102,.22), transparent 46%),
+        linear-gradient(135deg, rgba(40,100,240,.15), rgba(255,255,255,.56));
+    }
+    .today-daily-challenge[data-state="active"]::before { content: "▶"; font-size: .72rem; }
+    .today-daily-challenge[data-state="complete"] {
+      border-color: rgba(47,125,77,.26);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(255,209,102,.22), transparent 46%),
+        linear-gradient(135deg, rgba(47,125,77,.11), rgba(255,255,255,.56));
+    }
+    .today-daily-challenge[data-state="complete"]::before {
+      content: "✓";
+      background: var(--correct);
+      box-shadow: 0 5px 12px rgba(47,125,77,.16);
+    }
+    .today-daily-challenge[data-state="complete"] .today-daily-button {
+      background: rgba(47,125,77,.11);
+      color: var(--correct-dark);
+      box-shadow: none;
+    }
+    .today-daily-challenge[data-state="confirm"] {
+      border-color: rgba(138,100,29,.28);
+      background: linear-gradient(135deg, rgba(228,171,66,.15), rgba(255,255,255,.55));
+    }
+    .today-daily-challenge[data-state="confirm"]::before { content: "!"; background: #a87722; box-shadow: none; }
+    .today-daily-challenge[data-state="confirm"] .today-daily-button { background: #a87722; }
+
+    /* Country profile: use the map card instead of leaving a small globe
+       floating in a wide SVG viewport. */
+    .country-profile-globe { height: 220px; margin-top: 0; }
+
+    @media (max-width: 520px) {
+      .today-daily-challenge {
+        grid-template-columns: auto minmax(0,1fr) auto;
+        gap: 8px;
+        margin-top: 8px;
+        padding: 8px 9px;
+      }
+      .today-daily-challenge::before { width: 28px; height: 28px; border-radius: 9px; font-size: .8rem; }
+      .today-daily-title { font-size: .76rem; }
+      .today-daily-meta { font-size: .60rem; }
+      .today-daily-button { min-height: 32px; padding-inline: 10px; font-size: .69rem; }
+      .country-profile-globe { height: 210px; }
+      .country-profile-city-map { height: 170px; }
+    }
+
+    @media (max-width: 360px) {
+      .today-daily-challenge { grid-template-columns: 26px minmax(0,1fr) auto; gap: 7px; }
+      .today-daily-challenge::before { width: 26px; height: 26px; }
+      .today-daily-button { min-width: 60px; padding-inline: 8px; }
+    }
+  </style>
+
+
+  <style id="home-simplification-v0480">
+    /* v0.48 — Home is a launcher first, configurator second. */
+    .home-mode-browser {
+      display:grid; gap:10px; margin:0 0 12px; padding:14px;
+      border:1px solid rgba(23,23,23,.09); border-radius:20px;
+      background:rgba(255,255,255,.24);
+    }
+    .home-mode-browser-head {
+      display:flex; align-items:end; justify-content:space-between; gap:12px; padding:0 2px;
+    }
+    .home-mode-browser-eyebrow {
+      color:var(--accent); font-size:.61rem; line-height:1; font-weight:900; letter-spacing:.12em; text-transform:uppercase;
+    }
+    .home-mode-browser-title { margin:3px 0 0; font-size:1.2rem; line-height:1; letter-spacing:-.035em; }
+    .home-mode-browser-meta { max-width:23ch; color:var(--muted); font-size:.66rem; line-height:1.25; font-weight:700; text-align:right; }
+    .home-mode-browser .play-mode-picker { display:grid !important; grid-template-columns:1fr !important; gap:10px !important; margin:0 !important; }
+    .home-mode-browser .mode-discovery-group { padding:10px; gap:8px; background:rgba(255,255,255,.35); }
+    .home-mode-browser .mode-discovery-options .play-mode-button {
+      min-height:68px !important; padding:9px 10px !important; border-radius:14px !important;
+      border:1px solid rgba(23,23,23,.11) !important; background:rgba(247,244,237,.72) !important;
+      box-shadow:none !important; text-align:center !important;
+    }
+    .home-mode-browser .play-mode-button:hover { background:rgba(255,255,255,.88) !important; }
+    .home-mode-browser .play-mode-button.active {
+      border-color:rgba(40,100,240,.34) !important; background:rgba(40,100,240,.085) !important;
+      box-shadow:0 0 0 1px rgba(40,100,240,.06) inset !important;
+    }
+    .home-mode-browser .play-mode-button.active .play-mode-name { color:var(--accent-dark) !important; }
+    .home-mode-browser .play-mode-name { font-size:.9rem !important; line-height:1.08 !important; font-weight:900 !important; }
+    .home-mode-browser .play-mode-meta { display:block !important; margin-top:3px; font-size:.58rem !important; line-height:1.18 !important; color:var(--muted) !important; }
+    .home-mode-browser .quiz-style-picker { margin-top:8px; }
+    .home-mode-browser .quiz-style-help { margin-top:5px; }
+    .home-mode-browser .mode-availability-note { margin-top:0; }
+
+    #startSessionCard { margin-top:0 !important; padding:15px !important; border-radius:20px !important; }
+    #startSessionCard.hidden { display:none !important; }
+    #startSessionCard .start-session-eyebrow { font-size:.6rem; }
+    #startSessionCard .start-session-title { font-size:1.45rem !important; margin-top:3px; }
+    #startSessionCard .start-session-summary { margin-top:5px; margin-bottom:9px; gap:3px 8px; }
+    #startSessionCard .start-session-summary-secondary,
+    #startSessionCard .start-session-summary-challenges { font-size:.72rem !important; }
+    #startSessionCard .session-customize-disclosure { margin-top:8px !important; }
+    #startSessionCard .session-customize-summary { min-height:44px !important; }
+    #startSessionCard .session-customize-title { font-size:.78rem !important; }
+    #startSessionCard .start-session-button { min-height:52px !important; margin-top:10px !important; }
+
+    /* The visible mode picker now owns mode selection; Customize only contains
+       the secondary knobs that apply after that choice. */
+    #startSessionCard [data-session-step="mode"] { display:none !important; }
+
+    @media (max-width:520px) {
+      .home-mode-browser { margin-bottom:9px; padding:10px; border-radius:17px; gap:8px; }
+      .home-mode-browser-head { align-items:start; }
+      .home-mode-browser-title { font-size:1.05rem; }
+      .home-mode-browser-meta { font-size:.59rem; max-width:18ch; }
+      .home-mode-browser .mode-discovery-group { padding:8px; }
+      .home-mode-browser .mode-discovery-options-three { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
+      .home-mode-browser .mode-discovery-options-four { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+      .home-mode-browser .mode-discovery-options .play-mode-button { min-height:62px !important; padding:7px 6px !important; }
+      .home-mode-browser .play-mode-name { font-size:.8rem !important; }
+      .home-mode-browser .play-mode-meta { font-size:.52rem !important; }
+      #startSessionCard { padding:11px !important; }
+      #startSessionCard .start-session-title { font-size:1.22rem !important; }
+      #startSessionCard .start-session-summary-secondary,
+      #startSessionCard .start-session-summary-challenges { font-size:.66rem !important; }
+    }
+    @media (max-width:360px) {
+      .home-mode-browser-head { display:block; }
+      .home-mode-browser-meta { margin-top:4px; max-width:none; text-align:left; }
+      .home-mode-browser .mode-discovery-options-three { grid-template-columns:1fr !important; }
+      .home-mode-browser .mode-discovery-options-four { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+      .home-mode-browser .mode-discovery-options .play-mode-button { min-height:58px !important; }
+    }
+
+    /* Landscape phones: keep launcher left, selected setup right. */
+    @media (min-width:600px) and (max-width:950px) and (max-height:500px) and (orientation:landscape) {
+      .home-mode-browser { grid-column:2; grid-row:2 / span 3; margin:0 !important; }
+      #startSessionCard { grid-column:2; grid-row:5; margin:0 !important; }
+      #startSessionCard.hidden { display:none !important; }
+      .home-mode-browser .mode-discovery-options .play-mode-button { min-height:54px !important; }
     }
   </style>
 
@@ -12375,29 +12604,15 @@ button,
         <span class="active-session-resume-action" id="activeSessionResumeAction">Resume →</span>
       </button>
 
-      <section class="start-session-card current-session-card" aria-labelledby="startSummaryPrimary">
-        <div class="start-session-eyebrow" id="startSessionEyebrow">Session setup</div>
-        <h3 class="start-session-title" id="startSummaryPrimary">Flash card · Random</h3>
-        <div class="start-session-summary" aria-live="polite">
-          <div class="start-session-summary-secondary" id="startSummarySecondary">5 places · World</div>
-          <div class="start-session-summary-challenges" id="startSummaryChallenges">Basics · 4 challenges</div>
-          <div class="start-session-summary-note hidden" id="startSummaryNote"></div>
+      <section class="home-mode-browser" id="homeModeBrowser" aria-labelledby="homeModeBrowserTitle">
+        <div class="home-mode-browser-head">
+          <div>
+            <div class="home-mode-browser-eyebrow">Choose what to do</div>
+            <h3 class="home-mode-browser-title" id="homeModeBrowserTitle">Pick a mode</h3>
+          </div>
+          <div class="home-mode-browser-meta">Set the details after you choose.</div>
         </div>
-
-        <details class="session-customize-disclosure" id="sessionCustomizeDisclosure">
-          <summary class="session-customize-summary">
-            <span class="session-customize-title">Session options</span>
-            <span class="session-customize-chevron" aria-hidden="true">⌄</span>
-          </summary>
-
-          <div class="session-customize-body session-step-list">
-            <details class="session-step" data-session-step="mode">
-              <summary class="session-step-summary">
-                <span class="session-step-label">Mode</span>
-                <span class="session-step-value" id="sessionModeValue">Flash card</span>
-                <span class="session-step-chevron" aria-hidden="true">⌄</span>
-              </summary>
-              <div class="session-step-body"><div class="play-mode-picker" id="playModePicker" role="group" aria-label="Choose a study or game mode">
+        <div class="play-mode-picker" id="playModePicker" role="group" aria-label="Choose a study or game mode">
               <section class="mode-discovery-group" aria-labelledby="modeGroupStudy">
                 <div class="mode-discovery-heading">
                   <span class="mode-discovery-title" id="modeGroupStudy">Learn &amp; review</span>
@@ -12416,12 +12631,6 @@ button,
                     <span class="play-mode-meta">Match facts to places</span>
                   </button>
                 </div>
-                <div class="quiz-style-picker hidden" id="quizStylePicker" role="group" aria-label="Choose quiz style">
-                  <span class="quiz-style-label">Quiz style</span>
-                  <button class="quiz-style-option active" type="button" data-quiz-style="interactive" aria-pressed="true">Standard</button>
-                  <button class="quiz-style-option rapid-mode-button" type="button" data-quiz-style="rapid" aria-pressed="false">Rapid Fire</button>
-                </div>
-                <div class="quiz-style-help hidden" id="quizStyleHelp">Standard works through your chosen challenges place by place, with retries and hints. Rapid Fire mixes quick one-shot questions and can reverse the direction, such as capital → place.</div>
               </section>
 
               <section class="mode-discovery-group" aria-labelledby="modeGroupGames">
@@ -12449,7 +12658,38 @@ button,
               </section>
             </div>
             <div class="mode-availability-note hidden" id="modeAvailabilityNote" role="note"></div>
-            </div>
+      </section>
+
+      <section class="start-session-card current-session-card hidden" id="startSessionCard" aria-labelledby="startSummaryPrimary">
+        <div class="start-session-eyebrow" id="startSessionEyebrow">Set up session</div>
+        <h3 class="start-session-title" id="startSummaryPrimary">Flash card · Random</h3>
+        <div class="start-session-summary" aria-live="polite">
+          <div class="start-session-summary-secondary" id="startSummarySecondary">5 places · World</div>
+          <div class="start-session-summary-challenges" id="startSummaryChallenges">Basics · 4 challenges</div>
+          <div class="start-session-summary-note hidden" id="startSummaryNote"></div>
+        </div>
+
+        <details class="session-customize-disclosure" id="sessionCustomizeDisclosure">
+          <summary class="session-customize-summary">
+            <span class="session-customize-title">Customize</span>
+            <span class="session-customize-chevron" aria-hidden="true">⌄</span>
+          </summary>
+
+          <div class="session-customize-body session-step-list">
+
+            <details class="session-step hidden" id="quizStyleDisclosure" data-session-step="quiz-style">
+              <summary class="session-step-summary">
+                <span class="session-step-label">Quiz style</span>
+                <span class="session-step-value" id="sessionQuizStyleValue">Rapid Fire</span>
+                <span class="session-step-chevron" aria-hidden="true">⌄</span>
+              </summary>
+              <div class="session-step-body quiz-style-step-body">
+                <div class="quiz-style-picker" id="quizStylePicker" role="group" aria-label="Choose quiz style">
+                  <button class="quiz-style-option" type="button" data-quiz-style="interactive" aria-pressed="false">Standard</button>
+                  <button class="quiz-style-option rapid-mode-button active" type="button" data-quiz-style="rapid" aria-pressed="true">Rapid Fire</button>
+                </div>
+                <div class="quiz-style-help" id="quizStyleHelp">Standard works through your chosen challenges place by place, with retries and hints. Rapid Fire mixes quick one-shot questions and can reverse the direction, such as capital → place.</div>
+              </div>
             </details>
 
             <details class="session-step" data-session-step="strategy">
@@ -12625,7 +12865,7 @@ button,
         </div>
         <div class="mastery-stat">
           <div class="mastery-stat-value" id="masteryRecall">—</div>
-          <div class="mastery-stat-label">Lifetime recall</div>
+          <div class="mastery-stat-label">Direct first-try recall</div>
         </div>
         <div class="mastery-stat">
           <div class="mastery-stat-value" id="masteryDue">0</div>
@@ -12666,15 +12906,15 @@ button,
         <section class="mastery-section" aria-labelledby="masteryWeakTitle">
           <div class="mastery-section-head">
             <div class="mastery-section-title" id="masteryWeakTitle">Weakest places</div>
-            <div class="mastery-section-note">lowest recall first</div>
+            <div class="mastery-section-note">lowest mastery evidence</div>
           </div>
           <div class="mastery-list" id="masteryWeakCountries"></div>
         </section>
 
         <section class="mastery-section" aria-labelledby="masteryFieldsTitle">
           <div class="mastery-section-head">
-            <div class="mastery-section-title" id="masteryFieldsTitle">Recall by challenge</div>
-            <div class="mastery-section-note">all-time accuracy</div>
+            <div class="mastery-section-title" id="masteryFieldsTitle">Recall & game skills</div>
+            <div class="mastery-section-note">direct recall + gameplay evidence</div>
           </div>
           <div class="mastery-list" id="masteryFieldStats"></div>
         </section>
@@ -12737,7 +12977,7 @@ button,
           </div>
 
           <div class="mastery-map-detail-summary" id="masteryMapDetailStats"></div>
-          <div class="mastery-map-fact-heading">Recall by challenge</div>
+          <div class="mastery-map-fact-heading">Performance & game skills</div>
           <div class="mastery-map-facts" id="masteryMapFacts"></div>
         </aside>
       </div>
@@ -12745,7 +12985,7 @@ button,
       <details class="mastery-map-method-details">
         <summary>How statuses work</summary>
         <div class="mastery-map-method">
-          Due means it is time to review. Weak, Strong and Mastered reflect your recall over time; newer studied places stay Learning until there is enough history.
+          Due means a scheduled direct-recall fact is ready for review, even if that challenge is currently switched off. Games add weighted mastery evidence without changing the spaced-review clock. Weak and Strong use both direct recall and gameplay evidence; Mastered still requires sustained clean retrieval over time.
         </div>
       </details>
     </div>
@@ -13350,7 +13590,7 @@ button,
       <div class="special-game-head">
         <div>
           <h2 class="special-game-title" id="rankingTitle">Ranking</h2>
-          <p class="special-game-subtitle">Put the places in the right order.</p>
+          <p class="special-game-subtitle">Put a varied mix of places in the right order.</p>
         </div>
         <button class="special-game-close" id="rankingCloseBtn" type="button">Menu</button>
       </div>
@@ -13361,7 +13601,12 @@ button,
             <button class="special-game-option active" type="button" data-ranking-metric="borders">Land borders</button>
             <button class="special-game-option" type="button" data-ranking-metric="population">Population</button>
             <button class="special-game-option" type="button" data-ranking-metric="area">Area</button>
+            <button class="special-game-option" type="button" data-ranking-metric="density">Population density</button>
           </div>
+          <label class="territory-inline-toggle ranking-random-toggle">
+            <input id="rankingRandomMetricToggle" type="checkbox" />
+            <span class="territory-inline-toggle-copy"><strong>Random metric each round</strong><span class="territory-inline-toggle-meta">Rotate between borders, population, area and density</span></span>
+          </label>
           <div class="special-game-help" id="rankingMetricHelp">Shared land borders.</div>
         </div>
         <div class="special-game-field">
@@ -13414,7 +13659,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.46.9";
+    const GEODEN_VERSION = "0.48.10";
     const GEODEN_BUILD_DATE = "2026-09-18";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -14515,7 +14760,7 @@ button,
     let menuPlayMode = ["standard", "interactive", "matching", "detective", "rapid", "chain", "ranking", "maphunt"].includes(savedPlayMode) ? savedPlayMode : "standard";
     let lastQuizStyle = ["interactive", "rapid"].includes(localStorage.getItem(QUIZ_STYLE_KEY))
       ? localStorage.getItem(QUIZ_STYLE_KEY)
-      : (["interactive", "rapid"].includes(savedPlayMode) ? savedPlayMode : "interactive");
+      : (["interactive", "rapid"].includes(savedPlayMode) ? savedPlayMode : "rapid");
     const savedCountryPool = localStorage.getItem(COUNTRY_POOL_KEY);
     const migratedCountryPool = ["weakest", "mistakes", "confusions", "due"].includes(savedCountryPool)
       ? "review"
@@ -15143,7 +15388,8 @@ button,
 
       const lifetimeTotal = Number(rec?.lifetimeTotal) || 0;
       const stageStats = Object.values(rec?.stageStats || {}).filter(s => Number(s?.attempts) > 0);
-      return lifetimeTotal > 0 || stageStats.length > 0 || Number(rec?.attempts) > 0 || Number(rec?.detectiveAttempts) > 0;
+      const gameEvidence = Object.values(rec?.gameEvidence || {}).filter(stat => Number(stat?.events) > 0);
+      return lifetimeTotal > 0 || stageStats.length > 0 || gameEvidence.length > 0 || Number(rec?.attempts) > 0 || Number(rec?.detectiveAttempts) > 0;
     }
 
     function freshCountryIndices() {
@@ -15180,28 +15426,39 @@ button,
           if (countryIndex < 0) return null;
 
           const lifetimeTotal = Number(rec?.lifetimeTotal) || 0;
-          const stageStats = Object.values(rec?.stageStats || {}).filter(s => Number(s?.attempts) > 0);
+          const stageStats = Object.values(rec?.stageStats || {}).filter(stat => Number(stat?.attempts) > 0);
+          const gameRows = gameMasteryRows(rec);
           const scoredAttempts = Number(rec?.attempts) || 0;
           const detectiveAttempts = Number(rec?.detectiveAttempts) || 0;
           const hasScoredHistory = lifetimeTotal > 0 || stageStats.length > 0 || scoredAttempts > 0;
+          const hasGameHistory = gameRows.length > 0;
           const hasDetectiveHistory = detectiveAttempts > 0;
-          if (!hasScoredHistory && !hasDetectiveHistory) return null;
+          if (!hasScoredHistory && !hasGameHistory && !hasDetectiveHistory) return null;
 
-          // Fact-level results remain authoritative whenever they exist. Detective
-          // accuracy is only a fallback so a player who has studied exclusively in
-          // Detective can still use the Weakest strategy instead of falling into a
-          // gap between Fresh and Weakest.
+          const directWeight = stageStats.reduce((sum, stat) => sum + Math.max(0, Number(stat.attempts) || 0), 0);
+          const directScore = stageStats.reduce((sum, stat) => sum + Math.max(0, Number(stat.cleanCorrect) || 0), 0);
+          const gameWeight = gameRows.reduce((sum, row) => sum + row.weightTotal, 0);
+          const gameScore = gameRows.reduce((sum, row) => sum + row.scoreTotal, 0);
+
+          // Legacy Detective records predate the generic game-evidence layer. Use
+          // them only when no generic identification evidence exists yet.
+          const hasIdentificationEvidence = gameRows.some(row => row.skill === "countryIdentification");
           const detectiveScoreTotal = Number(rec?.detectiveScoreTotal);
           const detectiveAccuracy = hasDetectiveHistory
             ? Number.isFinite(detectiveScoreTotal) && detectiveScoreTotal >= 0
               ? Math.max(0, Math.min(1, detectiveScoreTotal / (detectiveAttempts * 100)))
               : (Number(rec.detectiveCorrect) || 0) / detectiveAttempts
             : 1;
-          const lifetimeAccuracy = lifetimeTotal > 0
-            ? (Number(rec.lifetimeCorrect) || 0) / lifetimeTotal
-            : hasScoredHistory ? 1 : detectiveAccuracy;
-          const stageAccuracies = stageStats.map(s => (Number(s.cleanCorrect) || 0) / Math.max(1, Number(s.attempts) || 1));
-          const worstStage = stageAccuracies.length ? Math.min(...stageAccuracies) : lifetimeAccuracy;
+          const legacyDetectiveWeight = hasDetectiveHistory && !hasIdentificationEvidence ? detectiveAttempts : 0;
+          const combinedWeight = directWeight + gameWeight + legacyDetectiveWeight;
+          const combinedScore = directScore + gameScore + detectiveAccuracy * legacyDetectiveWeight;
+          const lifetimeAccuracy = combinedWeight ? combinedScore / combinedWeight : 1;
+
+          const stageAccuracies = stageStats.map(stat => (Number(stat.cleanCorrect) || 0) / Math.max(1, Number(stat.attempts) || 1));
+          const gameAccuracies = gameRows.map(row => row.score);
+          const allAccuracies = [...stageAccuracies, ...gameAccuracies];
+          if (legacyDetectiveWeight) allAccuracies.push(detectiveAccuracy);
+          const worstStage = allAccuracies.length ? Math.min(...allAccuracies) : lifetimeAccuracy;
           const lastScore = Number.isFinite(Number(rec?.lastScore)) ? Number(rec.lastScore) : lifetimeAccuracy;
 
           return {
@@ -15210,7 +15467,7 @@ button,
             lifetimeAccuracy,
             lastScore,
             level: Number(rec?.level) || 0,
-            attempts: scoredAttempts + (hasScoredHistory ? 0 : detectiveAttempts)
+            attempts: Math.max(scoredAttempts, Math.round(combinedWeight), detectiveAttempts)
           };
         })
         .filter(Boolean)
@@ -15404,11 +15661,15 @@ button,
       const weakLimit = Math.min(12, setIndices.length);
       const weakestInSet = scoredCountryIndicesByWeakness(countries.length)
         .filter(index => allowed.has(index))
+        .map(index => {
+          const rec = smartReview.countries?.[countries[index].code];
+          return { index, stages: reviewWeakestStagesForRecord(rec, interaction) };
+        })
+        // Game-only weaknesses belong in Progress, but must not crowd genuinely
+        // reviewable direct facts out of the Review queue.
+        .filter(item => item.stages.length > 0)
         .slice(0, weakLimit);
-      for (const index of weakestInSet) {
-        const rec = smartReview.countries?.[countries[index].code];
-        add(index, "weak", reviewWeakestStagesForRecord(rec, interaction));
-      }
+      for (const item of weakestInSet) add(item.index, "weak", item.stages);
 
       return {
         indices,
@@ -15535,38 +15796,89 @@ button,
       return { order: [...primary, ...rest], count: primary.length };
     }
 
+    const GAME_VARIETY_REGION_KEYS = ["europe", "africa", "asia", "northAmerica", "southAmerica", "oceania"];
+
+    function gameVarietyRegionKey(c) {
+      if (!c?.code) return "other";
+      for (const key of GAME_VARIETY_REGION_KEYS) {
+        if ((COUNTRY_SET_CODES[key] || []).includes(c.code) ||
+            (TERRITORY_SET_CODES[key] || []).includes(c.code) ||
+            (ADDITIONAL_PLACE_SET_CODES[key] || []).includes(c.code)) return key;
+      }
+      return "other";
+    }
+
+    function gameVarietyContext(countryList) {
+      const list = (countryList || []).filter(Boolean);
+      const regions = new Set(list.map(gameVarietyRegionKey).filter(key => key !== "other"));
+      if (regions.size >= 2) {
+        return { group: c => gameVarietyRegionKey(c) || "other", kind: "region" };
+      }
+
+      // Within a single region, spread rounds across the map instead of repeatedly
+      // clustering in one corner. Median latitude/longitude gives us four simple,
+      // data-driven geographic quadrants without hard-coding subregions.
+      const lats = list.map(c => Number(c.lat)).filter(Number.isFinite).sort((a,b) => a-b);
+      const lons = list.map(c => Number(c.lon)).filter(Number.isFinite).sort((a,b) => a-b);
+      const middle = values => values.length ? values[Math.floor(values.length / 2)] : 0;
+      const midLat = middle(lats);
+      const midLon = middle(lons);
+      return {
+        kind: "quadrant",
+        group: c => {
+          const lat = Number(c?.lat);
+          const lon = Number(c?.lon);
+          if (!Number.isFinite(lat) || !Number.isFinite(lon)) return "other";
+          return `${lat >= midLat ? "N" : "S"}${lon >= midLon ? "E" : "W"}`;
+        }
+      };
+    }
+
+    function diversifyGameCountryItems(items, getCountry = value => value) {
+      const source = [...(items || [])];
+      if (source.length < 3) return source;
+      const countriesForItems = source.map(getCountry).filter(Boolean);
+      const context = gameVarietyContext(countriesForItems);
+      const buckets = new Map();
+      for (const item of source) {
+        const c = getCountry(item);
+        const group = context.group(c);
+        if (!buckets.has(group)) buckets.set(group, []);
+        buckets.get(group).push(item);
+      }
+      if (buckets.size < 2) return source;
+      for (const bucket of buckets.values()) {
+        for (let i = bucket.length - 1; i > 0; i--) {
+          const j = randomInt(i + 1);
+          [bucket[i], bucket[j]] = [bucket[j], bucket[i]];
+        }
+      }
+
+      const output = [];
+      const recent = [];
+      while (output.length < source.length) {
+        const available = [...buckets.entries()].filter(([, values]) => values.length);
+        if (!available.length) break;
+        let choices = available.filter(([group]) => !recent.includes(group));
+        if (!choices.length) choices = available.filter(([group]) => group !== recent.at(-1));
+        if (!choices.length) choices = available;
+        const minUsed = Math.min(...choices.map(([group]) => output.reduce((n, item) => n + (context.group(getCountry(item)) === group ? 1 : 0), 0)));
+        const balanced = choices.filter(([group]) => output.reduce((n, item) => n + (context.group(getCountry(item)) === group ? 1 : 0), 0) <= minUsed + 1);
+        const [group, values] = balanced[randomInt(balanced.length)] || choices[0];
+        output.push(values.shift());
+        recent.push(group);
+        if (recent.length > 2) recent.shift();
+      }
+      return output;
+    }
+
     function diversifyDetectiveCountryOrder(order, primaryCount) {
       const count = Math.max(0, Math.min(Number(primaryCount) || 0, order.length));
       if (count < 3) return order;
       const primary = order.slice(0, count);
       const rest = order.slice(count);
-      const buckets = new Map();
-      for (const countryIndex of primary) {
-        const country = countries[countryIndex];
-        const group = detectiveContinent(country) || "Other";
-        if (!buckets.has(group)) buckets.set(group, []);
-        buckets.get(group).push(countryIndex);
-      }
-      if (buckets.size < 2) return order;
-
-      // Keep a little geographic distance between cases. Prefer a continent not
-      // seen in the previous two cases, then at least avoid an immediate repeat.
-      const output = [];
-      const recentGroups = [];
-      while (output.length < primary.length) {
-        const availableGroups = [...buckets.entries()].filter(([, items]) => items.length);
-        if (!availableGroups.length) break;
-        let choices = availableGroups.filter(([group]) => !recentGroups.includes(group));
-        if (!choices.length) choices = availableGroups.filter(([group]) => group !== recentGroups.at(-1));
-        if (!choices.length) choices = availableGroups;
-        const maxRemaining = Math.max(...choices.map(([, items]) => items.length));
-        const balanced = choices.filter(([, items]) => items.length >= Math.max(1, maxRemaining - 1));
-        const [group, items] = balanced[randomInt(balanced.length)] || choices[0];
-        output.push(items.shift());
-        recentGroups.push(group);
-        if (recentGroups.length > 2) recentGroups.shift();
-      }
-      return [...output, ...rest];
+      const diversified = diversifyGameCountryItems(primary, index => countries[index]);
+      return [...diversified, ...rest];
     }
 
     function updateCountrySetOptions() {
@@ -15717,9 +16029,12 @@ button,
               : "Study something first";
       }
 
+      const studyFocusMatters = !["chain", "ranking", "maphunt"].includes(menuPlayMode);
       if (
-        (selectedCountryPool === "fresh" && freshCount === 0) ||
-        (selectedCountryPool === "review" && (!reviewSupported || reviewCount === 0))
+        studyFocusMatters && (
+          (selectedCountryPool === "fresh" && freshCount === 0) ||
+          (selectedCountryPool === "review" && (!reviewSupported || reviewCount === 0))
+        )
       ) {
         selectedCountryPool = "random";
         localStorage.setItem(COUNTRY_POOL_KEY, selectedCountryPool);
@@ -15913,8 +16228,7 @@ button,
       const active = hasActiveStudyRun();
       activeSessionResumeBtn?.classList.toggle("hidden", !active);
       if (startSessionEyebrow) {
-        const specialMode = ["chain", "ranking", "maphunt"].includes(menuPlayMode);
-        startSessionEyebrow.textContent = specialMode ? "Game setup" : (active ? "Start a new session" : "Session setup");
+        startSessionEyebrow.textContent = "Start a new session";
       }
       if (!active) return;
 
@@ -15929,10 +16243,10 @@ button,
             ? "Detective case"
             : "Mixed question";
 
-      if (activeSessionResumeTitle) activeSessionResumeTitle.textContent = `${mode} · ${strategy}`;
-      if (activeSessionResumeMeta) activeSessionResumeMeta.textContent = `${activeSessionProgressText()} · ${stageName} · ${setName}`;
-      if (activeSessionResumeAction) activeSessionResumeAction.textContent = `Resume ${mode} →`;
-      activeSessionResumeBtn?.setAttribute("aria-label", `Resume ${mode} session, ${activeSessionProgressText()}`);
+      if (activeSessionResumeTitle) activeSessionResumeTitle.textContent = "Resume current session";
+      if (activeSessionResumeMeta) activeSessionResumeMeta.textContent = `${mode} · ${strategy} · ${activeSessionProgressText()} · ${stageName} · ${setName}`;
+      if (activeSessionResumeAction) activeSessionResumeAction.textContent = "Resume →";
+      activeSessionResumeBtn?.setAttribute("aria-label", `Resume current session: ${mode}, ${strategy}, ${activeSessionProgressText()}, ${stageName}, ${setName}`);
     }
 
     function clearNewSessionConfirmation() {
@@ -16016,7 +16330,6 @@ button,
       const secondary = document.getElementById("startSummarySecondary");
       const note = document.getElementById("startSummaryNote");
       const challenges = document.getElementById("startSummaryChallenges");
-      const modeValue = document.getElementById("sessionModeValue");
       const strategyValue = document.getElementById("sessionStrategyValue");
       const lengthValue = document.getElementById("sessionLengthValue");
       const challengeValue = document.getElementById("sessionChallengeSummary");
@@ -16026,14 +16339,29 @@ button,
       const lengthName = startMenuLengthLabel();
       const challengeSummary = challengeSetSummaryForMode(menuPlayMode);
       const challengeStep = document.querySelector('[data-session-step="challenges"]');
+      const quizStyleStep = document.querySelector('[data-session-step="quiz-style"]');
+      const quizStyleValue = document.getElementById("sessionQuizStyleValue");
       const strategyStep = document.querySelector('[data-session-step="strategy"]');
       const lengthStep = document.querySelector('[data-session-step="length"]');
       const setStep = document.querySelector('[data-session-step="set"]');
       const specialMode = ["chain", "ranking", "maphunt"].includes(menuPlayMode);
+      const quizMode = ["interactive", "rapid"].includes(menuPlayMode);
+      const setupEyebrow = document.getElementById("startSessionEyebrow");
+      const customizeDisclosure = document.getElementById("sessionCustomizeDisclosure");
       if (challengeStep) challengeStep.classList.toggle("hidden", specialMode);
+      if (quizStyleStep) {
+        quizStyleStep.classList.toggle("hidden", !quizMode || specialMode);
+        if (!quizMode) quizStyleStep.open = false;
+      }
+      if (quizStyleValue) quizStyleValue.textContent = menuPlayMode === "interactive" ? "Standard" : "Rapid Fire";
       if (strategyStep) strategyStep.classList.toggle("hidden", specialMode);
       if (lengthStep) lengthStep.classList.toggle("hidden", specialMode);
       if (setStep) setStep.classList.toggle("hidden", specialMode);
+      if (setupEyebrow) setupEyebrow.textContent = "Start a new session";
+      if (customizeDisclosure) {
+        customizeDisclosure.classList.remove("hidden");
+        if (specialMode) customizeDisclosure.open = false;
+      }
 
       if (challenges) challenges.classList.toggle("hidden", specialMode);
 
@@ -16045,14 +16373,13 @@ button,
             ? `${countrySetDisplayName(mapHuntSet)} · ${mapHuntPromptMode === "flag" ? "Flag prompts" : mapHuntPromptMode === "capital" ? "Capital prompts" : "Place-name prompts"}`
             : (() => {
                 const effectiveCount = Math.min(rankingCount, rankingCountriesForSet(rankingSet).length);
-                return `${countrySetDisplayName(rankingSet)} · ${rankingMetricDisplayName(rankingMetric)} · ${effectiveCount} places`;
+                return `${countrySetDisplayName(rankingSet)} · ${rankingMetricDisplayName()} · ${effectiveCount} places`;
               })();
       } else {
-        if (primary) primary.textContent = `${modeName} · ${poolName}`;
-        if (secondary) secondary.textContent = `${lengthName} · ${setName}`;
+        if (primary) primary.textContent = modeName;
+        if (secondary) secondary.textContent = `${poolName} · ${lengthName} · ${setName}`;
         if (challenges) challenges.textContent = challengeSummary;
       }
-      if (modeValue) modeValue.textContent = modeName;
       if (strategyValue) strategyValue.textContent = poolName;
       if (lengthValue) lengthValue.textContent = lengthName;
       if (challengeValue) challengeValue.textContent = challengeSummary;
@@ -16060,7 +16387,12 @@ button,
       updateActiveSessionResumeCard();
 
       if (note) {
-        if (specialMode) {
+        const reviewCapableMode = studyFocusSupportsReview(menuPlayMode);
+        if (specialMode || !reviewCapableMode) {
+          // Only advertise due facts when this mode can actually consume the
+          // fact-targeted review queue. Detective, Matching and Rapid Fire may
+          // show overlapping facts, but they do not deliberately serve the due
+          // records and should not imply that they do.
           note.textContent = "";
           note.classList.add("hidden");
           return;
@@ -16093,6 +16425,10 @@ button,
       return available;
     }
 
+    function hasResumableMapHunt() {
+      return !!(mapHuntState?.svg && mapHuntMap?.childNodes?.length);
+    }
+
     function updateSessionChoiceUI() {
       clearNewSessionConfirmation();
       updateCountryPoolOptions();
@@ -16114,10 +16450,12 @@ button,
       if (["chain", "ranking", "maphunt"].includes(menuPlayMode)) {
         startConfirmBtn.disabled = false;
         startConfirmBtn.textContent = menuPlayMode === "chain"
-          ? "Set up Chain Fill →"
+          ? "Start new Chain Fill →"
           : menuPlayMode === "maphunt"
-            ? "Set up Map Hunt →"
-            : "Set up Ranking →";
+            ? (hasResumableMapHunt()
+                ? (mapHuntState?.finished ? "View Map Hunt results →" : "Resume Map Hunt →")
+                : "Start new Map Hunt →")
+            : "Start new Ranking →";
         return;
       }
 
@@ -16142,7 +16480,7 @@ button,
       }
 
       startConfirmBtn.disabled = false;
-      startConfirmBtn.textContent = hasActiveStudyRun() ? "Start new session →" : "Start session →";
+      startConfirmBtn.textContent = `${hasActiveStudyRun() ? "Start new" : "Start"} ${modeDisplayName()} →`;
     }
 
     function selectSessionChoice(mode, limit = null) {
@@ -16179,7 +16517,7 @@ button,
       // Mode is always the first decision. If the newly selected mode cannot use
       // the current study focus, move the focus to Random rather than blocking
       // the mode itself. The focus controls below then explain what is available.
-      if (selectedCountryPool === "review" && !studyFocusSupportsReview(menuPlayMode)) {
+      if (selectedCountryPool === "review" && ["rapid", "matching", "detective"].includes(menuPlayMode)) {
         selectedCountryPool = "random";
         localStorage.setItem(COUNTRY_POOL_KEY, selectedCountryPool);
       }
@@ -16192,16 +16530,14 @@ button,
         button.classList.remove("mode-unavailable");
         button.title = "";
         button.removeAttribute("aria-describedby");
-        const active = mode === "quiz" ? ["interactive", "rapid"].includes(menuPlayMode) : mode === menuPlayMode;
+        const modeSelectedOnHome = startOverlay?.dataset?.modeArmed === "true";
+        const active = modeSelectedOnHome && (mode === "quiz" ? ["interactive", "rapid"].includes(menuPlayMode) : mode === menuPlayMode);
         button.classList.toggle("active", active);
         button.setAttribute("aria-pressed", active ? "true" : "false");
       });
 
       const quizStylePicker = document.getElementById("quizStylePicker");
-      const quizStyleHelp = document.getElementById("quizStyleHelp");
       const quizActive = ["interactive", "rapid"].includes(menuPlayMode);
-      quizStylePicker?.classList.toggle("hidden", !quizActive);
-      quizStyleHelp?.classList.toggle("hidden", !quizActive);
       quizStylePicker?.querySelectorAll("[data-quiz-style]").forEach(button => {
         const style = button.dataset.quizStyle;
         button.disabled = false;
@@ -16300,7 +16636,7 @@ button,
         localStorage.setItem(PLAY_MODE_KEY, menuPlayMode);
       }
       masteryOverlay.classList.remove("open");
-      openStartOverlay(!!studySession && studySession.active !== false);
+      openStartOverlay(!!studySession && studySession.active !== false, true);
     }
 
     // Legacy entry points now route into the single adaptive Review strategy.
@@ -16401,17 +16737,20 @@ button,
 
       dailyChallengeBtn.disabled = false;
       if (activeToday) {
+        dailyChallengeCard.dataset.state = "active";
         const answered = Math.max(0, Number(rapid?.total) || 0);
         dailyChallengeTitle.textContent = `Daily · ${answered}/10`;
         dailyChallengeMeta.textContent = "In progress";
         dailyChallengeBtn.textContent = "Resume →";
       } else if (result && Number(result.total) > 0) {
+        dailyChallengeCard.dataset.state = "complete";
         const score = Number.isFinite(Number(result.bestCorrect)) ? Number(result.bestCorrect) : Number(result.correct) || 0;
         const plays = Math.max(1, Number(result.plays) || 1);
         dailyChallengeTitle.textContent = `Daily · ${score}/${Number(result.total) || 10} best`;
         dailyChallengeMeta.textContent = plays > 1 ? `${plays} plays today` : "Completed today";
         dailyChallengeBtn.textContent = "Replay →";
       } else {
+        dailyChallengeCard.dataset.state = "new";
         dailyChallengeTitle.textContent = "Daily GeoDen";
         dailyChallengeMeta.textContent = "10 mixed questions · same challenge all day";
         dailyChallengeBtn.textContent = "Play →";
@@ -16443,6 +16782,7 @@ button,
         const now = Date.now();
         if (now > dailyChallengeArmedUntil) {
           dailyChallengeArmedUntil = now + 7000;
+          dailyChallengeCard.dataset.state = "confirm";
           dailyChallengeBtn.textContent = "Replace session";
           dailyChallengeMeta.textContent = "This replaces your unfinished session. Tap again to confirm.";
           if (dailyChallengeDisarmTimer) window.clearTimeout(dailyChallengeDisarmTimer);
@@ -16475,7 +16815,37 @@ button,
       setMenuPlayMode(style);
     }
 
-    function openStartOverlay(allowClose = false) {
+    function showHomeSessionSetup({ scroll = false } = {}) {
+      const card = document.getElementById("startSessionCard");
+      if (!card) return;
+      startOverlay.dataset.modeArmed = "true";
+      card.classList.remove("hidden");
+      updatePlayModePicker();
+      updateSessionChoiceUI();
+      if (scroll) {
+        window.setTimeout(() => card.scrollIntoView({ behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth", block: "nearest" }), 40);
+      }
+    }
+
+    function resumeCurrentSessionFromMenu() {
+      if (!hasActiveStudyRun()) return;
+      startOverlay.classList.remove("open");
+      if (studySession?.interaction === "matching") {
+        menuPlayMode = "matching";
+        openMatchingMode(true, true);
+      } else if (studySession?.interaction === "detective") {
+        menuPlayMode = "detective";
+        openDetectiveMode(true);
+      } else if (studySession?.interaction === "rapid") {
+        menuPlayMode = "rapid";
+        openRapidMode(true);
+      } else {
+        menuPlayMode = studySession?.interaction === "interactive" ? "interactive" : "standard";
+        render();
+      }
+    }
+
+    function openStartOverlay(allowClose = false, revealSetup = false) {
       matchingOverlay?.classList.remove("open");
       detectiveOverlay?.classList.remove("open");
       rapidOverlay?.classList.remove("open");
@@ -16487,6 +16857,8 @@ button,
       const sessionCustomizeDisclosure = document.getElementById("sessionCustomizeDisclosure");
       if (sessionCustomizeDisclosure) sessionCustomizeDisclosure.open = false;
       if (countrySetDisclosure) countrySetDisclosure.open = false;
+      startOverlay.dataset.modeArmed = revealSetup ? "true" : "false";
+      document.getElementById("startSessionCard")?.classList.toggle("hidden", !revealSetup);
       updateCountrySetOptions();
       updateCountryPoolOptions();
       updatePlayModePicker();
@@ -16501,17 +16873,7 @@ button,
 
     function closeStartOverlay() {
       if (startOverlay.dataset.allowClose !== "true") return;
-      startOverlay.classList.remove("open");
-      if (studySession?.interaction === "matching" && studySession?.active !== false) {
-        matchingOverlay.classList.add("open");
-        if (!matchingState) startMatchingRound();
-      } else if (studySession?.interaction === "detective" && studySession?.active !== false) {
-        detectiveOverlay?.classList.add("open");
-        prepareDetectiveRound(false);
-      } else if (studySession?.interaction === "rapid" && studySession?.active !== false) {
-        rapidOverlay?.classList.add("open");
-        rapidRenderQuestion();
-      }
+      resumeCurrentSessionFromMenu();
     }
 
     function setupSessionStepFlow() {
@@ -16532,15 +16894,11 @@ button,
       disclosure.addEventListener("toggle", () => {
         if (!disclosure.open) {
           for (const step of steps) step.open = false;
-          return;
         }
-        // Session setup begins with Mode. Once the player chooses it, the
-        // remaining steps update to show only the options that make sense.
-        if (!steps.some(step => step.open) && steps[0]) steps[0].open = true;
       });
 
       disclosure.addEventListener("click", event => {
-        const choice = event.target.closest("[data-play-mode], [data-country-pool], [data-session-mode], [data-country-set]");
+        const choice = event.target.closest("[data-play-mode], [data-quiz-style], [data-country-pool], [data-session-mode], [data-country-set]");
         if (!choice || choice.disabled) return;
         const step = choice.closest(".session-step");
         if (!step) return;
@@ -16549,6 +16907,17 @@ button,
         // choices still collapse once selected.
         if (choice.matches("[data-play-mode]")) return;
         window.setTimeout(() => { step.open = false; }, 90);
+      });
+
+      const summary = disclosure.querySelector(".session-customize-summary");
+      summary?.addEventListener("click", event => {
+        if (!["chain", "ranking", "maphunt"].includes(menuPlayMode)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        disclosure.open = false;
+        if (menuPlayMode === "chain") openChainFill();
+        else if (menuPlayMode === "maphunt") openMapHunt();
+        else if (menuPlayMode === "ranking") openRanking();
       });
     }
 
@@ -23057,12 +23426,13 @@ button,
       const pc = smartReview.presentationCounter;
       const interaction = options.interaction || studySession?.interaction || "standard";
       const compatible = interaction === "interactive" ? INTERACTIVE_STAGES : new Set(ALL_STAGES);
+      const respectEnabled = options.respectEnabled !== false;
 
       return Object.entries(rec.stageStats || {})
         .filter(([stage, stat]) =>
           ALL_STAGES.includes(stage) &&
           stage !== "historyFacts" &&
-          config.enabled[stage] &&
+          (!respectEnabled || config.enabled[stage]) &&
           compatible.has(stage) &&
           Number(stat?.attempts) > 0
         )
@@ -23074,7 +23444,10 @@ button,
           const attempts = Math.max(1, Number(stat.attempts) || 1);
           const accuracy = (Number(stat.correct) || 0) / attempts;
           const cleanAccuracy = (Number(stat.cleanCorrect) || 0) / attempts;
-          return { stage, scheduled, enoughGap, due: enoughGap && (dueByCounter || dueByTime), accuracy, cleanAccuracy };
+          // Real elapsed time is sufficient on its own. The presentation gap
+          // only prevents the counter-based same-session path from resurfacing a
+          // fact immediately after it was just shown.
+          return { stage, scheduled, enoughGap, due: dueByTime || (enoughGap && dueByCounter), accuracy, cleanAccuracy };
         })
         .filter(item => item.due)
         .sort((a, b) =>
@@ -23194,10 +23567,11 @@ button,
     function dueReviewRecords(options = {}) {
       const includeCurrent = options.includeCurrent === true;
       const interaction = options.interaction || studySession?.interaction || "standard";
+      const respectEnabled = options.respectEnabled !== false;
 
       return Object.entries(smartReview.countries)
         .map(([code, rec]) => {
-          let dueStages = dueFactStagesForRecord(rec, { interaction });
+          let dueStages = dueFactStagesForRecord(rec, { interaction, respectEnabled });
           if (interaction === "interactive" && !polishPrefs?.allowGiveawayPrompts) {
             const country = countries.find(c => c.code === code);
             dueStages = dueStages.filter(stage => !countryStageHasObviousNameAnswer(country, stage));
@@ -23223,22 +23597,31 @@ button,
         });
     }
 
-    function nextFutureReviewAt() {
+    function nextFutureReviewAt(options = {}) {
       const now = Date.now();
       const values = [];
+      const interaction = options.interaction || "standard";
+      const compatible = interaction === "interactive" ? INTERACTIVE_STAGES : new Set(ALL_STAGES);
+      const respectEnabled = options.respectEnabled !== false;
+      const allowedCodes = options.set
+        ? new Set(countrySetIndices(options.set).map(index => countries[index]?.code).filter(Boolean))
+        : null;
 
-      for (const rec of Object.values(smartReview.countries)) {
+      for (const [code, rec] of Object.entries(smartReview.countries || {})) {
+        if (allowedCodes && !allowedCodes.has(code)) continue;
         let foundFactSchedule = false;
         for (const [stage, stat] of Object.entries(rec.stageStats || {})) {
           if (!ALL_STAGES.includes(stage) || stage === "historyFacts" || Number(stat?.attempts) <= 0) continue;
+          if (!compatible.has(stage)) continue;
+          if (respectEnabled && !config.enabled[stage]) continue;
           foundFactSchedule = true;
           const value = Number(ensureStageReviewSchedule(rec, stage).nextDueAt);
           if (Number.isFinite(value) && value < Number.MAX_SAFE_INTEGER && value > now) values.push(value);
         }
 
-        // Backwards-compatible fallback for records that have not yet acquired
-        // any stage-level scheduling data.
-        if (!foundFactSchedule) {
+        // Backwards-compatible fallback only when no stage schedule exists at all.
+        // Do not let an excluded/disabled fact leak into a filtered next-review time.
+        if (!foundFactSchedule && !Object.values(rec.stageStats || {}).some(stat => Number(stat?.attempts) > 0)) {
           const value = Number(rec.nextDueAt);
           if (Number.isFinite(value) && value < Number.MAX_SAFE_INTEGER && value > now) values.push(value);
         }
@@ -23456,7 +23839,97 @@ button,
     }
 
 
+    const GAME_MASTERY_META = {
+      mapLocation: { label: "Map location", practiceStage: "globe" },
+      flagRecognition: { label: "Flag recognition", practiceStage: "flag" },
+      capitalToPlace: { label: "Capital → place", practiceStage: "capital" },
+      placeNameRecall: { label: "Place-name recall", practiceStage: "country" },
+      capitalRecall: { label: "Capital recall", practiceStage: "capital" },
+      countryIdentification: { label: "Country identification", practiceStage: "country" },
+      rankingBorders: { label: "Border comparison" },
+      rankingPopulation: { label: "Population comparison" },
+      rankingArea: { label: "Area comparison" },
+      rankingDensity: { label: "Density comparison" }
+    };
+
+    function ensureGameMasteryEvidence(rec, skill) {
+      if (!rec.gameEvidence || typeof rec.gameEvidence !== "object") rec.gameEvidence = {};
+      if (!rec.gameEvidence[skill] || typeof rec.gameEvidence[skill] !== "object") {
+        rec.gameEvidence[skill] = {
+          events: 0,
+          weightTotal: 0,
+          scoreTotal: 0,
+          cleanEvents: 0,
+          assistedEvents: 0,
+          missedEvents: 0,
+          lastAt: 0,
+          sources: {}
+        };
+      }
+      const stat = rec.gameEvidence[skill];
+      for (const key of ["events", "weightTotal", "scoreTotal", "cleanEvents", "assistedEvents", "missedEvents", "lastAt"]) {
+        if (!Number.isFinite(Number(stat[key]))) stat[key] = 0;
+      }
+      if (!stat.sources || typeof stat.sources !== "object") stat.sources = {};
+      return stat;
+    }
+
+    function recordGameMasteryEvidence(countryOrCode, skill, score, options = {}) {
+      const code = typeof countryOrCode === "string" ? countryOrCode : countryOrCode?.code;
+      if (!code || !GAME_MASTERY_META[skill]) return null;
+      const rec = reviewRecord(code);
+      const stat = ensureGameMasteryEvidence(rec, skill);
+      const value = Math.max(0, Math.min(1, Number(score) || 0));
+      const weight = Math.max(.05, Math.min(1, Number(options.weight) || 1));
+      stat.events += 1;
+      stat.weightTotal += weight;
+      stat.scoreTotal += value * weight;
+      if (value >= .95) stat.cleanEvents += 1;
+      else if (value > 0) stat.assistedEvents += 1;
+      else stat.missedEvents += 1;
+      stat.lastAt = Date.now();
+      const source = String(options.source || "game");
+      stat.sources[source] = Math.max(0, Number(stat.sources[source]) || 0) + 1;
+      if (options.save !== false) saveSmartReview();
+      return stat;
+    }
+
+    function gameMasteryRows(rec) {
+      return Object.entries(rec?.gameEvidence || {})
+        .filter(([skill, stat]) => GAME_MASTERY_META[skill] && Number(stat?.events) > 0 && Number(stat?.weightTotal) > 0)
+        .map(([skill, stat]) => {
+          const weightTotal = Math.max(.0001, Number(stat.weightTotal) || 0);
+          const scoreTotal = Math.max(0, Number(stat.scoreTotal) || 0);
+          return {
+            skill,
+            events: Math.max(0, Number(stat.events) || 0),
+            weightTotal,
+            scoreTotal,
+            score: Math.max(0, Math.min(1, scoreTotal / weightTotal)),
+            cleanEvents: Math.max(0, Number(stat.cleanEvents) || 0),
+            assistedEvents: Math.max(0, Number(stat.assistedEvents) || 0),
+            missedEvents: Math.max(0, Number(stat.missedEvents) || 0),
+            lastAt: Math.max(0, Number(stat.lastAt) || 0),
+            sources: stat.sources || {}
+          };
+        });
+    }
+
+    function gameMasteryAggregate(rec) {
+      const rows = gameMasteryRows(rec);
+      const weight = rows.reduce((sum, row) => sum + row.weightTotal, 0);
+      const scoreTotal = rows.reduce((sum, row) => sum + row.scoreTotal, 0);
+      return {
+        rows,
+        events: rows.reduce((sum, row) => sum + row.events, 0),
+        weight,
+        scoreTotal,
+        score: weight ? Math.max(0, Math.min(1, scoreTotal / weight)) : null
+      };
+    }
+
     function masteryFieldLabel(field) {
+      if (GAME_MASTERY_META[field]?.label) return GAME_MASTERY_META[field].label;
       if (STAGE_META[field]?.name) return STAGE_META[field].name;
       if (MATCHING_FIELD_META[field]?.label) return MATCHING_FIELD_META[field].label;
       return String(field || "Fact").replace(/([a-z])([A-Z])/g, "$1 $2");
@@ -23470,10 +23943,22 @@ button,
 
       const studied = entries.length;
       const fresh = Math.max(0, activeWorldCodes.size - studied);
-      const correct = entries.reduce((sum, [, rec]) => sum + (Number(rec.lifetimeCorrect) || 0), 0);
-      const total = entries.reduce((sum, [, rec]) => sum + (Number(rec.lifetimeTotal) || 0), 0);
+      // Progress should represent independent recall, not answers that became
+      // correct only after a retry/correction. Aggregate first-try results from
+      // fact-level history so Matching and Interactive assistance cannot inflate it.
+      let correct = 0;
+      let total = 0;
+      for (const [, rec] of entries) {
+        for (const [stage, stat] of Object.entries(rec.stageStats || {})) {
+          if (stage === "historyFacts" || Number(stat?.attempts) <= 0) continue;
+          total += Number(stat.attempts) || 0;
+          correct += Number(stat.cleanCorrect) || 0;
+        }
+      }
       const recall = total ? Math.round(correct / total * 100) : null;
-      const dueRecords = dueReviewRecords({ includeCurrent: true, interaction: "standard" })
+      // Progress reports the real schedule, independent of the learner's current
+      // challenge toggles. Review setup can separately decide which due facts are playable.
+      const dueRecords = dueReviewRecords({ includeCurrent: true, interaction: "standard", respectEnabled: false })
         .filter(item => activeWorldCodes.has(item.code));
       const due = dueRecords.length;
       const dueFacts = dueFactCount(dueRecords);
@@ -23487,46 +23972,81 @@ button,
         const scoredAttempts = Number(rec.attempts) || 0;
         const detectiveAttempts = Number(rec.detectiveAttempts) || 0;
         const attempts = scoredAttempts || detectiveAttempts;
-        const lifetimeTotal = Number(rec.lifetimeTotal) || 0;
-        const lifetimeCorrect = Number(rec.lifetimeCorrect) || 0;
-        const accuracy = lifetimeTotal
-          ? lifetimeCorrect / lifetimeTotal
-          : detectiveAttempts
-            ? Number.isFinite(Number(rec.detectiveScoreTotal))
+        const directStats = Object.entries(rec.stageStats || {})
+          .filter(([field, stat]) => field !== "historyFacts" && Number(stat?.attempts) > 0)
+          .map(([field, stat]) => {
+            const stageAttempts = Math.max(1, Number(stat.attempts) || 1);
+            return {
+              field,
+              kind: "direct",
+              accuracy: (Number(stat.correct) || 0) / stageAttempts,
+              cleanAccuracy: (Number(stat.cleanCorrect) || 0) / stageAttempts,
+              attempts: stageAttempts,
+              weight: stageAttempts,
+              scoreTotal: Number(stat.cleanCorrect) || 0
+            };
+          });
+        const gameStats = gameMasteryRows(rec).map(row => ({
+          field: row.skill,
+          kind: "game",
+          accuracy: row.score,
+          cleanAccuracy: row.score,
+          attempts: row.events,
+          weight: row.weightTotal,
+          scoreTotal: row.scoreTotal
+        }));
+        const allStats = [...directStats, ...gameStats]
+          .sort((a, b) => a.cleanAccuracy - b.cleanAccuracy || a.accuracy - b.accuracy || b.attempts - a.attempts);
+        const directWeight = directStats.reduce((sum, stat) => sum + stat.weight, 0);
+        const directScore = directStats.reduce((sum, stat) => sum + stat.scoreTotal, 0);
+        const gameWeight = gameStats.reduce((sum, stat) => sum + stat.weight, 0);
+        const gameScore = gameStats.reduce((sum, stat) => sum + stat.scoreTotal, 0);
+        const genericIdentification = gameStats.some(stat => stat.field === "countryIdentification");
+        const legacyDetectiveWeight = detectiveAttempts && !genericIdentification ? detectiveAttempts : 0;
+        const legacyDetectiveScore = legacyDetectiveWeight
+          ? (Number.isFinite(Number(rec.detectiveScoreTotal))
               ? Math.max(0, Math.min(1, Number(rec.detectiveScoreTotal) / (detectiveAttempts * 100)))
-              : (Number(rec.detectiveCorrect) || 0) / detectiveAttempts
-            : null;
-        const stageStats = Object.entries(rec.stageStats || {})
-          .filter(([, stat]) => Number(stat?.attempts) > 0)
-          .map(([field, stat]) => ({
-            field,
-            accuracy: (Number(stat.correct) || 0) / Math.max(1, Number(stat.attempts) || 1)
-          }))
-          .sort((a, b) => a.accuracy - b.accuracy);
-        return { country, attempts, accuracy, weakestField: stageStats[0]?.field || null };
+              : (Number(rec.detectiveCorrect) || 0) / detectiveAttempts) * legacyDetectiveWeight
+          : 0;
+        const evidenceWeight = directWeight + gameWeight + legacyDetectiveWeight;
+        const accuracy = evidenceWeight ? (directScore + gameScore + legacyDetectiveScore) / evidenceWeight : null;
+        const evidenceAttempts = directStats.reduce((sum, stat) => sum + stat.attempts, 0) + gameStats.reduce((sum, stat) => sum + stat.attempts, 0) + legacyDetectiveWeight;
+        return { country, attempts: Math.max(attempts, evidenceAttempts), accuracy, weakestField: allStats[0]?.field || null };
       });
 
       const fieldMap = new Map();
+      const gameFieldMap = new Map();
       for (const [, rec] of entries) {
         for (const [field, stat] of Object.entries(rec.stageStats || {})) {
           const attempts = Number(stat?.attempts) || 0;
           if (!attempts) continue;
-          const current = fieldMap.get(field) || { field, attempts: 0, correct: 0, cleanCorrect: 0 };
+          const current = fieldMap.get(field) || { field, kind: "direct", attempts: 0, correct: 0, cleanCorrect: 0 };
           current.attempts += attempts;
           current.correct += Number(stat.correct) || 0;
           current.cleanCorrect += Number(stat.cleanCorrect) || 0;
           fieldMap.set(field, current);
         }
+        for (const row of gameMasteryRows(rec)) {
+          const current = gameFieldMap.get(row.skill) || { field: row.skill, kind: "game", attempts: 0, weightTotal: 0, scoreTotal: 0 };
+          current.attempts += row.events;
+          current.weightTotal += row.weightTotal;
+          current.scoreTotal += row.scoreTotal;
+          gameFieldMap.set(row.skill, current);
+        }
       }
 
-      const fields = [...fieldMap.values()]
-        .map(item => ({
-          ...item,
-          accuracy: item.attempts ? item.correct / item.attempts : 1,
-          cleanAccuracy: item.attempts ? item.cleanCorrect / item.attempts : 1
-        }))
-        .sort((a, b) => a.accuracy - b.accuracy || b.attempts - a.attempts)
-        .slice(0, 7);
+      const directFields = [...fieldMap.values()].map(item => ({
+        ...item,
+        accuracy: item.attempts ? item.correct / item.attempts : 1,
+        cleanAccuracy: item.attempts ? item.cleanCorrect / item.attempts : 1
+      }));
+      const gameFields = [...gameFieldMap.values()].map(item => {
+        const score = item.weightTotal ? item.scoreTotal / item.weightTotal : 0;
+        return { ...item, accuracy: score, cleanAccuracy: score };
+      });
+      const fields = [...directFields, ...gameFields]
+        .sort((a, b) => a.cleanAccuracy - b.cleanAccuracy || a.accuracy - b.accuracy || b.attempts - a.attempts)
+        .slice(0, 9);
 
       return { studied, fresh, correct, total, recall, due, dueFacts, weakCountries, fields };
     }
@@ -23589,15 +24109,26 @@ button,
     }
 
     function masteryFieldPracticePlan(field, maxCount = 5) {
-      if (!ALL_STAGES.includes(field) || field === "historyFacts") return { indices: [], factFocus: {} };
+      const gameMeta = GAME_MASTERY_META[field];
+      const practiceStage = gameMeta?.practiceStage || field;
+      if (!ALL_STAGES.includes(practiceStage) || practiceStage === "historyFacts") return { indices: [], factFocus: {} };
       const allowed = new Set(countrySetIndices("world"));
       const candidates = Object.entries(smartReview.countries || {})
         .map(([code, rec]) => {
           const index = countries.findIndex(country => country.code === code);
           const country = countries[index];
+          if (index < 0 || !allowed.has(index) || !country || !countryStageIsAvailable(country, practiceStage)) return null;
+          if (gameMeta) {
+            const stat = rec?.gameEvidence?.[field];
+            const events = Math.max(0, Number(stat?.events) || 0);
+            const weight = Math.max(0, Number(stat?.weightTotal) || 0);
+            if (!events || !weight) return null;
+            const score = Math.max(0, Math.min(1, (Number(stat.scoreTotal) || 0) / weight));
+            return { index, attempts: events, accuracy: score, cleanAccuracy: score, lastAt: Number(stat.lastAt) || 0 };
+          }
           const stat = rec?.stageStats?.[field];
           const attempts = Math.max(0, Number(stat?.attempts) || 0);
-          if (index < 0 || !allowed.has(index) || !country || !attempts || !countryStageIsAvailable(country, field)) return null;
+          if (!attempts) return null;
           const correct = Math.max(0, Number(stat.correct) || 0);
           const cleanCorrect = Math.max(0, Number(stat.cleanCorrect) || 0);
           return {
@@ -23617,7 +24148,7 @@ button,
         )
         .slice(0, Math.max(1, Number(maxCount) || 5));
       const indices = candidates.map(item => item.index);
-      const factFocus = Object.fromEntries(indices.map(index => [countries[index].code, [field]]));
+      const factFocus = Object.fromEntries(indices.map(index => [countries[index].code, [practiceStage]]));
       return { indices, factFocus };
     }
 
@@ -23649,7 +24180,7 @@ button,
       if (index < 0) return;
       const field = ALL_STAGES.includes(item.weakestField) && item.weakestField !== "historyFacts"
         ? item.weakestField
-        : "country";
+        : (GAME_MASTERY_META[item.weakestField]?.practiceStage || "country");
       startFocusedMasteryPractice([index], { [item.country.code]: [field] }, `${item.country.name} · ${masteryFieldLabel(field)}`);
     }
 
@@ -23778,10 +24309,17 @@ button,
         masteryReviewNowBtn.textContent = "Nothing to review yet";
       }
 
-      if (worldReviewPlan.dueFacts > 0) {
-        masteryNextReview.textContent = `${worldReviewPlan.dueFacts} fact${worldReviewPlan.dueFacts === 1 ? " is" : "s are"} due now.`;
+      if (snapshot.dueFacts > 0) {
+        const playableDue = worldReviewPlan.dueFacts;
+        if (playableDue === snapshot.dueFacts) {
+          masteryNextReview.textContent = `${snapshot.dueFacts} fact${snapshot.dueFacts === 1 ? " is" : "s are"} due now.`;
+        } else if (playableDue > 0) {
+          masteryNextReview.textContent = `${snapshot.dueFacts} facts are due now · ${playableDue} included by your current challenges.`;
+        } else {
+          masteryNextReview.textContent = `${snapshot.dueFacts} fact${snapshot.dueFacts === 1 ? " is" : "s are"} due now · none are included by your current challenges.`;
+        }
       } else {
-        masteryNextReview.textContent = formatNextReviewTime(nextFutureReviewAt());
+        masteryNextReview.textContent = formatNextReviewTime(nextFutureReviewAt({ set: "world", interaction: "standard", respectEnabled: false }));
       }
 
       masteryWeakCountries.replaceChildren();
@@ -23793,7 +24331,7 @@ button,
       } else {
         for (const item of snapshot.weakCountries) {
           const score = item.accuracy == null ? "—" : `${Math.round(item.accuracy * 100)}%`;
-          const attemptText = `${item.attempts} attempt${item.attempts === 1 ? "" : "s"}`;
+          const attemptText = `${item.attempts} evidence point${item.attempts === 1 ? "" : "s"}`;
           const weakText = item.weakestField ? ` · weakest: ${masteryFieldLabel(item.weakestField)}` : "";
           renderMasteryRow(
             masteryWeakCountries,
@@ -23813,18 +24351,21 @@ button,
       if (!snapshot.fields.length) {
         const empty = document.createElement("div");
         empty.className = "mastery-empty";
-        empty.textContent = "Your accuracy by challenge will appear here after you answer some questions.";
+        empty.textContent = "Your direct recall and game-skill evidence will appear here after you practise.";
         masteryFieldStats.appendChild(empty);
       } else {
         for (const item of snapshot.fields) {
           const accuracy = Math.round(item.accuracy * 100);
           const clean = Math.round(item.cleanAccuracy * 100);
           const practice = masteryFieldPracticePlan(item.field, 5);
+          const meta = item.kind === "game"
+            ? `${item.attempts} game result${item.attempts === 1 ? "" : "s"} · weighted gameplay evidence`
+            : `${item.cleanCorrect}/${item.attempts} first try · ${accuracy}% eventually correct`;
           renderMasteryRow(
             masteryFieldStats,
             masteryFieldLabel(item.field),
-            `${item.correct}/${item.attempts} correct · ${clean}% first try`,
-            `${accuracy}%`,
+            meta,
+            `${clean}%`,
             practice.indices.length ? {
               actionLabel: "Practice",
               ariaLabel: `Practice ${masteryFieldLabel(item.field)}`,
@@ -23854,20 +24395,10 @@ button,
     }
 
     function renderReviewSummary() {
-      const records = Object.values(smartReview.countries);
-      const learned = records.length;
-      const dueRecords = dueReviewRecords({ includeCurrent: true, interaction: "standard" });
-      const due = dueRecords.length;
-      const dueFacts = dueFactCount(dueRecords);
-
-      const scored = records.filter(r => r.lifetimeTotal > 0);
-      const correct = scored.reduce((sum, r) => sum + (Number(r.lifetimeCorrect) || 0), 0);
-      const total = scored.reduce((sum, r) => sum + (Number(r.lifetimeTotal) || 0), 0);
-      const pct = total ? Math.round(correct / total * 100) : null;
-
+      const snapshot = masterySnapshot();
       reviewSummary.textContent =
-        `${learned} studied · ${dueFacts} fact${dueFacts === 1 ? "" : "s"} due` +
-        (pct == null ? "" : ` · ${pct}% recall`);
+        `${snapshot.studied} studied · ${snapshot.dueFacts} fact${snapshot.dueFacts === 1 ? "" : "s"} due` +
+        (snapshot.recall == null ? "" : ` · ${snapshot.recall}% first try`);
     }
 
     function sessionStageSummaryRows(summary) {
@@ -23952,7 +24483,11 @@ button,
       } else {
         insight.push("Everything was correct first try.");
       }
-      if (studySession?.pool === "review") insight.push(formatNextReviewTime(nextFutureReviewAt()));
+      if (studySession?.pool === "review") insight.push(formatNextReviewTime(nextFutureReviewAt({
+        set: studySession?.countrySet || "world",
+        interaction: studySession?.interaction === "interactive" ? "interactive" : "standard",
+        respectEnabled: true
+      })));
       const daily = dailyGoalSnapshot();
       if (daily.complete) {
         insight.push(`Daily goal complete · ${daily.facts}/${daily.goal} facts${daily.streak ? ` · ${daily.streak}-day streak` : ""}.`);
@@ -24011,13 +24546,21 @@ button,
           doneText.textContent = `${sessionTotal} new ${studyUnits} studied.`;
         } else if (isBoundedStudySession() && studySession?.pool === "review") {
           doneTitle.textContent = "Review complete";
-          doneText.textContent = `${sessionTotal} ${studyUnits} reviewed. ${formatNextReviewTime(nextFutureReviewAt())}`;
+          doneText.textContent = `${sessionTotal} ${studyUnits} reviewed. ${formatNextReviewTime(nextFutureReviewAt({
+            set: studySession?.countrySet || "world",
+            interaction: studySession?.interaction === "interactive" ? "interactive" : "standard",
+            respectEnabled: true
+          }))}`;
         } else if (isBoundedStudySession()) {
           doneTitle.textContent = "Session complete";
           doneText.textContent = `${sessionTotal} ${studyUnits} studied.`;
         } else {
           doneTitle.textContent = index >= sessionCountryTotal() ? "You're caught up" : "No place selected";
-          doneText.textContent = formatNextReviewTime(nextFutureReviewAt());
+          doneText.textContent = formatNextReviewTime(nextFutureReviewAt({
+            set: studySession?.countrySet || "world",
+            interaction: studySession?.interaction === "interactive" ? "interactive" : "standard",
+            respectEnabled: true
+          }));
         }
 
         renderSessionRecap();
@@ -24372,7 +24915,7 @@ button,
 
     async function renderCountryProfileGlobe(c, token) {
       if (!countryProfileGlobe || !c || !window.d3 || !window.topojson) return;
-      countryProfileGlobe.setAttribute("viewBox", "0 0 420 190");
+      countryProfileGlobe.setAttribute("viewBox", "0 0 240 200");
       countryProfileGlobe.setAttribute("preserveAspectRatio", "xMidYMid meet");
       countryProfileGlobe.setAttribute("aria-label", `Globe showing ${c.name}'s location`);
       countryProfileGlobe.replaceChildren();
@@ -24384,8 +24927,8 @@ button,
         const numeric = String(c.numeric || "").padStart(3, "0");
         const target = mapFeatureForCountry(c, features) || null;
         const projection = d3.geoOrthographic()
-          .translate([210, 95])
-          .scale(82)
+          .translate([120, 100])
+          .scale(92)
           .clipAngle(90)
           .precision(.45)
           .rotate([-(Number(c.lon) || 0), -(Number(c.lat) || 0), 0]);
@@ -24473,7 +25016,16 @@ button,
       const mastery = masteryMapCountryProfile(c);
       if (!mastery.studied) countryProfileMastery.textContent = "Not studied yet";
       else {
-        const pct = mastery.accuracy == null ? "—" : `${Math.round(mastery.accuracy * 100)}% recall`;
+        const directFacts = (mastery.facts || []).filter(item => !item.gameEvidence);
+        const directWeight = directFacts.reduce((sum, item) => sum + Math.max(0, Number(item.attempts) || 0), 0);
+        const directScore = directFacts.reduce((sum, item) => sum + Math.max(0, Number(item.cleanCorrect) || 0), 0);
+        const gameWeight = Math.max(0, Number(mastery.gameWeight) || 0);
+        const gameScore = Number.isFinite(Number(mastery.gameScore)) ? Number(mastery.gameScore) : 0;
+        const combinedWeight = directWeight + gameWeight;
+        const combinedScore = combinedWeight ? (directScore + gameScore * gameWeight) / combinedWeight : null;
+        const pct = gameWeight > 0
+          ? (combinedScore == null ? "— mastery" : `${Math.round(combinedScore * 100)}% mastery`)
+          : (mastery.cleanAccuracy == null ? "— first try" : `${Math.round(mastery.cleanAccuracy * 100)}% first try`);
         const weak = mastery.weakestFact ? ` · weakest: ${masteryFieldLabel(mastery.weakestFact.stage)}` : "";
         countryProfileMastery.textContent = `${MASTERY_MAP_STATUS_META[mastery.status]?.label || "Learning"} · ${pct}${weak}`;
       }
@@ -26834,12 +27386,27 @@ button,
       const accuracy = hasAccuracy ? Number(metrics.accuracy) : 1;
       const hasCleanAccuracy = metrics.cleanAccuracy !== null && metrics.cleanAccuracy !== undefined && Number.isFinite(Number(metrics.cleanAccuracy));
       const cleanAccuracy = hasCleanAccuracy ? Number(metrics.cleanAccuracy) : accuracy;
+      const gameScore = Number.isFinite(Number(metrics.gameScore)) ? Number(metrics.gameScore) : null;
+      const gameWeight = Math.max(0, Number(metrics.gameWeight) || 0);
+      const directWeight = Math.max(0, Number(metrics.directWeight) || 0);
+      const combinedWeight = directWeight + gameWeight;
+      const combinedScore = combinedWeight
+        ? ((Number.isFinite(cleanAccuracy) ? cleanAccuracy : 0) * directWeight + (gameScore ?? 0) * gameWeight) / combinedWeight
+        : cleanAccuracy;
       const minLevel = Math.max(0, Number(metrics.minLevel) || 0);
       const factCount = Math.max(0, Number(metrics.factCount) || 0);
+      const directFactCount = Math.max(factCount, Number(metrics.directFactCount) || 0);
 
-      if (attempts >= 2 && (accuracy < .70 || cleanAccuracy < .60)) return "weak";
+      if (attempts >= 2 && combinedScore < .60) return "weak";
+      // Mastered remains intentionally strict: gameplay and Matching-only facts
+      // can make a place Strong, but long-term spaced retrieval is still required
+      // for the top status.
       if (factCount >= 3 && minLevel >= 4 && cleanAccuracy >= .90) return "mastered";
-      if (factCount >= 2 && minLevel >= 2 && cleanAccuracy >= .80) return "strong";
+      if (
+        (factCount >= 2 && minLevel >= 2 && cleanAccuracy >= .80) ||
+        (directFactCount >= 2 && directWeight >= 2 && cleanAccuracy >= .82) ||
+        (gameWeight >= 2 && combinedScore >= .82)
+      ) return "strong";
       return "learning";
     }
 
@@ -26862,13 +27429,13 @@ button,
       if (!rec || !studied) {
         return {
           country, studied: false, status: "unseen", factCount: 0, attempts: 0,
-          accuracy: null, cleanAccuracy: null, minLevel: 0, dueStages: [], facts: []
+          accuracy: null, cleanAccuracy: null, gameScore: null, gameWeight: 0, gameEvents: 0, minLevel: 0, dueStages: [], facts: []
         };
       }
 
-      const dueStages = dueFactStagesForRecord(rec, { interaction: "standard" });
+      const dueStages = dueFactStagesForRecord(rec, { interaction: "standard", respectEnabled: false });
       const dueSet = new Set(dueStages);
-      const facts = Object.entries(rec.stageStats || {})
+      const directFacts = Object.entries(rec.stageStats || {})
         .filter(([, stat]) => Number(stat?.attempts) > 0)
         .map(([stage, stat]) => {
           const attempts = Math.max(1, Number(stat.attempts) || 1);
@@ -26886,9 +27453,27 @@ button,
             level: reviewable ? Math.max(0, Number(schedule.level) || 0) : null,
             nextDueAt: reviewable ? Number(schedule.nextDueAt) : null,
             due: dueSet.has(stage),
-            reviewable
+            reviewable,
+            gameEvidence: false
           };
-        })
+        });
+      const gameRows = gameMasteryRows(rec);
+      const gameFacts = gameRows.map(row => ({
+        stage: row.skill,
+        attempts: row.events,
+        correct: row.score * row.events,
+        cleanCorrect: row.cleanEvents,
+        accuracy: row.score,
+        cleanAccuracy: row.score,
+        level: null,
+        nextDueAt: null,
+        due: false,
+        reviewable: false,
+        gameEvidence: true,
+        weightTotal: row.weightTotal,
+        scoreTotal: row.scoreTotal
+      }));
+      const facts = [...directFacts, ...gameFacts]
         .sort((a, b) =>
           Number(b.due) - Number(a.due) ||
           a.cleanAccuracy - b.cleanAccuracy ||
@@ -26896,12 +27481,17 @@ button,
           b.attempts - a.attempts
         );
 
-      const reviewFacts = facts.filter(item => item.reviewable);
-      const attempts = reviewFacts.reduce((sum, item) => sum + item.attempts, 0);
-      const correct = reviewFacts.reduce((sum, item) => sum + item.correct, 0);
-      const cleanCorrect = reviewFacts.reduce((sum, item) => sum + item.cleanCorrect, 0);
-      const accuracy = attempts ? correct / attempts : (Number(rec.lifetimeTotal) ? Number(rec.lifetimeCorrect || 0) / Number(rec.lifetimeTotal) : null);
-      const cleanAccuracy = attempts ? cleanCorrect / attempts : accuracy;
+      const reviewFacts = directFacts.filter(item => item.reviewable);
+      // Overall map accuracy includes every scored challenge type, including
+      // Matching-only facts. Review levels/schedules still apply only to facts
+      // that the normal Review engine can actually ask.
+      const directAttempts = directFacts.reduce((sum, item) => sum + item.attempts, 0);
+      const directCorrect = directFacts.reduce((sum, item) => sum + item.correct, 0);
+      const directCleanCorrect = directFacts.reduce((sum, item) => sum + item.cleanCorrect, 0);
+      const accuracy = directAttempts ? directCorrect / directAttempts : null;
+      const cleanAccuracy = directAttempts ? directCleanCorrect / directAttempts : null;
+      const gameAggregate = gameMasteryAggregate(rec);
+      const attempts = directAttempts + gameAggregate.events;
       const levels = reviewFacts.map(item => item.level).filter(Number.isFinite);
       const minLevel = levels.length ? Math.min(...levels) : 0;
       const nextValues = reviewFacts.map(item => item.nextDueAt).filter(value => Number.isFinite(value) && value < Number.MAX_SAFE_INTEGER);
@@ -26920,8 +27510,12 @@ button,
         attempts: attempts || Number(rec.lifetimeTotal) || Number(rec.attempts) || detectiveAttempts || 0,
         accuracy,
         cleanAccuracy,
+        gameScore: gameAggregate.score,
+        gameWeight: gameAggregate.weight,
+        directWeight: directAttempts,
         minLevel,
-        factCount: reviewFacts.length
+        factCount: reviewFacts.length,
+        directFactCount: directFacts.length
       });
 
       return {
@@ -26931,10 +27525,15 @@ button,
         status,
         facts,
         reviewFacts,
-        factCount: reviewFacts.length,
+        factCount: facts.length,
+        directFactCount: directFacts.length,
+        reviewFactCount: reviewFacts.length,
         attempts,
         accuracy,
         cleanAccuracy,
+        gameScore: gameAggregate.score,
+        gameWeight: gameAggregate.weight,
+        gameEvents: gameAggregate.events,
         minLevel,
         dueStages,
         nextDueAt,
@@ -27052,12 +27651,12 @@ button,
         masteryMapFacts.replaceChildren();
         const empty = document.createElement("div");
         empty.className = "mastery-map-empty-detail";
-        empty.textContent = `Study this ${profile.country.isTerritory ? "territory" : profile.country.isAdditionalPlace ? "place" : "country"} in any mode and its progress will appear here.`;
+        empty.textContent = "No scored progress yet. Every GeoDen mode can contribute mastery evidence once you practise this place.";
         masteryMapFacts.appendChild(empty);
         return;
       }
 
-      if (!profile.factCount && profile.detectiveAttempts > 0) {
+      if (!profile.factCount && profile.detectiveAttempts > 0 && !profile.gameEvents) {
         const solveRate = Math.round(profile.detectiveCorrect / Math.max(1, profile.detectiveAttempts) * 100);
         const avgScore = profile.detectiveAverageScore == null ? "—" : `${Math.round(profile.detectiveAverageScore)} pts`;
         const bestClues = profile.detectiveBestClues == null ? "—" : `${profile.detectiveBestClues} clue${profile.detectiveBestClues === 1 ? "" : "s"}`;
@@ -27090,14 +27689,24 @@ button,
 
       const recall = profile.accuracy == null ? "—" : `${Math.round(profile.accuracy * 100)}%`;
       const clean = profile.cleanAccuracy == null ? "—" : `${Math.round(profile.cleanAccuracy * 100)}%`;
+      const gameScore = profile.gameScore == null ? "—" : `${Math.round(profile.gameScore * 100)}%`;
       const weak = profile.weakestFact ? masteryFieldLabel(profile.weakestFact.stage) : "—";
       const dueText = profile.dueStages.length
         ? `${profile.dueStages.length} fact${profile.dueStages.length === 1 ? "" : "s"} due now`
-        : `Next review ${masteryMapRelativeReviewTime(profile.nextDueAt)}`;
-      masteryMapCountryMeta.textContent = `${profile.factCount} challenge type${profile.factCount === 1 ? "" : "s"} practised · ${dueText}`;
+        : profile.reviewFactCount > 0
+          ? `Next review ${masteryMapRelativeReviewTime(profile.nextDueAt)}`
+          : "No spaced review scheduled";
+      const directTypes = Math.max(0, Number(profile.directFactCount) || 0);
+      const gameTypes = profile.gameEvents ? gameMasteryRows(profile.rec).length : 0;
+      masteryMapCountryMeta.textContent = `${directTypes} direct challenge type${directTypes === 1 ? "" : "s"} · ${gameTypes} game skill${gameTypes === 1 ? "" : "s"} · ${dueText}`;
 
-      const stats = [
-        [recall, "Recall"],
+      const stats = profile.gameEvents ? [
+        [clean, "Direct first try"],
+        [gameScore, "Game evidence"],
+        [weak, "Needs work"],
+        [String(profile.dueStages.length), "Due now"]
+      ] : [
+        [recall, "Eventually correct"],
         [clean, "First try"],
         [weak, "Needs work"],
         [String(profile.dueStages.length), "Due now"]
@@ -27137,8 +27746,10 @@ button,
         const cleanPct = Math.round(item.cleanAccuracy * 100);
         const schedule = item.reviewable
           ? (item.due ? "Due now" : `Review ${masteryMapRelativeReviewTime(item.nextDueAt)}`)
-          : "Matching-only fact";
-        meta.textContent = `${item.correct}/${item.attempts} correct · ${cleanPct}% first try · ${schedule}`;
+          : "Not scheduled for Review";
+        meta.textContent = item.gameEvidence
+          ? `${item.attempts} game result${item.attempts === 1 ? "" : "s"} · ${Math.round(item.accuracy * 100)}% weighted evidence · ${schedule}`
+          : `${item.correct}/${item.attempts} correct · ${cleanPct}% first try · ${schedule}`;
         const score = document.createElement("div");
         score.className = "mastery-map-fact-score";
         score.textContent = `${Math.round(item.accuracy * 100)}%`;
@@ -28089,6 +28700,16 @@ button,
         ? Math.min(Number.isFinite(Number(rec.detectiveBestClues)) ? Number(rec.detectiveBestClues) : Number.MAX_SAFE_INTEGER, Number(round?.revealedCount) || 1)
         : Number(rec.detectiveBestClues) || null;
       rec.lastDetectiveAt = Date.now();
+      if (!rec.detectiveClueExposure || typeof rec.detectiveClueExposure !== "object") rec.detectiveClueExposure = {};
+      for (const clue of (round?.clues || []).slice(0, Math.max(0, Number(round?.revealedCount) || 0))) {
+        if (!clue?.key) continue;
+        rec.detectiveClueExposure[clue.key] = Math.max(0, Number(rec.detectiveClueExposure[clue.key]) || 0) + 1;
+      }
+      recordGameMasteryEvidence(c, "countryIdentification", Math.max(0, Math.min(1, (Number(points) || 0) / 100)), {
+        weight: 1,
+        source: "detective",
+        save: false
+      });
       saveSmartReview();
 
       const wrongGuesses = Math.max(0, Number(round?.wrongGuesses) || 0);
@@ -28664,8 +29285,14 @@ button,
       stat.attempts += 1;
       if (correct) {
         stat.correct += 1;
-        if (!assisted) stat.cleanCorrect += 1;
-        stat.streak += 1;
+        if (!assisted) {
+          stat.cleanCorrect += 1;
+          stat.streak += 1;
+        } else {
+          // A hinted Rapid Fire answer is useful learning, but it is not an
+          // independent-recall streak. Match the standard/Matching semantics.
+          stat.streak = 0;
+        }
       } else {
         stat.streak = 0;
         stat.errors = Math.max(0, Number(stat.errors) || 0) + 1;
@@ -30233,7 +30860,9 @@ button,
     playModePicker.addEventListener("click", event => {
       const button = event.target.closest("[data-play-mode]");
       if (!button) return;
+      startOverlay.dataset.modeArmed = "true";
       setMenuPlayMode(button.dataset.playMode);
+      showHomeSessionSetup({ scroll: true });
     });
 
     document.getElementById("quizStylePicker")?.addEventListener("click", event => {
@@ -30270,6 +30899,7 @@ button,
     customSetSelectVisibleBtn.addEventListener("click", () => {
       const query = String(customSetSearch.value || "").trim().toLowerCase();
       countries
+        .filter(c => geographyEntityIncluded(c))
         .filter(c => !query || c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query))
         .forEach(c => customCountryDraft.add(c.code));
       renderCustomCountrySetList();
@@ -30337,16 +30967,22 @@ button,
       if (menuPlayMode === "chain") {
         startOverlay.classList.remove("open");
         openChainFill();
+        window.setTimeout(() => { if (chainFillOverlay?.classList.contains("open")) startChainGame(); }, 0);
         return;
       }
       if (menuPlayMode === "ranking") {
         startOverlay.classList.remove("open");
         openRanking();
+        window.setTimeout(() => { if (rankingOverlay?.classList.contains("open")) startRankingGame(); }, 0);
         return;
       }
       if (menuPlayMode === "maphunt") {
         startOverlay.classList.remove("open");
+        const resumeExisting = hasResumableMapHunt();
         openMapHunt();
+        if (!resumeExisting) {
+          window.setTimeout(() => { if (mapHuntOverlay?.classList.contains("open")) startMapHuntGame(); }, 0);
+        }
         return;
       }
       if (!selectedSessionMode) return;
@@ -30390,7 +31026,7 @@ button,
       startConfirmBtn?.focus();
     });
     newSessionConfirmBtn?.addEventListener("click", startConfiguredSession);
-    activeSessionResumeBtn?.addEventListener("click", closeStartOverlay);
+    activeSessionResumeBtn?.addEventListener("click", resumeCurrentSessionFromMenu);
 
     const openDailyGoalSetting = () => {
       openAppSettings();
@@ -30729,7 +31365,7 @@ button,
     const GEODEN_TRANSFER_KEYS = [
       PROGRESS_KEY, COUNTRY_ORDER_KEY, CONFIG_KEY, RAPID_CONFIG_KEY, CURRENT_STAGE_KEY, PHASE_KEY,
       REVEALED_KEY, CAPITAL_HINTS_KEY, REVIEW_COUNTRY_KEY, SMART_REVIEW_KEY,
-      ATTEMPT_KEY, NAV_HISTORY_KEY, STUDY_SESSION_KEY, PLAY_MODE_KEY,
+      ATTEMPT_KEY, NAV_HISTORY_KEY, STUDY_SESSION_KEY, PLAY_MODE_KEY, QUIZ_STYLE_KEY,
       COUNTRY_POOL_KEY, COUNTRY_SET_KEY, CUSTOM_COUNTRY_SET_KEY,
       MATCHING_CONFIG_KEY, DETECTIVE_CONFIG_KEY, INTERACTIVE_CHOICE_COUNT_KEY, INTERACTIVE_CITY_MODE_KEY,
       DAILY_PROGRESS_KEY, SESSION_CHOICE_KEY, POLISH_PREFS_KEY, GEO_PROFILE_KEY, TERRITORY_PREF_KEY,
@@ -31181,7 +31817,7 @@ button,
         localStorage.setItem(SPECIAL_GAME_PREFS_KEY, JSON.stringify({
           chainSet, chainAnswerMode, chainRuleMode, chainAutocompleteEnabled,
           mapHuntSet, mapHuntPromptMode,
-          rankingMetric, rankingCount, rankingSet, rankingLastRoundCodes
+          rankingMetric, rankingRandomMetric, rankingLastRandomMetric, rankingCount, rankingSet, rankingLastRoundCodes
         }));
       } catch (_) {}
     }
@@ -31409,14 +32045,18 @@ button,
         });
         weakened = landFrontier.filter(code => !available.includes(code));
 
-        // Escape hatch: when no country meets the normal fortified threshold,
-        // only weaken a country that directly borders the place most recently
-        // completed. Filling DRC, for example, can never make Kenya the fallback
-        // route because Kenya does not share a border with DRC.
+        // Escape hatch: Fortified should never dead-end while unfinished
+        // land-frontier places remain. Prefer a place touching the country just
+        // completed, but if that branch is exhausted continue from another edge
+        // of the already-filled territory. Every fallback candidate must still
+        // share a genuine land border with at least one filled place, so this
+        // never teleports across the map.
         if (!available.length && landFrontier.length) {
           const origin = chainState.lastFilledCode || chainState.startCode;
           const direct = new Set(landGraph?.get(origin) || []);
-          const candidates = landFrontier.filter(code => !partial.has(code) && direct.has(code));
+          const directCandidates = landFrontier.filter(code => !partial.has(code) && direct.has(code));
+          const frontierCandidates = landFrontier.filter(code => !partial.has(code));
+          const candidates = directCandidates.length ? directCandidates : frontierCandidates;
           const best = [...candidates].sort((a,b) => {
             const da = Math.max(1, landGraph?.get(a)?.size || 1);
             const db = Math.max(1, landGraph?.get(b)?.size || 1);
@@ -31425,6 +32065,9 @@ button,
             const qa = (landExposure.get(a) || 0) / ra;
             const qb = (landExposure.get(b) || 0) / rb;
             if (qa !== qb) return qb - qa;
+            const ea = landExposure.get(a) || 0;
+            const eb = landExposure.get(b) || 0;
+            if (ea !== eb) return eb - ea;
             if (ra !== rb) return ra - rb;
             return countryByCode(a)?.name.localeCompare(countryByCode(b)?.name || "") || 0;
           })[0];
@@ -31436,30 +32079,46 @@ button,
           }
         }
 
-        // Synthetic bridges are likewise local: only a bridge touching the last
-        // completed place may open the next disconnected/island route.
+        // If the filled landmass has no unfinished land frontier, continue via
+        // a synthetic island/disconnected-component bridge. Prefer a bridge from
+        // the last-filled place, then fall back to any bridge touching the filled
+        // component so the game can always progress.
         if (!available.length && !landFrontier.length && bridgeFrontier.length) {
           const origin = chainState.lastFilledCode || chainState.startCode;
           const directBridges = new Set(chainState.graph?.bridgeGraph?.get(origin) || []);
-          available = bridgeFrontier.filter(code => directBridges.has(code));
+          const local = bridgeFrontier.filter(code => directBridges.has(code));
+          available = local.length ? local : [bridgeFrontier[0]];
           weakened = [];
         }
       }
 
       if (!available.length && incomplete.length && filled.size) {
-        // Last-resort repair for unexpected map/data gaps. Fortified mode never
-        // jumps across the map: it may only continue through an edge touching
-        // the most recently completed place. Connected mode keeps the broader
-        // geographic repair so old/custom datasets remain traversable.
+        // Last-resort repair for unexpected map/data gaps. Fortified still only
+        // advances through an edge attached to the filled component; it simply
+        // isn't restricted to the most recently filled country when that branch
+        // has nowhere left to go. Connected mode keeps the broader geographic
+        // repair so old/custom datasets remain traversable.
         if (chainState.ruleMode === "fortified") {
           const origin = chainState.lastFilledCode || chainState.startCode;
           const directLand = new Set(landGraph?.get(origin) || []);
           const localLand = incomplete.find(code => directLand.has(code));
           if (localLand) available = [localLand];
           else {
-            const directBridge = new Set(chainState.graph?.bridgeGraph?.get(origin) || []);
-            const localBridge = incomplete.find(code => directBridge.has(code));
-            if (localBridge) available = [localBridge];
+            const frontierLand = incomplete.find(code =>
+              [...(landGraph?.get(code) || [])].some(done => filled.has(done))
+            );
+            if (frontierLand) available = [frontierLand];
+            else {
+              const directBridge = new Set(chainState.graph?.bridgeGraph?.get(origin) || []);
+              const localBridge = incomplete.find(code => directBridge.has(code));
+              if (localBridge) available = [localBridge];
+              else {
+                const frontierBridge = incomplete.find(code =>
+                  [...(chainState.graph?.bridgeGraph?.get(code) || [])].some(done => filled.has(done))
+                );
+                if (frontierBridge) available = [frontierBridge];
+              }
+            }
           }
         } else {
           const landCandidates = incomplete.filter(code =>
@@ -31844,6 +32503,26 @@ button,
         : "Hint · first letter";
     }
 
+    function chainMasteryPartKey(code, kind) {
+      return `${code}|${kind}`;
+    }
+
+    function recordChainPartMastery(country, kind, score) {
+      if (!chainState || !country || !["country", "capital"].includes(kind)) return;
+      if (!chainState.recordedMastery) chainState.recordedMastery = new Set();
+      const key = chainMasteryPartKey(country.code, kind);
+      if (chainState.recordedMastery.has(key)) return;
+      chainState.recordedMastery.add(key);
+      const skill = kind === "country" ? "placeNameRecall" : "capitalRecall";
+      recordGameMasteryEvidence(country, skill, score, { weight:1, source:"chain", save:true });
+      recordDailyFactCounts({
+        total: 1,
+        clean: score >= .95 ? 1 : 0,
+        assisted: score > 0 && score < .95 ? 1 : 0,
+        missed: score <= 0 ? 1 : 0
+      });
+    }
+
     function giveChainHint() {
       if (!chainState || chainState.finishedAt) return;
       const candidates = chainHintCandidates();
@@ -31868,6 +32547,8 @@ button,
       const previous = Math.max(0, Number(chainState.activeHint?.count) || 0);
       const next = Math.min(total, previous + 1);
       chainState.activeHint = { key:chainHintKey(hint), count:next };
+      if (!chainState.assistedMastery) chainState.assistedMastery = new Set();
+      chainState.assistedMastery.add(chainMasteryPartKey(hint.code, hint.kind));
       chainState.hintsUsed = Math.max(0, Number(chainState.hintsUsed) || 0) + 1;
 
       const label = chainHintLabel(hint);
@@ -31903,6 +32584,8 @@ button,
       if (!c) return;
 
       const part = chainPartState(code);
+      const missingCountry = !part.country && chainState.answerMode !== "capital";
+      const missingCapital = !part.capital && chainState.answerMode !== "country";
       if (chainState.answerMode === "country") {
         part.country = true;
       } else if (chainState.answerMode === "capital") {
@@ -31911,6 +32594,8 @@ button,
         part.country = true;
         part.capital = true;
       }
+      if (missingCountry) recordChainPartMastery(c, "country", 0);
+      if (missingCapital) recordChainPartMastery(c, "capital", 0);
 
       chainState.lastFilledCode = code;
       chainState.activeHint = null;
@@ -31966,7 +32651,7 @@ button,
         return;
       }
       const query = interactiveLooseNormalize(chainGuessInput.value);
-      if (query.length < 3) {
+      if (query.length < 1) {
         clearChainSuggestions();
         return;
       }
@@ -32005,6 +32690,7 @@ button,
         button.addEventListener("pointerdown", event => event.preventDefault());
         button.addEventListener("click", () => {
           chainGuessInput.value = entry.answer;
+          if (chainState) chainState.assistedInputValue = interactiveLooseNormalize(entry.answer);
           clearChainSuggestions();
           updateChainGuessButtonState();
           chainGuessInput.focus({ preventScroll:true });
@@ -32029,6 +32715,7 @@ button,
       const button = options[chainSuggestionIndex];
       if (!button) return false;
       chainGuessInput.value = button.dataset.chainSuggestion || button.textContent || "";
+      if (chainState) chainState.assistedInputValue = interactiveLooseNormalize(chainGuessInput.value);
       clearChainSuggestions();
       updateChainGuessButtonState();
       return true;
@@ -32082,6 +32769,7 @@ button,
     function submitChainGuess() {
       if (!chainState || chainState.finishedAt || !chainGuessInput) return;
       const raw = chainGuessInput.value.trim();
+      const usedInputAssist = !!chainState.assistedInputValue && interactiveLooseNormalize(raw) === chainState.assistedInputValue;
       if (!raw) {
         chainFeedback.textContent = chainState.answerMode === "capital"
           ? "Enter a capital first."
@@ -32157,11 +32845,13 @@ button,
       const isCountryAnswer = match.countryMatches.some(item => item.code === c.code);
       const isCapitalAnswer = match.capitalMatches.some(item => item.code === c.code);
       let accepted = false;
+      let acceptedCountry = false;
+      let acceptedCapital = false;
 
       if (chainState.answerMode === "country") {
-        if (!part.country && isCountryAnswer) { part.country = true; accepted = true; }
+        if (!part.country && isCountryAnswer) { part.country = true; accepted = true; acceptedCountry = true; }
       } else if (chainState.answerMode === "capital") {
-        if (!part.capital && isCapitalAnswer) { part.capital = true; accepted = true; }
+        if (!part.capital && isCapitalAnswer) { part.capital = true; accepted = true; acceptedCapital = true; }
       } else {
         if (isCountryAnswer && isCapitalAnswer && !part.country && !part.capital) {
           // Singapore, Luxembourg, Monaco, etc.: one typed answer genuinely
@@ -32169,8 +32859,10 @@ button,
           part.country = true;
           part.capital = true;
           accepted = true;
-        } else if (isCountryAnswer && !part.country) { part.country = true; accepted = true; }
-        else if (isCapitalAnswer && !part.capital) { part.capital = true; accepted = true; }
+          acceptedCountry = true;
+          acceptedCapital = true;
+        } else if (isCountryAnswer && !part.country) { part.country = true; accepted = true; acceptedCountry = true; }
+        else if (isCapitalAnswer && !part.capital) { part.capital = true; accepted = true; acceptedCapital = true; }
       }
 
       if (!accepted) {
@@ -32182,6 +32874,16 @@ button,
         return;
       }
 
+      if (acceptedCountry) {
+        const assisted = usedInputAssist || chainState.assistedMastery?.has(chainMasteryPartKey(c.code, "country"));
+        recordChainPartMastery(c, "country", assisted ? .65 : 1);
+      }
+      if (acceptedCapital) {
+        const assisted = usedInputAssist || chainState.assistedMastery?.has(chainMasteryPartKey(c.code, "capital"));
+        recordChainPartMastery(c, "capital", assisted ? .65 : 1);
+      }
+
+      chainState.assistedInputValue = "";
       chainGuessInput.value = "";
       updateChainGuessButtonState();
       const completedNow = chainIsComplete(c.code);
@@ -32264,7 +32966,10 @@ button,
         if (token !== chainBuildToken || !chainFillOverlay?.classList.contains("open")) return;
         const viable = codes.filter(code => (graph.get(code)?.size || 0) > 0);
         const freshStarts = viable.filter(code => code !== chainPreviousStartCode);
-        const startPool = freshStarts.length ? freshStarts : viable;
+        const varietyContext = gameVarietyContext(viable.map(countryByCode).filter(Boolean));
+        const previousStartGroup = varietyContext.group(countryByCode(chainPreviousStartCode));
+        const variedStarts = freshStarts.filter(code => varietyContext.group(countryByCode(code)) !== previousStartGroup);
+        const startPool = variedStarts.length ? variedStarts : (freshStarts.length ? freshStarts : viable);
         const startCode = startPool[randomInt(startPool.length)] || codes[0];
         chainPreviousStartCode = startCode;
         chainState = {
@@ -32277,6 +32982,9 @@ button,
           hintsUsed:0,
           giveUpsUsed:0,
           activeHint:null,
+          assistedMastery:new Set(),
+          recordedMastery:new Set(),
+          assistedInputValue:"",
           startCode,
           lastFilledCode:startCode,
           startedAt:Date.now(),
@@ -32347,7 +33055,7 @@ button,
       stopChainTimer();
       destroyChainZoom();
       chainFillOverlay?.classList.remove("open");
-      if (menuPlayMode === "chain") openStartOverlay(!!studySession && studySession.active !== false);
+      if (menuPlayMode === "chain") openStartOverlay(!!studySession && studySession.active !== false, true);
     }
 
     chainSetOptions?.addEventListener("click", event => {
@@ -32397,6 +33105,7 @@ button,
       const suggestion = chainSpellingSuggestion;
       if (!suggestion || !chainGuessInput || chainGuessInput.disabled) return;
       chainGuessInput.value = suggestion.spelling;
+      if (chainState) chainState.assistedInputValue = interactiveLooseNormalize(suggestion.spelling);
       updateChainGuessButtonState();
 
       const availability = chainAvailability();
@@ -32549,6 +33258,7 @@ button,
             : "Find this place";
       }
 
+      mapHuntState.promptFallbackToName = false;
       if (mapHuntPromptMode === "flag") {
         mapHuntPromptText?.classList.add("hidden");
         mapHuntPromptFlag?.classList.remove("hidden");
@@ -32569,6 +33279,7 @@ button,
             // for this one question only.
             mapHuntPromptFlag.classList.add("hidden");
             mapHuntPromptFlag.style.visibility = "";
+            mapHuntState.promptFallbackToName = true;
             mapHuntPromptText?.classList.remove("hidden");
             if (mapHuntPromptText) mapHuntPromptText.textContent = c.name;
             mapHuntState.locked = false;
@@ -32582,6 +33293,7 @@ button,
             flagLoadHandler?.call(mapHuntPromptFlag, event);
             if (!mapHuntState || mapHuntState.finished || mapHuntCurrentCountry()?.code !== promptCode) return;
             mapHuntPromptFlag.style.visibility = "";
+            mapHuntState.promptFallbackToName = false;
             mapHuntState.locked = false;
             if (mapHuntFeedback) {
               mapHuntFeedback.textContent = "Click the place on the map.";
@@ -32626,6 +33338,30 @@ button,
       }, delay);
     }
 
+    function mapHuntMasteryScore(result) {
+      if (result?.revealed) return 0;
+      const tries = Math.max(1, Math.min(4, Number(result?.tries) || 4));
+      return ({ 1:1, 2:.75, 3:.5, 4:.25 })[tries] ?? 0;
+    }
+
+    function recordMapHuntMastery(country, result) {
+      if (!country || !result) return;
+      const score = mapHuntMasteryScore(result);
+      recordGameMasteryEvidence(country, "mapLocation", score, { weight:1, source:"maphunt", save:false });
+      if (mapHuntPromptMode === "flag" && !mapHuntState?.promptFallbackToName) {
+        recordGameMasteryEvidence(country, "flagRecognition", score, { weight:.85, source:"maphunt", save:false });
+      } else if (mapHuntPromptMode === "capital") {
+        recordGameMasteryEvidence(country, "capitalToPlace", score, { weight:.85, source:"maphunt", save:false });
+      }
+      saveSmartReview();
+      recordDailyFactCounts({
+        total: 1,
+        clean: score >= .95 ? 1 : 0,
+        assisted: score > 0 && score < .95 ? 1 : 0,
+        missed: score <= 0 ? 1 : 0
+      });
+    }
+
     function handleMapHuntGuess(code) {
       if (!mapHuntState || mapHuntState.finished || mapHuntState.locked) return;
       // Open water is not a geography guess. Ignore ocean/background taps so a
@@ -32636,7 +33372,9 @@ button,
 
       if (code === target.code) {
         const tries = Math.min(4, mapHuntState.misses + 1);
-        mapHuntState.results.set(target.code, { tries, revealed:false });
+        const result = { tries, revealed:false };
+        mapHuntState.results.set(target.code, result);
+        recordMapHuntMastery(target, result);
         mapHuntState.locked = true;
         updateMapHuntMapStates();
         mapHuntFeedback.textContent = tries === 1
@@ -32655,7 +33393,9 @@ button,
       if (wrong) recordCountryConfusion(target.code, wrong.code, "globe");
 
       if (mapHuntState.misses >= 4) {
-        mapHuntState.results.set(target.code, { tries:5, revealed:true });
+        const result = { tries:5, revealed:true };
+        mapHuntState.results.set(target.code, result);
+        recordMapHuntMastery(target, result);
         mapHuntState.locked = true;
         updateMapHuntMapStates();
         mapHuntFeedback.textContent = `That was ${target.name}. GeoDen has highlighted it for you.`;
@@ -32869,7 +33609,7 @@ button,
         setKey:mapHuntSet,
         promptMode:mapHuntPromptMode,
         allCodes:[...allCodes],
-        roundCodes:mapHuntShuffle(roundCodes),
+        roundCodes:diversifyGameCountryItems(mapHuntShuffle(roundCodes), code => countryByCode(code)),
         roundSet:new Set(roundCodes),
         results:new Map(),
         cursor:0,
@@ -32982,7 +33722,7 @@ button,
         mapHuntAdvanceTimer = null;
       }
       mapHuntOverlay?.classList.remove("open");
-      if (menuPlayMode === "maphunt") openStartOverlay(!!studySession && studySession.active !== false);
+      if (menuPlayMode === "maphunt") openStartOverlay(!!studySession && studySession.active !== false, true);
     }
 
     mapHuntSetOptions?.addEventListener("click", event => {
@@ -33022,6 +33762,7 @@ button,
     const rankingStartBtn = document.getElementById("rankingStartBtn");
     const rankingMetricOptions = document.getElementById("rankingMetricOptions");
     const rankingMetricHelp = document.getElementById("rankingMetricHelp");
+    const rankingRandomMetricToggle = document.getElementById("rankingRandomMetricToggle");
     const rankingCountOptions = document.getElementById("rankingCountOptions");
     const rankingSetOptions = document.getElementById("rankingSetOptions");
     const rankingPromptTitle = document.getElementById("rankingPromptTitle");
@@ -33032,7 +33773,10 @@ button,
     const rankingNewBtn = document.getElementById("rankingNewBtn");
     const rankingRevealBtn = document.getElementById("rankingRevealBtn");
 
-    let rankingMetric = ["borders", "population", "area"].includes(specialGamePrefs.rankingMetric) ? specialGamePrefs.rankingMetric : "borders";
+    const RANKING_METRIC_KEYS = ["borders", "population", "area", "density"];
+    let rankingMetric = RANKING_METRIC_KEYS.includes(specialGamePrefs.rankingMetric) ? specialGamePrefs.rankingMetric : "borders";
+    let rankingRandomMetric = specialGamePrefs.rankingRandomMetric === true;
+    let rankingLastRandomMetric = RANKING_METRIC_KEYS.includes(specialGamePrefs.rankingLastRandomMetric) ? specialGamePrefs.rankingLastRandomMetric : null;
     let rankingCount = [5, 8, 10, 15].includes(Number(specialGamePrefs.rankingCount)) ? Number(specialGamePrefs.rankingCount) : 5;
     let rankingSet = chainSetChoices.has(specialGamePrefs.rankingSet) ? specialGamePrefs.rankingSet : "world";
     let rankingState = null;
@@ -33042,13 +33786,21 @@ button,
     let rankingBuildToken = 0;
 
     function updateRankingSetupHelp() {
+      if (rankingRandomMetricToggle) rankingRandomMetricToggle.checked = rankingRandomMetric;
+      rankingMetricOptions?.querySelectorAll("[data-ranking-metric]").forEach(button => {
+        button.disabled = rankingRandomMetric;
+        button.setAttribute("aria-disabled", rankingRandomMetric ? "true" : "false");
+      });
       if (rankingMetricHelp) {
         const copy = {
           borders: "Shared land borders.",
           population: "Population.",
-          area: "Total area."
+          area: "Total area.",
+          density: "Population divided by area — people per km²."
         };
-        rankingMetricHelp.textContent = copy[rankingMetric] || "";
+        rankingMetricHelp.textContent = rankingRandomMetric
+          ? "A different metric is picked each round, without immediately repeating the last one."
+          : (copy[rankingMetric] || "");
       }
       const poolCount = rankingCountriesForSet(rankingSet).length;
       rankingCountOptions?.querySelectorAll("[data-ranking-count]").forEach(button => {
@@ -33058,16 +33810,35 @@ button,
       });
     }
 
+    function formatDensityValue(value) {
+      if (!Number.isFinite(value)) return "Not listed";
+      return `${new Intl.NumberFormat("en", { maximumFractionDigits: value < 10 ? 1 : 0 }).format(value)} / km²`;
+    }
+
     const RANKING_METRICS = {
       borders: { title:"Most → fewest land borders", format:value => `${value} land border${value === 1 ? "" : "s"}` },
       population: { title:"Largest → smallest population", format:value => formatWholeNumber(value) },
-      area: { title:"Largest → smallest area", format:value => formatArea(value) }
+      area: { title:"Largest → smallest area", format:value => formatArea(value) },
+      density: { title:"Highest → lowest population density", format:value => formatDensityValue(value) }
     };
 
-    function rankingMetricDisplayName(metric = rankingMetric) {
-      if (metric === "population") return "Population";
-      if (metric === "area") return "Area";
+    function rankingMetricDisplayName(metric = null) {
+      if (metric == null && rankingRandomMetric) return "Random metric";
+      const key = metric || rankingMetric;
+      if (key === "population") return "Population";
+      if (key === "area") return "Area";
+      if (key === "density") return "Population density";
       return "Land borders";
+    }
+
+    function chooseRankingRoundMetric() {
+      if (!rankingRandomMetric) return rankingMetric;
+      let choices = RANKING_METRIC_KEYS.filter(metric => metric !== rankingLastRandomMetric);
+      if (!choices.length) choices = [...RANKING_METRIC_KEYS];
+      const chosen = choices[randomInt(choices.length)] || "borders";
+      rankingLastRandomMetric = chosen;
+      saveSpecialGamePrefs();
+      return chosen;
     }
 
     function rankingCountriesForSet(setKey = rankingSet) {
@@ -33080,9 +33851,14 @@ button,
       if (metric === "borders") {
         try { return (await neighbouringCountriesFor(c))?.names?.length ?? null; } catch (_) { return null; }
       }
-      if (metric === "population" || metric === "area") {
+      if (["population", "area", "density"].includes(metric)) {
         try {
           const facts = await loadCountryFacts(c);
+          if (metric === "density") {
+            const population = Number(facts?.population);
+            const area = Number(facts?.area);
+            return Number.isFinite(population) && Number.isFinite(area) && area > 0 ? population / area : null;
+          }
           const value = metric === "population" ? facts?.population : facts?.area;
           return Number.isFinite(value) ? value : null;
         } catch (_) { return null; }
@@ -33091,7 +33867,7 @@ button,
     }
 
     async function rankingBatchValues(metric, batch) {
-      if (!["population","area"].includes(metric)) {
+      if (!["population","area","density"].includes(metric)) {
         return Promise.all(batch.map(c => rankingMetricValue(metric,c)));
       }
       try {
@@ -33107,7 +33883,14 @@ button,
         for (const entity of Object.values(data.entities || {})) {
           const code = nonDeprecatedClaims(entity,"P297").map(claimStringValue).find(Boolean);
           if (!code) continue;
-          const value = bestQuantity(entity, metric === "population" ? "P1082" : "P2046");
+          let value = null;
+          if (metric === "density") {
+            const population = bestQuantity(entity, "P1082");
+            const area = bestQuantity(entity, "P2046");
+            if (Number.isFinite(population) && Number.isFinite(area) && area > 0) value = population / area;
+          } else {
+            value = bestQuantity(entity, metric === "population" ? "P1082" : "P2046");
+          }
           if (Number.isFinite(value)) valuesByCode.set(String(code).toUpperCase(), value);
         }
         const values = batch.map(c => valuesByCode.get(c.code) ?? null);
@@ -33151,40 +33934,127 @@ button,
       return out;
     }
 
+    function rankingValueDistance(a, b, metric) {
+      if (!Number.isFinite(a) || !Number.isFinite(b)) return Infinity;
+      if (metric === "borders") return Math.abs(a - b);
+      const x = Math.max(Math.abs(a), 1e-9);
+      const y = Math.max(Math.abs(b), 1e-9);
+      return Math.abs(Math.log(x) - Math.log(y));
+    }
+
+    function rankingChooseClosePair(candidates, metric, context) {
+      const sorted = [...candidates].sort((a,b) => a.value - b.value || a.c.name.localeCompare(b.c.name));
+      const pairs = [];
+      for (let i = 0; i < sorted.length - 1; i++) {
+        for (let j = i + 1; j < Math.min(sorted.length, i + 5); j++) {
+          const a = sorted[i], b = sorted[j];
+          if (a.value === b.value) continue; // ties are fair, but not the close-call we want to manufacture
+          pairs.push({
+            a, b,
+            distance: rankingValueDistance(a.value, b.value, metric),
+            crossGroup: context.group(a.c) !== context.group(b.c)
+          });
+        }
+      }
+      if (!pairs.length) return [];
+      const cross = pairs.filter(pair => pair.crossGroup);
+      const pool = cross.length ? cross : pairs;
+      pool.sort((x,y) => x.distance - y.distance);
+      const top = pool.slice(0, Math.min(6, pool.length));
+      const chosen = top[randomInt(top.length)] || top[0];
+      return chosen ? [chosen.a, chosen.b] : [];
+    }
+
+    function rankingSelectVariedItems(candidates, wanted, metric) {
+      if (candidates.length <= wanted) return [...candidates];
+      const context = gameVarietyContext(candidates.map(item => item.c));
+      const sortedByValue = [...candidates].sort((a,b) => a.value - b.value);
+      const valueBand = item => {
+        const index = sortedByValue.indexOf(item);
+        const ratio = sortedByValue.length <= 1 ? 0 : index / (sortedByValue.length - 1);
+        return ratio < 1/3 ? "low" : ratio > 2/3 ? "high" : "mid";
+      };
+      const selected = [];
+      const chosenCodes = new Set();
+      const add = item => {
+        if (!item || chosenCodes.has(item.c.code) || selected.length >= wanted) return false;
+        selected.push(item);
+        chosenCodes.add(item.c.code);
+        return true;
+      };
+
+      // Every board gets at least one deliberate close comparison. Prefer that
+      // close pair to come from different geographic groups, so difficulty comes
+      // from the statistic rather than two neighbouring/similar-looking places.
+      for (const item of rankingChooseClosePair(candidates, metric, context)) add(item);
+
+      while (selected.length < wanted) {
+        const remaining = candidates.filter(item => !chosenCodes.has(item.c.code));
+        if (!remaining.length) break;
+        const groupCounts = new Map();
+        const bandCounts = new Map();
+        for (const item of selected) {
+          const group = context.group(item.c);
+          const band = valueBand(item);
+          groupCounts.set(group, (groupCounts.get(group) || 0) + 1);
+          bandCounts.set(band, (bandCounts.get(band) || 0) + 1);
+        }
+        const scored = remaining.map(item => {
+          const group = context.group(item.c);
+          const band = valueBand(item);
+          const groupCount = groupCounts.get(group) || 0;
+          const bandCount = bandCounts.get(band) || 0;
+          const unseenGroup = groupCount === 0 ? 7 : 0;
+          const unseenBand = bandCount === 0 ? 3.5 : 0;
+          const balance = -groupCount * 2.2 - bandCount * .7;
+          return { item, score: unseenGroup + unseenBand + balance + Math.random() * 1.5 };
+        }).sort((a,b) => b.score - a.score);
+        add(scored[0]?.item);
+      }
+      return selected;
+    }
+
     async function buildRankingItems(options = {}) {
       const avoidPrevious = options.avoidPrevious === true;
+      const metric = RANKING_METRIC_KEYS.includes(options.metric) ? options.metric : rankingMetric;
       const previous = new Set(avoidPrevious ? rankingLastRoundCodes : []);
       const all = rankingCountriesForSet();
-      const source = avoidPrevious ? all.filter(c => !previous.has(c.code)) : all;
-      if (source.length < 2) throw new Error("not-enough-fresh-places");
+      const wanted = Math.min(rankingCount, all.length);
+      const fresh = avoidPrevious ? all.filter(c => !previous.has(c.code)) : all;
+      const repeated = avoidPrevious ? all.filter(c => previous.has(c.code)) : [];
+      const source = avoidPrevious && fresh.length < wanted
+        ? [...fresh, ...shuffleRanking(repeated)]
+        : fresh;
+      if (source.length < 2) throw new Error("not-enough-places");
 
-      const pool = shuffleRanking(source);
-      const wanted = Math.min(rankingCount, pool.length);
+      // First diversify the fetch order geographically so even a partially
+      // available data source does not bias the board toward one corner of a set.
+      // Fresh places are preferred; previous-round places only top the pool up
+      // when a small regional set cannot otherwise maintain the chosen board size.
+      const pool = diversifyGameCountryItems(source, c => c);
       const candidates = [];
-      const batchSize = Math.max(wanted + 4, 10);
+      const targetCandidateCount = Math.min(pool.length, Math.max(wanted * 2, 18));
+      const batchSize = Math.min(24, Math.max(wanted + 5, 12));
 
-      // Keep looking until there are enough usable values AND at least two
-      // different values. A board where every item ties is not a useful game.
+      // Build a broader candidate pool than the board needs. That lets Ranking
+      // choose geographic variety, value range and a deliberate close call instead
+      // of simply taking the first five usable records returned by the data source.
       for (let offset=0; offset<pool.length; offset += batchSize) {
         const batch = pool.slice(offset, offset + batchSize);
-        const values = await rankingBatchValues(rankingMetric, batch);
+        const values = await rankingBatchValues(metric, batch);
         batch.forEach((c,i) => {
           const value = values[i];
           if (Number.isFinite(value)) candidates.push({ c, value });
         });
-        if (candidates.length >= wanted && new Set(candidates.map(item => item.value)).size >= 2) break;
+        if (candidates.length >= targetCandidateCount && new Set(candidates.map(item => item.value)).size >= 2) break;
       }
 
       if (candidates.length < 2) throw new Error("not-enough-values");
       if (new Set(candidates.map(item => item.value)).size < 2) throw new Error("not-enough-distinct-values");
 
-      const shuffled = shuffleRanking(candidates);
-      let selected = shuffled.slice(0, wanted);
-
-      // A random subset can still contain only one tied value even if the wider
-      // candidate pool has variety. Replace one item with a different value.
+      let selected = rankingSelectVariedItems(candidates, wanted, metric);
       if (new Set(selected.map(item => item.value)).size < 2) {
-        const different = shuffled.slice(wanted).find(item => item.value !== selected[0]?.value);
+        const different = candidates.find(item => !selected.some(chosen => chosen.c.code === item.c.code) && item.value !== selected[0]?.value);
         if (different && selected.length) selected[selected.length - 1] = different;
       }
 
@@ -33192,13 +34062,7 @@ button,
       return rankingShuffleForPlay(selected);
     }
 
-    function rankingFreshReplayCount() {
-      if (!rankingLastRoundCodes.length) return rankingCountriesForSet().length;
-      const previous = new Set(rankingLastRoundCodes);
-      return rankingCountriesForSet().filter(c => !previous.has(c.code)).length;
-    }
-
-    function rankingTargetValues() {
+function rankingTargetValues() {
       return [...rankingState.items].map(item => item.value).sort((a,b) => b-a);
     }
 
@@ -33213,14 +34077,50 @@ button,
       return new Set(values).size < values.length;
     }
 
+    const RANKING_MASTERY_SKILL = {
+      borders: "rankingBorders",
+      population: "rankingPopulation",
+      area: "rankingArea",
+      density: "rankingDensity"
+    };
+
+    function rankingCorrectCodes() {
+      if (!rankingState) return new Set();
+      const target = rankingTargetValues();
+      return new Set(rankingState.items.filter((item, index) => item.value === target[index]).map(item => item.c.code));
+    }
+
+    function recordRankingMastery(revealed = false) {
+      if (!rankingState || rankingState.masteryRecorded) return;
+      rankingState.masteryRecorded = true;
+      const skill = RANKING_MASTERY_SKILL[rankingState.metric];
+      if (!skill) return;
+      const firstCorrect = rankingState.firstCheckCorrectCodes instanceof Set
+        ? rankingState.firstCheckCorrectCodes
+        : new Set(rankingState.firstCheckCorrectCodes || []);
+      const checks = Math.max(1, Number(rankingState.checks) || 1);
+      const perfectFirstCheck = firstCorrect.size === rankingState.items.length;
+      for (const item of rankingState.items) {
+        let score;
+        if (revealed) score = firstCorrect.has(item.c.code) ? .55 : .15;
+        else if (checks <= 1 && perfectFirstCheck) score = .9;
+        else score = firstCorrect.has(item.c.code) ? .8 : .55;
+        // Ranking demonstrates relative/comparative knowledge, not exact-value
+        // recall, so deliberately give it less weight than a direct answer.
+        recordGameMasteryEvidence(item.c, skill, score, { weight:.45, source:"ranking", save:false });
+      }
+      saveSmartReview();
+    }
+
     function rankingFinishPerfect() {
       if (!rankingState) return;
       rankingState.revealed = true;
       rankingState.verified = true;
+      recordRankingMastery(false);
       rankingFeedback.textContent = `Perfect — the whole order is right.${rankingHasTies() ? " Tied places can be in either order." : ""}`;
-      const canReplayFresh = rankingFreshReplayCount() >= 2;
-      rankingRevealBtn.textContent = canReplayFresh ? "Play new places →" : "Change setup →";
-      rankingRevealBtn.dataset.rankingAction = canReplayFresh ? "replay" : "setup";
+      const canReplay = rankingCountriesForSet().length >= 2;
+      rankingRevealBtn.textContent = canReplay ? "Next round →" : "Change setup →";
+      rankingRevealBtn.dataset.rankingAction = canReplay ? "replay" : "setup";
       rankingRevealBtn.classList.remove("hidden");
       rankingVerifyBtn.disabled = true;
       rankingNewBtn.textContent = "Change setup";
@@ -33329,6 +34229,8 @@ button,
 
     function verifyRanking() {
       if (!rankingState || rankingState.revealed) return;
+      rankingState.checks = Math.max(0, Number(rankingState.checks) || 0) + 1;
+      if (!rankingState.firstCheckCorrectCodes) rankingState.firstCheckCorrectCodes = [...rankingCorrectCodes()];
       rankingState.verified = true;
       rankingVerifyBtn.disabled = true;
       rankingVerifyBtn.classList.add("hidden");
@@ -33347,6 +34249,7 @@ button,
 
     function revealRanking() {
       if (!rankingState) return;
+      recordRankingMastery(true);
       const previousPositions = rankingRowPositions();
       rankingState.items.sort((a,b)=>b.value-a.value || a.c.name.localeCompare(b.c.name));
       rankingState.revealed=true;
@@ -33355,9 +34258,9 @@ button,
       rankingFeedback.textContent = rankingHasTies()
         ? "Here’s one correct order. Tied places can swap."
         : "Here’s the correct order.";
-      const canReplayFresh = rankingFreshReplayCount() >= 2;
-      rankingRevealBtn.textContent = canReplayFresh ? "Play new places →" : "Change setup →";
-      rankingRevealBtn.dataset.rankingAction = canReplayFresh ? "replay" : "setup";
+      const canReplay = rankingCountriesForSet().length >= 2;
+      rankingRevealBtn.textContent = canReplay ? "Next round →" : "Change setup →";
+      rankingRevealBtn.dataset.rankingAction = canReplay ? "replay" : "setup";
       rankingRevealBtn.classList.remove("hidden");
       rankingNewBtn.textContent = "Change setup";
       renderRankingList();
@@ -33370,13 +34273,14 @@ button,
       const replay = options?.replay === true;
       const avoidPrevious = replay || rankingLastRoundCodes.length > 0;
       rankingSetup.classList.add("hidden"); rankingPlay.classList.add("hidden"); rankingLoading.classList.remove("hidden");
-      rankingLoading.textContent = ["population","area"].includes(rankingMetric) ? "Loading current values…" : "Building ranking…";
+      const roundMetric = chooseRankingRoundMetric();
+      rankingLoading.textContent = ["population","area","density"].includes(roundMetric) ? "Loading current values…" : "Building ranking…";
       rankingFeedback.textContent="";
       try {
-        const items = await buildRankingItems({ avoidPrevious });
+        const items = await buildRankingItems({ avoidPrevious, metric: roundMetric });
         if (token !== rankingBuildToken || !rankingOverlay?.classList.contains("open")) return;
         if (items.length < 2) throw new Error("Not enough values");
-        rankingState={ metric:rankingMetric, setKey:rankingSet, items, verified:false, revealed:false };
+        rankingState={ metric:roundMetric, setKey:rankingSet, items, verified:false, revealed:false, checks:0, firstCheckCorrectCodes:null, masteryRecorded:false };
         rankingLastRoundCodes = items.map(item => item.c.code);
         saveSpecialGamePrefs();
         rankingNewBtn.textContent = "Change setup";
@@ -33385,11 +34289,9 @@ button,
         rankingVerifyBtn.disabled = false;
         rankingVerifyBtn.classList.remove("hidden");
         rankingVerifyBtn.textContent = "Check order";
-        rankingPromptTitle.textContent=RANKING_METRICS[rankingMetric].title;
+        rankingPromptTitle.textContent=RANKING_METRICS[roundMetric].title;
         const requestedCount = Math.min(rankingCount, rankingCountriesForSet(rankingSet).length);
-        const availabilityNote = items.length < requestedCount
-          ? (avoidPrevious ? " · new places only" : " · available data only")
-          : "";
+        const availabilityNote = items.length < requestedCount ? " · available data only" : "";
         const tieNote = new Set(items.map(item => item.value)).size < items.length ? " · ties can swap" : "";
         rankingPromptMeta.textContent = `${items.length} places · ${countrySetDisplayName(rankingSet)}${availabilityNote}${tieNote} · rank 1 is highest`;
         rankingLoading.classList.add("hidden"); rankingPlay.classList.remove("hidden");
@@ -33403,10 +34305,10 @@ button,
         rankingSetup.classList.remove("hidden");
         updateRankingSetupHelp();
         if (rankingMetricHelp) {
-          const noFreshPlaces = err?.message === "not-enough-fresh-places" || (rankingLastRoundCodes.length > 0 && rankingFreshReplayCount() < 2);
+          const tooFewPlaces = err?.message === "not-enough-places";
           const noDistinctValues = err?.message === "not-enough-distinct-values";
-          rankingMetricHelp.textContent = noFreshPlaces
-            ? "Not enough new places remain in this set. Choose another set."
+          rankingMetricHelp.textContent = tooFewPlaces
+            ? "This set needs at least two places for Ranking. Choose another set."
             : noDistinctValues
               ? "These places all have the same value. Try another metric or set."
               : "Couldn’t load enough values. Try again, or choose another metric when you’re online.";
@@ -33434,10 +34336,11 @@ button,
     }
     function closeRanking() {
       rankingBuildToken += 1; rankingOverlay?.classList.remove("open");
-      if (menuPlayMode === "ranking") openStartOverlay(!!studySession && studySession.active !== false);
+      if (menuPlayMode === "ranking") openStartOverlay(!!studySession && studySession.active !== false, true);
     }
 
-    rankingMetricOptions?.addEventListener("click",event=>{const b=event.target.closest("[data-ranking-metric]");if(!b)return;rankingMetric=b.dataset.rankingMetric;saveSpecialGamePrefs();setSpecialOptionActive(rankingMetricOptions,"data-ranking-metric",rankingMetric);updateRankingSetupHelp();updateStartMenuSummary();});
+    rankingMetricOptions?.addEventListener("click",event=>{const b=event.target.closest("[data-ranking-metric]");if(!b || b.disabled)return;rankingMetric=b.dataset.rankingMetric;saveSpecialGamePrefs();setSpecialOptionActive(rankingMetricOptions,"data-ranking-metric",rankingMetric);updateRankingSetupHelp();updateStartMenuSummary();});
+    rankingRandomMetricToggle?.addEventListener("change",()=>{rankingRandomMetric=rankingRandomMetricToggle.checked;saveSpecialGamePrefs();updateRankingSetupHelp();updateStartMenuSummary();});
     rankingCountOptions?.addEventListener("click",event=>{const b=event.target.closest("[data-ranking-count]");if(!b)return;rankingCount=Number(b.dataset.rankingCount)||5;saveSpecialGamePrefs();setSpecialOptionActive(rankingCountOptions,"data-ranking-count",rankingCount);updateRankingSetupHelp();updateStartMenuSummary();});
     rankingSetOptions?.addEventListener("click",event=>{const b=event.target.closest("[data-ranking-set]");if(!b)return;rankingSet=b.dataset.rankingSet;saveSpecialGamePrefs();setSpecialOptionActive(rankingSetOptions,"data-ranking-set",rankingSet);updateRankingSetupHelp();updateStartMenuSummary();});
     rankingCloseBtn?.addEventListener("click",closeRanking);
@@ -33494,24 +34397,16 @@ button,
     initializeNavigationHistory();
     render();
 
-    // A session choice is required on first use (or after a completed bounded
-    // session). Existing active sessions resume normally after a reload.
-    if (!studySession || studySession.active === false) {
-      window.setTimeout(() => openStartOverlay(false), 30);
-    } else if (studySession.interaction === "matching") {
-      menuPlayMode = "matching";
-      window.setTimeout(() => openMatchingMode(true, true), 40);
-    } else if (studySession.interaction === "detective") {
-      menuPlayMode = "detective";
-      window.setTimeout(() => openDetectiveMode(true), 40);
-    } else if (studySession.interaction === "rapid") {
-      menuPlayMode = "rapid";
-      window.setTimeout(() => openRapidMode(true), 40);
-    } else if (studySession.interaction === "interactive") {
-      menuPlayMode = "interactive";
-    } else {
-      menuPlayMode = "standard";
+    // Home is always the app entry point. Unfinished runs are offered as a
+    // compact Resume action instead of dropping the learner into mid-session.
+    if (studySession?.active !== false) {
+      if (["matching", "detective", "rapid", "interactive"].includes(studySession?.interaction)) {
+        menuPlayMode = studySession.interaction;
+      } else {
+        menuPlayMode = "standard";
+      }
     }
+    window.setTimeout(() => openStartOverlay(false), 30);
 
 
   </script>
