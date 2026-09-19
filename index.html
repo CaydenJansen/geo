@@ -12946,6 +12946,124 @@ button,
       shape-rendering:geometricPrecision;
     }
   </style>
+
+  <style id="detective-guess-guidance-v0509">
+    /* v0.50.9 — keep the newest Detective guess prominent, then rank older
+       guesses from geographically warmest to coolest. */
+    /* v0.50.10 — progressive Detective: wrong guesses unlock the next clue;
+       Formation moves to clue two in the Recommended preset. */
+    .detective-latest-guess,
+    .detective-prior-history {
+      width:100%;
+      display:grid;
+      gap:5px;
+    }
+    .detective-latest-guess.hidden,
+    .detective-prior-history.hidden { display:none !important; }
+    .detective-latest-guess {
+      padding-bottom:7px;
+      border-bottom:1px solid rgba(23,23,23,.08);
+    }
+    .detective-latest-guess-chip { width:100%; }
+    .detective-prior-history { margin-top:1px; }
+    .detective-prior-chip {
+      justify-content:space-between !important;
+      gap:10px;
+    }
+    .detective-prior-chip.latest {
+      min-height:42px;
+      border-width:2px !important;
+      box-shadow:0 5px 14px rgba(25,22,16,.06);
+    }
+    .detective-guess-name {
+      min-width:0;
+      font-weight:900;
+      overflow-wrap:anywhere;
+    }
+    .detective-guess-meta {
+      flex:0 0 auto;
+      color:currentColor;
+      font-size:.68rem;
+      font-weight:900;
+      white-space:nowrap;
+      opacity:.92;
+    }
+    @media (max-width:390px) {
+      .detective-prior-chip { align-items:flex-start; }
+      .detective-guess-meta { font-size:.64rem; }
+    }
+  </style>
+
+  <style id="detective-flow-layout-v05012">
+    /* v0.50.12 — the progressive clue stack can become taller than the viewport.
+       Keep the guess/history card in document flow instead of pinning it over
+       newly revealed clues. The dialog itself remains the scroll container. */
+    .detective-case {
+      min-width: 0;
+    }
+    .detective-clues {
+      position: relative;
+      z-index: 0;
+    }
+    .detective-guess-card {
+      position: relative !important;
+      inset: auto !important;
+      bottom: auto !important;
+      z-index: 1 !important;
+      margin-top: 14px !important;
+      background: rgba(251,250,246,.96) !important;
+      box-shadow: 0 8px 22px rgba(25,22,16,.055);
+      scroll-margin-block: 16px;
+    }
+    /* The autocomplete remains intentionally layered, but only while typing. */
+    .detective-suggestions {
+      z-index: 6;
+    }
+    @media (max-width: 520px) {
+      .detective-guess-card {
+        margin-top: 10px !important;
+        scroll-margin-bottom: 18px !important;
+      }
+    }
+  </style>
+
+  <style id="matching-action-clip-fix-v05015">
+    /* v0.50.15 — the old sticky drawer used a negative bottom margin.
+       After Matching moved to an overflow-hidden fixed drawer, that leftover
+       margin could pull the verification buttons below the panel's clip edge. */
+    .matching-pools {
+      margin-bottom: 0 !important;
+      padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+      box-sizing: border-box;
+    }
+
+    .matching-drawer-actions {
+      flex: 0 0 auto;
+      min-height: 46px;
+      padding: 3px 2px 4px;
+      overflow: visible;
+      box-sizing: border-box;
+    }
+
+    .matching-verify,
+    .matching-check,
+    .matching-next-round {
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    @media (max-width: 520px) {
+      .matching-pools {
+        margin-bottom: 0 !important;
+        padding-bottom: max(9px, env(safe-area-inset-bottom)) !important;
+      }
+
+      .matching-drawer-actions {
+        min-height: 44px;
+        padding-bottom: 5px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -13637,7 +13755,7 @@ button,
 
       <div class="detective-case hidden" id="detectiveCase">
         <div class="detective-clues" id="detectiveClues"></div>
-        <button class="detective-reveal" id="detectiveRevealBtn" type="button">Another clue</button>
+        <button class="detective-reveal hidden" id="detectiveRevealBtn" type="button" aria-hidden="true" tabindex="-1">Another clue</button>
 
         <div class="detective-guess-card" id="detectiveGuessCard">
           <label class="detective-guess-label" for="detectiveInput">Your guess</label>
@@ -13646,9 +13764,15 @@ button,
             <button class="detective-guess-button" id="detectiveGuessBtn" type="button">Guess</button>
           </div>
           <div class="detective-suggestions hidden" id="detectiveSuggestions" role="listbox" aria-label="Place suggestions"></div>
-          <div class="detective-prior-guesses hidden" id="detectivePriorGuesses" aria-label="Previous guesses">
-            <span class="detective-prior-label">Previous guesses</span>
-            <div class="detective-prior-chips" id="detectivePriorGuessChips"></div>
+          <div class="detective-prior-guesses hidden" id="detectivePriorGuesses" aria-label="Guess history">
+            <div class="detective-latest-guess" id="detectiveLatestGuess">
+              <span class="detective-prior-label">Latest guess</span>
+              <div class="detective-latest-guess-chip" id="detectiveLatestGuessChip"></div>
+            </div>
+            <div class="detective-prior-history hidden" id="detectivePriorHistory">
+              <span class="detective-prior-label">Previous guesses · warmest first</span>
+              <div class="detective-prior-chips" id="detectivePriorGuessChips"></div>
+            </div>
           </div>
           <div class="detective-feedback" id="detectiveFeedback" aria-live="polite"></div>
           <button class="detective-give-up" id="detectiveGiveUpBtn" type="button">Reveal answer · 0 pts</button>
@@ -14020,7 +14144,7 @@ button,
           <div class="special-game-help" id="chainAnswerHelp">Enter any available place.</div>
           <label class="territory-inline-toggle">
             <input id="chainAutocompleteToggle" type="checkbox" checked />
-            <span class="territory-inline-toggle-copy"><strong>Typeahead suggestions</strong><span class="territory-inline-toggle-meta">Suggest playable place or capital names after 3 letters</span></span>
+            <span class="territory-inline-toggle-copy"><strong>Typeahead suggestions</strong><span class="territory-inline-toggle-meta">Suggest playable place or capital names after 1 letter</span></span>
           </label>
         </div>
         <div class="special-game-field">
@@ -14238,7 +14362,9 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.50.7";
+    const GEODEN_VERSION = "0.50.16";
+    // Input policy: autocomplete/typeahead is ordinary entry and remains unassisted.
+    // Only an actual spelling correction (or an explicit hint/reveal) counts as help.
     const GEODEN_BUILD_DATE = "2026-09-19";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -14635,7 +14761,7 @@ button,
     };
     const FLASH_BASIC_STAGES = ["flag", "country", "globe", "capital"];
     const INTERACTIVE_BASIC_STAGES = ["flag", "country", "globe", "capital"];
-    const MATCHING_BASIC_FIELDS = ["country", "flag", "capital", "currency"];
+    const MATCHING_BASIC_FIELDS = ["country", "flag", "silhouette", "capital", "currency", "neighbours", "population"];
 
     const DEFAULT_CONFIG = {
       order: [...ALL_STAGES],
@@ -14673,13 +14799,15 @@ button,
     };
 
     // Recommended Detective clues deliberately progress from broad geography to
-    // stronger identity clues. Custom ordering is still fully respected.
+    // stronger identity clues. Formation is an early historical anchor and the
+    // full flag stays as the final high-information clue. Custom ordering is
+    // still fully respected.
     const DETECTIVE_RECOMMENDED_CLUES = [
-      "continent", "borderCount", "flagColour", "area", "neighbours", "silhouette", "capital"
+      "continent", "formation", "borderCount", "flagColour", "area", "neighbours", "silhouette", "capital", "flag"
     ];
     const DETECTIVE_ALL_CLUES = [
-      ...DETECTIVE_RECOMMENDED_CLUES,
-      "languages", "currency", "largestCity", "population", "formation", "government",
+      "continent", "formation", "borderCount", "flagColour", "area", "neighbours", "silhouette", "capital",
+      "languages", "currency", "largestCity", "population", "government",
       "capitalLength", "capitalLetter", "flag"
     ];
     const DETECTIVE_CLUE_META = {
@@ -17964,6 +18092,20 @@ button,
             if (typeof saved.enabled[field] === "boolean") enabled[field] = saved.enabled[field];
           }
 
+          // v0.50.11 expands the untouched Matching recommended preset with
+          // Silhouette, Neighbours and Population. Migrate only the exact old
+          // default (including its original order) so custom setups remain
+          // completely untouched.
+          const previousMatchingRecommended = new Set(["country", "flag", "capital", "currency"]);
+          const previousOrderMatches = saved.order.length === MATCHING_ALL_FIELDS.length &&
+            saved.order.every((field, index) => field === MATCHING_ALL_FIELDS[index]);
+          const previousEnabledMatches = MATCHING_ALL_FIELDS.every(field =>
+            !!saved.enabled[field] === previousMatchingRecommended.has(field)
+          );
+          if (previousOrderMatches && previousEnabledMatches) {
+            for (const field of MATCHING_ALL_FIELDS) enabled[field] = MATCHING_BASIC_FIELDS.includes(field);
+          }
+
           if (order.length === MATCHING_ALL_FIELDS.length && Object.values(enabled).filter(Boolean).length >= 2) {
             return { order, enabled };
           }
@@ -17984,6 +18126,37 @@ button,
       try {
         const saved = JSON.parse(localStorage.getItem(DETECTIVE_CONFIG_KEY));
         if (saved && Array.isArray(saved.order) && saved.enabled) {
+          // v0.50.9 added Flag to the end of Recommended but still kept
+          // Formation later in the master order. Migrate only the untouched
+          // preset; hand-tuned Detective configurations remain untouched.
+          const v0509DefaultOrder = [
+            "continent","borderCount","flagColour","area","neighbours","silhouette","capital",
+            "languages","currency","largestCity","population","formation","government",
+            "capitalLength","capitalLetter","flag"
+          ];
+          const v0509Recommended = new Set([
+            "continent","borderCount","flagColour","area","neighbours","silhouette","capital","flag"
+          ]);
+          const v0509DefaultOrderMatches = saved.order.length === v0509DefaultOrder.length &&
+            saved.order.every((key,index) => key === v0509DefaultOrder[index]);
+          const v0509DefaultEnabledMatches = v0509DefaultOrder.every(key => !!saved.enabled[key] === v0509Recommended.has(key));
+          if (v0509DefaultOrderMatches && v0509DefaultEnabledMatches) {
+            return { order:[...DEFAULT_DETECTIVE_CONFIG.order], enabled:{...DEFAULT_DETECTIVE_CONFIG.enabled} };
+          }
+          const v0508DefaultOrder = [
+            "continent","borderCount","flagColour","area","neighbours","silhouette","capital",
+            "languages","currency","largestCity","population","formation","government",
+            "capitalLength","capitalLetter","flag"
+          ];
+          const v0508Recommended = new Set([
+            "continent","borderCount","flagColour","area","neighbours","silhouette","capital"
+          ]);
+          const v0508DefaultOrderMatches = saved.order.length === v0508DefaultOrder.length &&
+            saved.order.every((key,index) => key === v0508DefaultOrder[index]);
+          const v0508DefaultEnabledMatches = v0508DefaultOrder.every(key => !!saved.enabled[key] === v0508Recommended.has(key));
+          if (v0508DefaultOrderMatches && v0508DefaultEnabledMatches) {
+            return { order:[...DEFAULT_DETECTIVE_CONFIG.order], enabled:{...DEFAULT_DETECTIVE_CONFIG.enabled} };
+          }
           const v0458DefaultOrder = [
             "continent","borderCount","neighbours","languages","flagColour","silhouette",
             "currency","largestCity","countryLength","capitalLength","capitalLetter",
@@ -18791,7 +18964,6 @@ button,
       SA: "Absolute monarchy",
       SB: "Constitutional monarchy",
       SE: "Constitutional monarchy",
-      ES: "Constitutional monarchy",
       SZ: "Absolute monarchy",
       TH: "Constitutional monarchy",
       TO: "Constitutional monarchy",
@@ -21783,20 +21955,62 @@ button,
       return prev[right.length];
     }
 
-    function interactiveLooksLikeTypo(typed, expected) {
+    function interactiveSpellingAllowance(actualLength, candidateLength) {
+      const longest = Math.max(Number(actualLength) || 0, Number(candidateLength) || 0);
+      if (longest >= 13) return 3;
+      if (longest >= 8) return 2;
+      return 1;
+    }
+
+    function interactiveUniqueSpellingMatch(typed, candidates, minLength = 3) {
       const actual = interactiveLooseNormalize(typed);
-      if (actual.length < 5) return false;
+      if (!actual || actual.length < minLength) return null;
 
-      const candidates = String(expected || "")
+      const unique = new Map();
+      for (const value of (candidates || [])) {
+        const label = String(value || "").trim();
+        const normalized = interactiveLooseNormalize(label);
+        if (!label || normalized.length < minLength || normalized === actual) continue;
+        if (!unique.has(normalized)) unique.set(normalized, label);
+      }
+
+      const matches = [];
+      for (const [normalized, value] of unique) {
+        const distance = interactiveEditDistance(actual, normalized);
+        const allowance = interactiveSpellingAllowance(actual.length, normalized.length);
+        const ratio = distance / Math.max(actual.length, normalized.length, 1);
+        if (distance > 0 && distance <= allowance && ratio <= .34) {
+          matches.push({ value, normalized, distance, gap:Math.abs(actual.length - normalized.length) });
+        }
+      }
+
+      matches.sort((a,b) => a.distance - b.distance || a.gap - b.gap || a.value.localeCompare(b.value));
+      const best = matches[0];
+      if (!best) return null;
+      const rival = matches.find(item =>
+        item.normalized !== best.normalized && item.distance === best.distance && item.gap === best.gap
+      );
+      return rival ? null : best;
+    }
+
+    function interactiveExpectedSpellingValues(stage, expected, c) {
+      if (stage === "country" && c) return countryAcceptedAnswerNames(c);
+      if (stage === "capital" && c) {
+        const values = [...capitalNamesForCountry(c), ...String(expected || "").split(/\s*[·/]\s*/)];
+        return [...new Set(values.filter(Boolean))];
+      }
+      return String(expected || "")
         .split(/\s*[·/]\s*/)
-        .map(value => interactiveLooseNormalize(value))
-        .filter(value => value.length >= 5);
+        .map(value => value.trim())
+        .filter(Boolean);
+    }
 
-      return candidates.some(candidate => {
-        const distance = interactiveEditDistance(actual, candidate);
-        const allowance = Math.max(actual.length, candidate.length) >= 10 ? 2 : 1;
-        return distance > 0 && distance <= allowance;
-      });
+    function interactiveSpellingMatchForExpected(typed, expected, stage = "", c = null) {
+      return interactiveUniqueSpellingMatch(typed, interactiveExpectedSpellingValues(stage, expected, c));
+    }
+
+    function interactiveLooksLikeTypo(typed, expected) {
+      return !!interactiveSpellingMatchForExpected(typed, expected);
     }
 
     async function interactiveCandidateTexts(stage) {
@@ -21927,9 +22141,10 @@ button,
 
     function chooseInteractiveSuggestion() {
       const buttons = interactiveSuggestionButtons();
-      if (interactiveSuggestionIndex < 0 || !buttons[interactiveSuggestionIndex]) return false;
-      markInteractiveAssisted();
-      interactiveInput.value = buttons[interactiveSuggestionIndex].dataset.value || buttons[interactiveSuggestionIndex].textContent || "";
+      let choiceIndex = interactiveSuggestionIndex;
+      if (choiceIndex < 0 && buttons.length === 1) choiceIndex = 0;
+      if (choiceIndex < 0 || !buttons[choiceIndex]) return false;
+      interactiveInput.value = buttons[choiceIndex].dataset.value || buttons[choiceIndex].textContent || "";
       interactiveSuggestions.classList.add("hidden");
       resetInteractiveSuggestionSelection();
       interactiveInput.focus();
@@ -21942,9 +22157,9 @@ button,
       interactiveSuggestions.replaceChildren();
       resetInteractiveSuggestionSelection();
 
-      // Typeahead is spelling/navigation help, not a one-letter answer reveal.
-      // Wait for at least two characters before showing exact candidate names.
-      if (!query || interactiveLooseNormalize(query).length < 2) {
+      // Typeahead doubles as spelling/navigation help, so start after the
+      // first typed character across every text-answer mode.
+      if (!query || interactiveLooseNormalize(query).length < 1) {
         interactiveSuggestions.classList.add("hidden");
         return;
       }
@@ -22007,7 +22222,6 @@ button,
         button.textContent = match.value;
         button.addEventListener("pointerdown", event => event.preventDefault());
         button.addEventListener("click", () => {
-          markInteractiveAssisted();
           interactiveInput.value = match.value;
           interactiveSuggestions.classList.add("hidden");
           resetInteractiveSuggestionSelection();
@@ -22103,7 +22317,7 @@ button,
 
     function interactiveCollectionNearTarget(state, typed) {
       if (!state) return null;
-      return collectionMissing(state).find(target => interactiveLooksLikeTypo(typed, target)) || null;
+      return interactiveUniqueSpellingMatch(typed, collectionMissing(state))?.value || null;
     }
 
     function renderInteractiveCollectionProgress(state, label, emptyText) {
@@ -22445,27 +22659,25 @@ button,
 
       const state = interactiveNeighbourState;
       const rawTyped = interactiveInput.value.trim();
-      const directTarget = state.normalizedTargets.get(interactiveLooseNormalize(rawTyped));
+      let directTarget = state.normalizedTargets.get(interactiveLooseNormalize(rawTyped));
       const typedCountry = interactiveCountryForTyped(rawTyped);
 
       if (!typedCountry && !directTarget) {
         const nearTarget = interactiveCollectionNearTarget(state, rawTyped);
         if (nearTarget) {
-          interactiveInput.classList.remove("wrong");
-          interactiveFeedback.textContent = "Almost — check the spelling.";
+          directTarget = nearTarget;
+          interactiveInput.value = nearTarget;
+          markInteractiveAssisted();
+        } else {
+          interactiveInput.classList.add("wrong");
+          interactiveFeedback.textContent = "Choose a country or territory name.";
           interactiveFeedback.classList.remove("correct", "wrong", "near", "hint");
-          interactiveFeedback.classList.add("near");
-          interactiveInput.focus();
+          interactiveFeedback.classList.add("wrong");
           return;
         }
-        interactiveInput.classList.add("wrong");
-        interactiveFeedback.textContent = "Choose a country or territory name.";
-        interactiveFeedback.classList.remove("correct", "wrong", "near", "hint");
-        interactiveFeedback.classList.add("wrong");
-        return;
       }
 
-      const typedName = typedCountry?.name || rawTyped;
+      const typedName = typedCountry?.name || directTarget || rawTyped;
       const canonicalTarget = directTarget || state.normalizedTargets.get(interactiveLooseNormalize(typedName));
 
       if (canonicalTarget && state.found.has(canonicalTarget)) {
@@ -22531,7 +22743,21 @@ button,
       const typed = interactiveLooseNormalize(interactiveInput.value);
       if (!typed) return;
 
-      const canonicalTarget = state.normalizedTargets.get(typed);
+      let canonicalTarget = state.normalizedTargets.get(typed);
+      if (!canonicalTarget) {
+        let knownExact = false;
+        try {
+          knownExact = (await interactiveCandidateTexts("languages")).some(value => interactiveLooseNormalize(value) === typed);
+        } catch (_) {}
+        if (!knownExact) {
+          const corrected = interactiveCollectionNearTarget(state, interactiveInput.value);
+          if (corrected) {
+            canonicalTarget = corrected;
+            interactiveInput.value = corrected;
+            markInteractiveAssisted();
+          }
+        }
+      }
 
       if (canonicalTarget && state.found.has(canonicalTarget)) {
         interactiveInput.classList.remove("wrong");
@@ -22544,14 +22770,6 @@ button,
       }
 
       const correct = !!canonicalTarget;
-      if (!correct && interactiveCollectionNearTarget(state, interactiveInput.value)) {
-        interactiveInput.classList.remove("correct", "wrong");
-        interactiveFeedback.textContent = "Almost — check the spelling.";
-        interactiveFeedback.classList.remove("correct", "wrong", "near", "hint");
-        interactiveFeedback.classList.add("near");
-        interactiveInput.focus();
-        return;
-      }
       registerInteractiveResult(correct);
 
       if (!correct) {
@@ -22597,7 +22815,7 @@ button,
       const typed = interactiveLooseNormalize(interactiveInput.value);
       if (!typed) return;
 
-      const canonicalTarget = state.normalizedTargets.get(typed);
+      let canonicalTarget = state.normalizedTargets.get(typed);
 
       if (canonicalTarget && state.found.has(canonicalTarget)) {
         interactiveInput.classList.remove("wrong");
@@ -22609,18 +22827,24 @@ button,
         return;
       }
 
+      if (!canonicalTarget && noun === "capitals" && showInteractiveRoleCorrection(placeCapitalRoleCorrection("capital", currentCountry(), interactiveInput.value))) {
+        return;
+      }
+      if (!canonicalTarget) {
+        let knownExact = false;
+        try {
+          knownExact = (await interactiveCandidateTexts(currentStage)).some(value => interactiveLooseNormalize(value) === typed);
+        } catch (_) {}
+        if (!knownExact) {
+          const corrected = interactiveCollectionNearTarget(state, interactiveInput.value);
+          if (corrected) {
+            canonicalTarget = corrected;
+            interactiveInput.value = corrected;
+            markInteractiveAssisted();
+          }
+        }
+      }
       const correct = !!canonicalTarget;
-      if (!correct && noun === "capitals" && showInteractiveRoleCorrection(placeCapitalRoleCorrection("capital", currentCountry(), interactiveInput.value))) {
-        return;
-      }
-      if (!correct && interactiveCollectionNearTarget(state, interactiveInput.value)) {
-        interactiveInput.classList.remove("correct", "wrong");
-        interactiveFeedback.textContent = "Almost — check the spelling.";
-        interactiveFeedback.classList.remove("correct", "wrong", "near", "hint");
-        interactiveFeedback.classList.add("near");
-        interactiveInput.focus();
-        return;
-      }
       registerInteractiveResult(correct);
 
       if (!correct) {
@@ -23018,19 +23242,30 @@ button,
         const expectedDatum = await matchingDatumForCountry(c, stage);
         if (stage !== currentStage || phase !== "prompt" || currentCountry()?.code !== c.code) return;
 
-        const correct = interactiveTextMatches(stage, interactiveInput.value, expectedDatum.text, c);
+        let correct = interactiveTextMatches(stage, interactiveInput.value, expectedDatum.text, c);
+        let spellingFixed = "";
 
         if (!correct && showInteractiveRoleCorrection(placeCapitalRoleCorrection(stage, c, interactiveInput.value))) {
           return;
         }
 
-        if (!correct && interactiveLooksLikeTypo(interactiveInput.value, expectedDatum.text)) {
-          interactiveInput.classList.remove("correct", "wrong");
-          interactiveFeedback.textContent = "Almost — check the spelling.";
-          interactiveFeedback.classList.remove("correct", "wrong", "near", "hint");
-          interactiveFeedback.classList.add("near");
-          interactiveInput.focus();
-          return;
+        if (!correct) {
+          let knownExact = !!countryForAnswerValue(stage, interactiveInput.value);
+          if (!knownExact) {
+            try {
+              const candidateValues = await interactiveCandidateTexts(stage);
+              knownExact = candidateValues.some(value => interactiveLooseNormalize(value) === interactiveLooseNormalize(interactiveInput.value));
+            } catch (_) {}
+          }
+          if (!knownExact) {
+            const correction = interactiveSpellingMatchForExpected(interactiveInput.value, expectedDatum.text, stage, c);
+            if (correction) {
+              spellingFixed = correction.value;
+              interactiveInput.value = correction.value;
+              markInteractiveAssisted();
+              correct = true;
+            }
+          }
         }
 
         registerInteractiveResult(correct);
@@ -23038,7 +23273,9 @@ button,
         if (correct) {
           interactiveInput.classList.remove("wrong");
           interactiveInput.classList.add("correct");
-          interactiveFeedback.textContent = `Correct · ${expectedDatum.text}`;
+          interactiveFeedback.textContent = spellingFixed
+            ? `Correct · spelling fixed to ${spellingFixed}`
+            : `Correct · ${expectedDatum.text}`;
           interactiveFeedback.classList.remove("correct", "wrong", "near", "hint");
           interactiveFeedback.classList.add("correct");
           interactiveSuggestions.classList.add("hidden");
@@ -28689,6 +28926,9 @@ button,
     const detectiveGuessBtn = document.getElementById("detectiveGuessBtn");
     const detectiveSuggestions = document.getElementById("detectiveSuggestions");
     const detectivePriorGuesses = document.getElementById("detectivePriorGuesses");
+    const detectiveLatestGuess = document.getElementById("detectiveLatestGuess");
+    const detectiveLatestGuessChip = document.getElementById("detectiveLatestGuessChip");
+    const detectivePriorHistory = document.getElementById("detectivePriorHistory");
     const detectivePriorGuessChips = document.getElementById("detectivePriorGuessChips");
     const detectiveFeedback = document.getElementById("detectiveFeedback");
     const detectiveGiveUpBtn = document.getElementById("detectiveGiveUpBtn");
@@ -28786,6 +29026,14 @@ button,
               clue?.visual !== "silhouette" || countryStageIsAvailable(roundCountry, "silhouette")
             );
             state.round.revealedCount = Math.max(0, Math.min(Number(state.round.revealedCount) || 0, state.round.clues.length));
+            // v0.50.10 makes misses and clue progression one-to-one. Reconcile
+            // older resumed rounds so their visible clue count cannot lag behind
+            // guesses already spent in that case.
+            const progressiveMinimum = Math.min(
+              state.round.clues.length,
+              Math.max(1, Math.max(0, Number(state.round.wrongGuesses) || 0) + 1)
+            );
+            state.round.revealedCount = Math.max(state.round.revealedCount, progressiveMinimum);
           }
         }
       }
@@ -28807,13 +29055,21 @@ button,
       return [...source].sort((a, b) => a.name.localeCompare(b.name));
     }
 
+    function detectiveMaxGuesses(round = ensureDetectiveState()?.round) {
+      return Math.max(1, Array.isArray(round?.clues) ? round.clues.length : 1);
+    }
+
+    function detectiveGuessesLeft(round = ensureDetectiveState()?.round) {
+      if (!round) return 0;
+      return Math.max(0, detectiveMaxGuesses(round) - Math.max(0, Number(round.wrongGuesses) || 0));
+    }
+
     function detectiveCurrentPoints(round = ensureDetectiveState()?.round) {
       if (!round) return 0;
-      const cluePenalty = Math.max(0, (Number(round.revealedCount) || 1) - 1) * 14;
-      // The first clue is a free opening phase. Wrong guesses only begin costing
-      // points once the learner has asked for / reached clue two.
-      const guessPenalty = Math.max(0, Number(round.penaltyGuesses) || 0) * 8;
-      return Math.max(10, 100 - cluePenalty - guessPenalty);
+      // Progressive Detective has one cost per miss: the wrong guess unlocks the
+      // next clue. Do not separately charge for that automatically revealed clue.
+      const guessPenalty = Math.max(0, Number(round.wrongGuesses) || 0) * 12;
+      return Math.max(10, 100 - guessPenalty);
     }
 
     function detectiveWithTimeout(promise, ms = 1400) {
@@ -28980,7 +29236,7 @@ button,
       if (specialHistory?.keyDateValue) {
         clues.push({ key: "formation", label: specialHistory.keyDateLabel || "Key modern date", value: specialHistory.keyDateValue });
       } else if (Number.isFinite(facts?.formationYear)) {
-        clues.push({ key: "formation", label: "Modern state formation", value: String(facts.formationYear) });
+        clues.push({ key: "formation", label: "Formation date", value: String(facts.formationYear) });
       }
       const government = facts ? governmentTypeForCountry(c, facts) : "";
       if (government && government !== "Not listed") clues.push({
@@ -29245,7 +29501,10 @@ button,
       detectivePointsAvailable.textContent = finished
         ? (round.solved ? `${Math.max(0, Number(round.points) || 0)} pts earned` : "0 pts earned")
         : `${detectiveCurrentPoints(round)} pts left`;
-      detectiveClueCounter.textContent = `${round.revealedCount} of ${round.clues.length} clues shown`;
+      const guessesLeft = detectiveGuessesLeft(round);
+      detectiveClueCounter.textContent = finished
+        ? `${round.revealedCount} of ${round.clues.length} clues shown`
+        : `Clue ${Math.max(1, round.revealedCount)} of ${round.clues.length} · ${guessesLeft} guess${guessesLeft === 1 ? "" : "es"} left`;
 
       detectiveClues.replaceChildren();
       round.clues.slice(0, round.revealedCount).forEach((clue, clueIndex) => {
@@ -29260,30 +29519,26 @@ button,
         detectiveGuessGlobe?.replaceChildren();
       }
       const canRevealMore = !finished && round.revealedCount < round.clues.length;
-      detectiveRevealBtn.classList.toggle("hidden", !canRevealMore);
-      if (canRevealMore) {
-        const before = detectiveCurrentPoints(round);
-        const after = detectiveCurrentPoints({ ...round, revealedCount: round.revealedCount + 1 });
-        const cost = Math.max(0, before - after);
-        detectiveRevealBtn.textContent = cost ? `Another clue · −${cost} pts` : "Another clue";
-      }
+      // Clues now advance only through incorrect guesses. Keep the legacy button
+      // hidden so resumed DOM/state from older builds cannot reveal one manually.
+      detectiveRevealBtn.classList.add("hidden");
+      detectiveRevealBtn.setAttribute("aria-hidden", "true");
+      detectiveRevealBtn.tabIndex = -1;
       detectiveGuessCard.classList.toggle("hidden", finished);
       detectiveResult.classList.toggle("hidden", !finished);
       const priorGuesses = Array.isArray(round.guesses) ? round.guesses.filter(Boolean) : [];
-      const guessMeta = Array.isArray(round.guessMeta) ? round.guessMeta : [];
+      const displayGuesses = priorGuesses.map((guess, guessIndex) => detectiveGuessDisplayMeta(round, c, guess, guessIndex));
+      const latestGuess = displayGuesses.at(-1) || null;
+      const earlierGuesses = displayGuesses
+        .slice(0, -1)
+        .sort((a, b) => a.distanceKm - b.distanceKm || b.index - a.index);
+
+      detectiveLatestGuessChip?.replaceChildren();
       detectivePriorGuessChips?.replaceChildren();
-      for (const guess of priorGuesses) {
-        const meta = guessMeta.find(item => interactiveLooseNormalize(item?.label) === interactiveLooseNormalize(guess));
-        const chip = document.createElement("span");
-        chip.className = `detective-prior-chip${meta?.warmth ? ` ${meta.warmth}` : ""}`;
-        const proximityText = meta?.proximityLabel || "";
-        chip.textContent = proximityText ? `${guess} — ${proximityText}` : guess;
-        if (proximityText) {
-          chip.title = proximityText;
-          chip.setAttribute("aria-label", `${guess} · ${proximityText}`);
-        }
-        detectivePriorGuessChips?.appendChild(chip);
-      }
+      if (latestGuess) detectiveLatestGuessChip?.appendChild(detectiveMakeGuessChip(latestGuess, true));
+      for (const meta of earlierGuesses) detectivePriorGuessChips?.appendChild(detectiveMakeGuessChip(meta));
+      detectiveLatestGuess?.classList.toggle("hidden", !latestGuess);
+      detectivePriorHistory?.classList.toggle("hidden", !earlierGuesses.length);
       detectivePriorGuesses?.classList.toggle("hidden", !priorGuesses.length || finished);
 
       detectiveFeedback.textContent = round.feedback || "";
@@ -29293,7 +29548,7 @@ button,
       detectiveGiveUpBtn.disabled = finished;
       detectiveGiveUpBtn.classList.toggle("final-option", !finished && !canRevealMore);
       if (!finished) {
-        detectiveGiveUpBtn.textContent = canRevealMore ? "Give up · reveal answer" : "No more clues · reveal answer";
+        detectiveGiveUpBtn.textContent = "Reveal answer · end case";
       }
 
       if (finished) {
@@ -29365,10 +29620,11 @@ button,
         wrongGuessKeys: [],
         guesses: [],
         guessMeta: [],
+        inputAssisted: false,
         solved: false,
         finished: false,
         points: 0,
-        feedback: "",
+        feedback: "Each incorrect guess unlocks the next clue.",
         feedbackType: ""
       };
       saveStudySession();
@@ -29422,15 +29678,16 @@ button,
 
     function detectiveTypoCandidate(value) {
       const typed = interactiveLooseNormalize(value);
-      if (typed.length < 5) return null;
+      if (typed.length < 3) return null;
       const matches = [];
       for (const country of detectiveCountryCandidates()) {
         for (const name of countryAcceptedAnswerNames(country)) {
           const candidate = interactiveLooseNormalize(name);
-          if (candidate.length < 5) continue;
+          if (candidate.length < 3) continue;
           const distance = interactiveEditDistance(typed, candidate);
-          const allowance = Math.max(typed.length, candidate.length) >= 10 ? 2 : 1;
-          if (distance > 0 && distance <= allowance) {
+          const allowance = interactiveSpellingAllowance(typed.length, candidate.length);
+          const ratio = distance / Math.max(typed.length, candidate.length, 1);
+          if (distance > 0 && distance <= allowance && ratio <= .34) {
             matches.push({ country, distance, gap: Math.abs(typed.length - candidate.length) });
           }
         }
@@ -29461,6 +29718,79 @@ button,
       return { key:"cold", label:"Far away", distanceKm };
     }
 
+    function detectiveGuessDirection(target, guessed) {
+      if (!target || !guessed || target.code === guessed.code) return null;
+      const lat1 = Number(guessed.lat) * Math.PI / 180;
+      const lat2 = Number(target.lat) * Math.PI / 180;
+      const lon1 = Number(guessed.lon) * Math.PI / 180;
+      const lon2 = Number(target.lon) * Math.PI / 180;
+      if (![lat1, lat2, lon1, lon2].every(Number.isFinite)) return null;
+      const dLon = lon2 - lon1;
+      const y = Math.sin(dLon) * Math.cos(lat2);
+      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+      const bearing = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+      const directions = [
+        { arrow:"↑", short:"N", label:"north" },
+        { arrow:"↗", short:"NE", label:"northeast" },
+        { arrow:"→", short:"E", label:"east" },
+        { arrow:"↘", short:"SE", label:"southeast" },
+        { arrow:"↓", short:"S", label:"south" },
+        { arrow:"↙", short:"SW", label:"southwest" },
+        { arrow:"←", short:"W", label:"west" },
+        { arrow:"↖", short:"NW", label:"northwest" }
+      ];
+      const direction = directions[Math.round(bearing / 45) % 8];
+      return { ...direction, bearing };
+    }
+
+    function detectiveGuessDisplayMeta(round, target, guess, index) {
+      const guessMeta = Array.isArray(round?.guessMeta) ? round.guessMeta : [];
+      const stored = guessMeta.find(item => interactiveLooseNormalize(item?.label) === interactiveLooseNormalize(guess)) || {};
+      const guessedCountry = stored.code ? countryByCode(stored.code) : detectiveCountryCandidates().find(country =>
+        countryAcceptedAnswerNames(country).some(name => interactiveLooseNormalize(name) === interactiveLooseNormalize(guess))
+      );
+      const proximity = guessedCountry ? detectiveGuessProximity(target, guessedCountry) : null;
+      const direction = guessedCountry ? detectiveGuessDirection(target, guessedCountry) : null;
+      const distanceKm = stored.distanceKm != null && Number.isFinite(Number(stored.distanceKm)) ? Number(stored.distanceKm) : proximity?.distanceKm;
+      return {
+        label: guess,
+        index,
+        code: stored.code || guessedCountry?.code || "",
+        warmth: stored.warmth || proximity?.key || "",
+        proximityLabel: stored.proximityLabel || proximity?.label || "",
+        distanceKm: Number.isFinite(distanceKm) ? distanceKm : Infinity,
+        directionArrow: stored.directionArrow || direction?.arrow || "",
+        directionShort: stored.directionShort || direction?.short || "",
+        directionLabel: stored.directionLabel || direction?.label || ""
+      };
+    }
+
+    function detectiveMakeGuessChip(meta, latest = false) {
+      const chip = document.createElement("span");
+      chip.className = `detective-prior-chip${meta?.warmth ? ` ${meta.warmth}` : ""}${latest ? " latest" : ""}`;
+      const name = document.createElement("span");
+      name.className = "detective-guess-name";
+      name.textContent = meta?.label || "";
+      chip.appendChild(name);
+
+      const details = [];
+      if (meta?.proximityLabel) details.push(meta.proximityLabel);
+      if (meta?.directionArrow) details.push(`${meta.directionArrow} ${meta.directionShort || ""}`.trim());
+      if (details.length) {
+        const detail = document.createElement("span");
+        detail.className = "detective-guess-meta";
+        detail.textContent = details.join(" · ");
+        chip.appendChild(detail);
+      }
+
+      const ariaBits = [meta?.label];
+      if (meta?.proximityLabel) ariaBits.push(meta.proximityLabel);
+      if (meta?.directionLabel) ariaBits.push(`target is ${meta.directionLabel}`);
+      chip.setAttribute("aria-label", ariaBits.filter(Boolean).join(" · "));
+      if (meta?.directionLabel) chip.title = `Target is ${meta.directionLabel} of ${meta.label}`;
+      return chip;
+    }
+
     function detectiveRecordOutcome(c, solved, points, round) {
       const rec = reviewRecord(c.code);
       rec.detectiveAttempts = Math.max(0, Number(rec.detectiveAttempts) || 0) + 1;
@@ -29488,7 +29818,7 @@ button,
 
       const wrongGuesses = Math.max(0, Number(round?.wrongGuesses) || 0);
       const cluesUsed = Math.max(1, Number(round?.revealedCount) || 1);
-      const cleanSolve = solved && wrongGuesses === 0 && cluesUsed === 1;
+      const cleanSolve = solved && wrongGuesses === 0 && cluesUsed === 1 && !round?.spellingAssisted;
       const assistedSolve = solved && !cleanSolve;
       recordDailyFactCounts({
         total: 1,
@@ -29512,7 +29842,7 @@ button,
       const round = state?.round;
       const c = currentCountry();
       if (!round || !c || round.finished) return;
-      const typed = detectiveInput.value.trim();
+      let typed = detectiveInput.value.trim();
       if (!typed) {
         round.feedback = `Type a ${c.isTerritory ? "territory" : c.isAdditionalPlace ? "place" : "country"} name first.`;
         round.feedbackType = "";
@@ -29520,12 +29850,24 @@ button,
         return;
       }
 
+      const exactTypedCountry = interactiveCountryForTyped(typed);
+      let spellingFixed = "";
+      if (!exactTypedCountry && !detectiveCountryMatchesGuess(c, typed)) {
+        const correction = interactiveUniqueSpellingMatch(typed, countryAcceptedAnswerNames(c));
+        if (correction) {
+          spellingFixed = correction.value;
+          typed = correction.value;
+          detectiveInput.value = correction.value;
+          round.spellingAssisted = true;
+        }
+      }
+
       if (detectiveCountryMatchesGuess(c, typed)) {
         const points = detectiveCurrentPoints(round);
         round.solved = true;
         round.finished = true;
         round.points = points;
-        round.feedback = "Correct.";
+        round.feedback = spellingFixed ? `Correct · spelling fixed to ${spellingFixed}.` : "Correct.";
         round.feedbackType = "correct";
         detectiveRecordOutcome(c, true, points, round);
         detectiveInput.blur();
@@ -29536,13 +29878,6 @@ button,
       }
 
       const typoCountry = detectiveTypoCandidate(typed);
-      if (detectiveGuessLooksLikeTypo(c, typed)) {
-        round.feedback = "Almost — check the spelling and try again.";
-        round.feedbackType = "near";
-        saveStudySession();
-        detectiveRenderRound();
-        return;
-      }
 
       // A confident typo of a different country is still that country guess.
       // Count it once now instead of asking the player to fix the spelling only
@@ -29566,6 +29901,7 @@ button,
       if (!Array.isArray(round.guessMeta)) round.guessMeta = [];
       const guessLabel = confusedWith && confusedWith.code !== c.code ? confusedWith.name : typed;
       const proximity = confusedWith && confusedWith.code !== c.code ? detectiveGuessProximity(c, confusedWith) : null;
+      const direction = confusedWith && confusedWith.code !== c.code ? detectiveGuessDirection(c, confusedWith) : null;
       if (guessLabel && !round.guesses.some(value => interactiveLooseNormalize(value) === interactiveLooseNormalize(guessLabel))) {
         round.guesses.push(guessLabel);
         round.guesses = round.guesses.slice(-12);
@@ -29573,24 +29909,49 @@ button,
           label:guessLabel,
           code:confusedWith?.code || "",
           warmth:proximity?.key || "",
-          proximityLabel:proximity?.label || ""
+          proximityLabel:proximity?.label || "",
+          distanceKm:proximity?.distanceKm ?? null,
+          directionArrow:direction?.arrow || "",
+          directionShort:direction?.short || "",
+          directionLabel:direction?.label || ""
         });
         round.guessMeta = round.guessMeta.slice(-12);
       }
       round.wrongGuesses = Math.max(0, Number(round.wrongGuesses) || 0) + 1;
-      if ((Number(round.revealedCount) || 1) > 1) {
-        round.penaltyGuesses = Math.max(0, Number(round.penaltyGuesses) || 0) + 1;
-      }
+      // Kept for backwards-compatible saved state, but progressive scoring no
+      // longer uses a second penalty counter.
+      round.penaltyGuesses = Math.max(0, Number(round.penaltyGuesses) || 0);
       detectiveInput.value = "";
       detectiveSuggestions.classList.add("hidden");
       detectiveSuggestionIndex = -1;
       hapticFeedback("wrong");
+
+      const maxGuesses = detectiveMaxGuesses(round);
+      if (round.wrongGuesses >= maxGuesses) {
+        round.solved = false;
+        round.finished = true;
+        round.points = 0;
+        round.feedback = "No guesses left — answer revealed.";
+        round.feedbackType = "wrong";
+        detectiveRecordOutcome(c, false, 0, round);
+        document.activeElement?.blur?.();
+        saveStudySession();
+        detectiveRenderRound();
+        return;
+      }
+
+      if (round.revealedCount < round.clues.length) {
+        round.revealedCount += 1;
+      }
+      const guessesLeft = detectiveGuessesLeft(round);
       round.feedback = round.revealedCount < round.clues.length
-        ? "Try again, or take another clue."
-        : "You’ve seen every clue — guess again or reveal the answer.";
+        ? `Incorrect — clue ${round.revealedCount} unlocked. ${guessesLeft} guess${guessesLeft === 1 ? "" : "es"} left.`
+        : `Incorrect — final clue unlocked. ${guessesLeft} final guess${guessesLeft === 1 ? "" : "es"} left.`;
       round.feedbackType = "wrong";
       saveStudySession();
       detectiveRenderRound();
+      const lastCard = detectiveClues.lastElementChild;
+      lastCard?.scrollIntoView?.({ block:"nearest", behavior:window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth" });
     }
 
     function giveUpDetectiveRound() {
@@ -29651,10 +30012,8 @@ button,
       const query = interactiveLooseNormalize(detectiveInput.value);
       detectiveSuggestions.replaceChildren();
       detectiveSuggestionIndex = -1;
-      // Detective suggestions are a spelling aid, not another clue. Waiting for
-      // three typed characters and using prefix matches prevents one-letter
-      // candidate browsing from narrowing the case for free.
-      if (query.length < 3) {
+      // Show spelling/navigation suggestions from the first typed character.
+      if (query.length < 1) {
         detectiveSuggestions.classList.add("hidden");
         return;
       }
@@ -29704,7 +30063,9 @@ button,
 
     function chooseDetectiveSuggestion() {
       const options = [...detectiveSuggestions.querySelectorAll(".detective-suggestion")];
-      const button = options[detectiveSuggestionIndex];
+      let choiceIndex = detectiveSuggestionIndex;
+      if (choiceIndex < 0 && options.length === 1) choiceIndex = 0;
+      const button = options[choiceIndex];
       if (!button) return false;
       detectiveInput.value = button.dataset.detectiveSuggestion || button.textContent || "";
       detectiveSuggestions.classList.add("hidden");
@@ -30064,8 +30425,12 @@ button,
       return "";
     }
 
+    function rapidSpellingMatch(round, c, typed) {
+      return interactiveUniqueSpellingMatch(typed, rapidExpectedValues(round, c));
+    }
+
     function rapidLooksLikeTypo(round, c, typed) {
-      return rapidExpectedValues(round, c).some(value => interactiveLooksLikeTypo(typed, value));
+      return !!rapidSpellingMatch(round, c, typed);
     }
 
     function rapidRecordFact(c, stage, correct, assisted = false) {
@@ -30513,8 +30878,8 @@ button,
       const query = interactiveLooseNormalize(rapidInput.value);
       rapidSuggestions.replaceChildren();
       rapidSuggestionIndex = -1;
-      // Rapid Fire autocomplete is navigation/spelling help, not a one-letter reveal.
-      if (!query || query.length < 2) {
+      // Rapid Fire autocomplete starts from the first typed character.
+      if (!query || query.length < 1) {
         rapidSuggestions.classList.add("hidden");
         return;
       }
@@ -30557,7 +30922,6 @@ button,
       const state = ensureRapidState();
       const round = state?.round;
       if (!round || round.status !== "active" || !value) return false;
-      round.usedSuggestion = true;
       rapidInput.value = value;
       rapidSuggestions.classList.add("hidden");
       rapidSuggestionIndex = -1;
@@ -30569,7 +30933,9 @@ button,
 
     function rapidAcceptSuggestion(submit = false) {
       const options = [...rapidSuggestions.querySelectorAll(".rapid-suggestion")];
-      const button = options[rapidSuggestionIndex];
+      let choiceIndex = rapidSuggestionIndex;
+      if (choiceIndex < 0 && options.length === 1) choiceIndex = 0;
+      const button = options[choiceIndex];
       if (!button) return false;
       return rapidUseSuggestion(button.dataset.rapidSuggestion || button.textContent || "", submit);
     }
@@ -30640,7 +31006,7 @@ button,
       rapidStreak.textContent = `${state.streak} clean streak`;
     }
 
-    function rapidSubmitText() {
+    async function rapidSubmitText() {
       const state = ensureRapidState();
       const round = state?.round;
       const c = currentCountry();
@@ -30661,13 +31027,28 @@ button,
         rapidInput.focus();
         return;
       }
-      if (rapidLooksLikeTypo(round, c, typed)) {
-        rapidFeedback.textContent = "Almost — check the spelling.";
-        rapidFeedback.className = "rapid-feedback near";
-        return;
+      const stage = RAPID_TYPES[round.type]?.stage;
+      let knownExact = !!countryForAnswerValue(stage, typed);
+      if (!knownExact) {
+        try {
+          const candidateValues = await rapidCandidateTexts(round);
+          if (round !== ensureRapidState()?.round || round.status !== "active") return;
+          knownExact = candidateValues.some(value => interactiveLooseNormalize(value) === interactiveLooseNormalize(typed));
+        } catch (_) {}
       }
-      const confusedWith = countryForAnswerValue(RAPID_TYPES[round.type]?.stage, typed);
-      if (confusedWith && confusedWith.code !== c.code) recordCountryConfusion(c.code, confusedWith.code, RAPID_TYPES[round.type]?.stage || "country");
+      if (!knownExact) {
+        const correction = rapidSpellingMatch(round, c, typed);
+        if (correction) {
+          round.usedSuggestion = true;
+          rapidInput.value = correction.value;
+          rapidFeedback.textContent = `Spelling fixed to ${correction.value}`;
+          rapidFeedback.className = "rapid-feedback correct";
+          rapidFinishQuestion(true, null, `Spelling corrected to ${correction.value}`);
+          return;
+        }
+      }
+      const confusedWith = countryForAnswerValue(stage, typed);
+      if (confusedWith && confusedWith.code !== c.code) recordCountryConfusion(c.code, confusedWith.code, stage || "country");
       round.userAnswer = typed;
       rapidFeedback.textContent = `Not quite.`;
       rapidFeedback.className = "rapid-feedback wrong";
@@ -31595,7 +31976,8 @@ button,
         if (moveInteractiveSuggestion(-1)) event.preventDefault();
       } else if (event.key === "Enter") {
         event.preventDefault();
-        if (!chooseInteractiveSuggestion()) submitInteractiveTextAnswer();
+        chooseInteractiveSuggestion();
+        submitInteractiveTextAnswer();
       } else if (event.key === "Escape") {
         interactiveSuggestions.classList.add("hidden");
         resetInteractiveSuggestionSelection();
@@ -32334,6 +32716,13 @@ button,
 
     searchCloseBtn.addEventListener("click", closeSearchBackToMenu);
     countrySearchInput.addEventListener("input", renderCountrySearchResults);
+    countrySearchInput.addEventListener("keydown", event => {
+      if (event.key !== "Enter") return;
+      const options = [...countrySearchResults.querySelectorAll("[data-country-code]")];
+      if (options.length !== 1) return;
+      event.preventDefault();
+      openCountryProfile(options[0].dataset.countryCode);
+    });
     countrySearchResults.addEventListener("click", event => {
       const button = event.target.closest("[data-country-code]");
       if (!button) return;
@@ -33178,16 +33567,17 @@ button,
 
     function chainTypoSuggestion(raw, allowedCountries) {
       const actual = interactiveLooseNormalize(raw);
-      if (actual.length < 5) return null;
+      if (actual.length < 3) return null;
       const matches = [];
 
       const consider = (c, kind, compareValues) => {
         for (const value of compareValues) {
           const candidate = interactiveLooseNormalize(value);
-          if (candidate.length < 5) continue;
+          if (candidate.length < 3) continue;
           const distance = interactiveEditDistance(actual, candidate);
-          const allowance = Math.max(actual.length, candidate.length) >= 10 ? 2 : 1;
-          if (distance > 0 && distance <= allowance) {
+          const allowance = interactiveSpellingAllowance(actual.length, candidate.length);
+          const ratio = distance / Math.max(actual.length, candidate.length, 1);
+          if (distance > 0 && distance <= allowance && ratio <= .34) {
             // Keep the spelling the player was actually closest to.
             // "Britan" should suggest "Britain", not replace it with "United Kingdom".
             matches.push({ country:c, kind, spelling:value, distance, lengthGap:Math.abs(actual.length - candidate.length) });
@@ -33488,7 +33878,6 @@ button,
         button.addEventListener("pointerdown", event => event.preventDefault());
         button.addEventListener("click", () => {
           chainGuessInput.value = entry.answer;
-          if (chainState) chainState.assistedInputValue = interactiveLooseNormalize(entry.answer);
           clearChainSuggestions();
           updateChainGuessButtonState();
           chainGuessInput.focus({ preventScroll:true });
@@ -33510,10 +33899,11 @@ button,
 
     function chooseChainSuggestion() {
       const options = [...(chainSuggestions?.querySelectorAll(".chain-suggestion") || [])];
-      const button = options[chainSuggestionIndex];
+      let choiceIndex = chainSuggestionIndex;
+      if (choiceIndex < 0 && options.length === 1) choiceIndex = 0;
+      const button = options[choiceIndex];
       if (!button) return false;
       chainGuessInput.value = button.dataset.chainSuggestion || button.textContent || "";
-      if (chainState) chainState.assistedInputValue = interactiveLooseNormalize(chainGuessInput.value);
       clearChainSuggestions();
       updateChainGuessButtonState();
       return true;
@@ -33566,8 +33956,9 @@ button,
 
     function submitChainGuess() {
       if (!chainState || chainState.finishedAt || !chainGuessInput) return;
-      const raw = chainGuessInput.value.trim();
-      const usedInputAssist = !!chainState.assistedInputValue && interactiveLooseNormalize(raw) === chainState.assistedInputValue;
+      let raw = chainGuessInput.value.trim();
+      let usedInputAssist = !!chainState.assistedInputValue && interactiveLooseNormalize(raw) === chainState.assistedInputValue;
+      let spellingFixed = "";
       if (!raw) {
         chainFeedback.textContent = chainState.answerMode === "capital"
           ? "Enter a capital first."
@@ -33578,7 +33969,15 @@ button,
         refocusChainInput();
         return;
       }
-      const match = chainAvailableMatch(raw);
+      let match = chainAvailableMatch(raw);
+      if (!match.allMatches.length && match.typoSuggestion) {
+        spellingFixed = match.typoSuggestion.spelling;
+        raw = spellingFixed;
+        chainGuessInput.value = spellingFixed;
+        chainState.assistedInputValue = interactiveLooseNormalize(spellingFixed);
+        usedInputAssist = true;
+        match = chainAvailableMatch(raw);
+      }
       const c = match.reachable;
       chainFeedback.className = "chain-feedback";
       clearChainSpellingHelp();
@@ -33693,11 +34092,12 @@ button,
       if (!chainState.finishedAt) {
         if (completedNow) {
           const ready = chainAvailability().available.size;
-          chainFeedback.textContent = `${c.name} filled. ${ready === 1 ? "1 place is ready." : `${ready} places are ready.`}`;
+          chainFeedback.textContent = `${spellingFixed ? `Spelling fixed to ${spellingFixed}. ` : ""}${c.name} filled. ${ready === 1 ? "1 place is ready." : `${ready} places are ready.`}`;
         } else {
-          chainFeedback.textContent = part.country
+          const progressText = part.country
             ? `${c.name}: place name added. Enter a capital to finish it.`
             : `${c.name}: capital added. Enter the place name to finish it.`;
+          chainFeedback.textContent = `${spellingFixed ? `Spelling fixed to ${spellingFixed}. ` : ""}${progressText}`;
         }
         chainFeedback.classList.add("good");
       }
@@ -33975,6 +34375,7 @@ button,
     let mapHuntWrongFeedbackTimer = null;
     let mapHuntRevealTimer = null;
     let mapHuntRevealInterval = null;
+    let mapHuntResizeRaf = null;
 
     function mapHuntShuffle(items) {
       const copy = [...items];
@@ -34148,6 +34549,7 @@ button,
       }
       if (!mapHuntMap || !window.d3) return;
       const svg = d3.select(mapHuntMap);
+      svg.selectAll("circle.map-hunt-marker").interrupt("maphunt-pop");
       svg.selectAll(".wrong-tap").classed("wrong-tap", false);
       svg.selectAll("text.map-hunt-temp-label").remove();
     }
@@ -34401,8 +34803,14 @@ button,
     function mapHuntMarkerMetrics(transform = mapHuntState?.zoomTransform) {
       const k = Math.max(1, Number(transform?.k) || 1);
       const baseWidth = Math.max(1, Number(mapHuntState?.mapWidth) || 1000);
-      const markerRenderedWidth = Math.max(1, Number(mapHuntMap?.getBoundingClientRect?.().width) || mapHuntMap?.clientWidth || baseWidth);
-      const viewportScale = Math.max(.22, markerRenderedWidth / baseWidth);
+      const baseHeight = Math.max(1, Number(mapHuntState?.mapHeight) || 555);
+      const bounds = mapHuntMap?.getBoundingClientRect?.();
+      const markerRenderedWidth = Math.max(1, Number(bounds?.width) || mapHuntMap?.clientWidth || baseWidth);
+      const markerRenderedHeight = Math.max(1, Number(bounds?.height) || mapHuntMap?.clientHeight || baseHeight);
+      // preserveAspectRatio="xMidYMid meet" is constrained by the smaller axis.
+      // Using width alone makes markers/strokes too small in short landscape
+      // layouts, exactly where mobile browser viewport changes are most common.
+      const viewportScale = Math.max(.22, Math.min(markerRenderedWidth / baseWidth, markerRenderedHeight / baseHeight));
       const mobile = window.matchMedia?.("(max-width: 520px)")?.matches;
       const zoomSteps = Math.max(0, Math.log2(k));
       // Small at overview; steadily becomes a useful target as the map zooms.
@@ -34453,14 +34861,21 @@ button,
       if (!code || !mapHuntMap || !window.d3) return;
       const marker = d3.select(mapHuntMap).select(`circle.map-hunt-marker[data-map-hunt-code="${code}"]`);
       if (marker.empty()) return;
-      const base = Number(marker.attr("r")) || 0;
-      if (!base) return;
-      marker.interrupt("maphunt-pop")
-        .attr("r", base * 1.7)
-        .transition("maphunt-pop")
-        .duration(330)
-        .ease(d3.easeCubicOut)
-        .attr("r", base);
+      // Keep wrong-tap feedback paint-only. A radius tween can finish after a
+      // pan/zoom event and restore a stale radius, which shows up as a sudden
+      // oversized/tiny dot and can aggravate Android SVG paint artefacts.
+      marker.interrupt("maphunt-pop");
+      updateMapHuntMarkerScale(mapHuntState?.zoomTransform || d3.zoomIdentity);
+    }
+
+    function refreshMapHuntViewportMetrics() {
+      if (!mapHuntState?.svg || !mapHuntMap || !window.d3 || !mapHuntOverlay?.classList.contains("open")) return;
+      if (mapHuntResizeRaf) window.cancelAnimationFrame(mapHuntResizeRaf);
+      mapHuntResizeRaf = window.requestAnimationFrame(() => {
+        mapHuntResizeRaf = null;
+        if (!mapHuntState?.svg || !mapHuntOverlay?.classList.contains("open")) return;
+        updateMapHuntMarkerScale(mapHuntState.zoomTransform || d3.zoomIdentity);
+      });
     }
 
     function mapHuntEligibleCode(code) {
@@ -34568,6 +34983,7 @@ button,
       // keeps each country path in a stable coordinate system.
       layer.attr("transform", null);
       const zoom = d3.zoom()
+        .extent([[0, 0], [width, height]])
         .scaleExtent([1, 64])
         .translateExtent([[-width * 1.4, -height * 1.4], [width * 2.4, height * 2.4]])
         .on("zoom", event => {
@@ -34742,9 +35158,16 @@ button,
       try {
         const allCodes = mapHuntCodesForSet(mapHuntSet);
         if (!allCodes.length) throw new Error("No places available");
-        mapHuntState = makeMapHuntState(allCodes, allCodes, false);
+        const state = makeMapHuntState(allCodes, allCodes, false);
+        mapHuntState = state;
         await renderMapHuntMap();
-        if (token !== mapHuntBuildToken || !mapHuntOverlay?.classList.contains("open")) return;
+        if (token !== mapHuntBuildToken || !mapHuntOverlay?.classList.contains("open")) {
+          // Closing during the async map build is a pause. If this same board
+          // finished building while hidden, make sure its first prompt is drawn
+          // when Map Hunt is opened again instead of resuming a blank board.
+          if (mapHuntState === state && state.svg && !state.finished) state.needsRender = true;
+          return;
+        }
         mapHuntLoading?.classList.add("hidden");
         mapHuntPlay?.classList.remove("hidden");
         renderMapHuntPrompt();
@@ -34875,6 +35298,8 @@ button,
     mapHuntZoomOutBtn?.addEventListener("click", event => { event.stopPropagation(); mapHuntZoomBy(1 / 1.6); });
     mapHuntZoomInBtn?.addEventListener("click", event => { event.stopPropagation(); mapHuntZoomBy(1.6); });
     mapHuntZoomResetBtn?.addEventListener("click", event => { event.stopPropagation(); resetMapHuntZoom(); });
+    window.addEventListener("resize", refreshMapHuntViewportMetrics, { passive:true });
+    window.visualViewport?.addEventListener("resize", refreshMapHuntViewportMetrics, { passive:true });
     updateMapHuntSetupHelp();
 
     /* ---------- Ranking ---------- */
