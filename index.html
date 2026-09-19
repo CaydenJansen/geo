@@ -12919,6 +12919,33 @@ button,
     .map-hunt-reveal-halo.reveal-flash { opacity:.95 !important; stroke:#c95845 !important; }
     .map-hunt-reveal-halo.reveal-flash.reveal-dim { opacity:.16 !important; }
   </style>
+
+  <style id="maphunt-viewbox-stability-v0507">
+    /* v0.50.7 — viewBox zoom keeps Android SVG paths stable. */
+    .map-hunt-map-layer { transform:none !important; }
+    .map-hunt-context-country { stroke-width:var(--mh-context-stroke,.55px) !important; }
+    .map-hunt-country { stroke-width:var(--mh-country-stroke,.72px) !important; }
+    .map-hunt-country.try-1,
+    .map-hunt-country.try-2,
+    .map-hunt-country.try-3,
+    .map-hunt-country.revealed { stroke-width:var(--mh-country-result-stroke,.9px) !important; }
+    .map-hunt-country.wrong-tap,
+    .map-hunt-country.reveal-flash { stroke-width:var(--mh-country-strong-stroke,1.4px) !important; }
+    .map-hunt-marker { stroke-width:var(--mh-marker-stroke,2px) !important; }
+    .map-hunt-marker.try-1,
+    .map-hunt-marker.try-2,
+    .map-hunt-marker.try-3,
+    .map-hunt-marker.revealed { stroke-width:var(--mh-marker-result-stroke,2.25px) !important; }
+    .map-hunt-marker.wrong-tap,
+    .map-hunt-marker.reveal-flash { stroke-width:var(--mh-marker-strong-stroke,3px) !important; }
+    .map-hunt-reveal-halo { stroke-width:var(--mh-halo-stroke,2px) !important; }
+    .map-hunt-country, .map-hunt-context-country, .map-hunt-marker, .map-hunt-reveal-halo {
+      transform:none !important;
+      filter:none !important;
+      mix-blend-mode:normal !important;
+      shape-rendering:geometricPrecision;
+    }
+  </style>
 </head>
 
 <body>
@@ -14211,7 +14238,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.50.6";
+    const GEODEN_VERSION = "0.50.7";
     const GEODEN_BUILD_DATE = "2026-09-19";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -33989,18 +34016,19 @@ button,
       return "unanswered";
     }
 
-    function updateMapHuntMapStates() {
+    function updateMapHuntMapStates(codes = null) {
       if (!mapHuntState || !mapHuntMap || !window.d3) return;
       mapHuntMap.classList.toggle("revision", !!mapHuntState.revision);
       const svg = d3.select(mapHuntMap);
-      svg.selectAll("[data-map-hunt-code]")
-        .attr("class", function() {
-          const code = this.getAttribute("data-map-hunt-code");
-          const base = this.tagName.toLowerCase() === "path" ? "map-hunt-country" : "map-hunt-marker";
-          return `${base} ${mapHuntResultClass(code)}`;
-        });
-      svg.selectAll("[data-map-hunt-halo]")
-        .attr("class", "map-hunt-reveal-halo");
+      const codeSet = Array.isArray(codes) && codes.length ? new Set(codes) : null;
+      let selection = svg.selectAll("[data-map-hunt-code]");
+      if (codeSet) selection = selection.filter(function() { return codeSet.has(this.getAttribute("data-map-hunt-code")); });
+      selection.attr("class", function() {
+        const code = this.getAttribute("data-map-hunt-code");
+        const base = this.tagName.toLowerCase() === "path" ? "map-hunt-country" : "map-hunt-marker";
+        return `${base} ${mapHuntResultClass(code)}`;
+      });
+      if (!codeSet) svg.selectAll("[data-map-hunt-halo]").attr("class", "map-hunt-reveal-halo");
       updateMapHuntResultLabels();
 
       const done = mapHuntState.results.size;
@@ -34120,7 +34148,7 @@ button,
       }
       if (!mapHuntMap || !window.d3) return;
       const svg = d3.select(mapHuntMap);
-      svg.selectAll("[data-map-hunt-code]").classed("wrong-tap", false);
+      svg.selectAll(".wrong-tap").classed("wrong-tap", false);
       svg.selectAll("text.map-hunt-temp-label").remove();
     }
 
@@ -34165,8 +34193,7 @@ button,
       }
       if (!mapHuntMap || !window.d3) return;
       const svg = d3.select(mapHuntMap);
-      svg.selectAll("[data-map-hunt-code]").classed("reveal-flash reveal-dim", false);
-      svg.selectAll("[data-map-hunt-halo]").classed("reveal-flash reveal-dim", false);
+      svg.selectAll(".reveal-flash, .reveal-dim").classed("reveal-flash reveal-dim", false);
       svg.selectAll("text.map-hunt-reveal-label").remove();
       updateMapHuntMarkerScale(mapHuntState?.zoomTransform || d3.zoomIdentity);
     }
@@ -34266,7 +34293,7 @@ button,
         recordMapHuntMastery(target, result);
         mapHuntState.awaitingRevealClick = false;
         mapHuntState.locked = true;
-        updateMapHuntMapStates();
+        updateMapHuntMapStates([target.code]);
         mapHuntFeedback.textContent = revealed
           ? "Found it after the reveal."
           : tries === 1
@@ -34373,9 +34400,9 @@ button,
 
     function mapHuntMarkerMetrics(transform = mapHuntState?.zoomTransform) {
       const k = Math.max(1, Number(transform?.k) || 1);
-      const markerViewBoxWidth = Number(mapHuntMap?.viewBox?.baseVal?.width) || 1000;
-      const markerRenderedWidth = Math.max(1, Number(mapHuntMap?.getBoundingClientRect?.().width) || mapHuntMap?.clientWidth || markerViewBoxWidth);
-      const viewportScale = Math.max(.22, markerRenderedWidth / markerViewBoxWidth);
+      const baseWidth = Math.max(1, Number(mapHuntState?.mapWidth) || 1000);
+      const markerRenderedWidth = Math.max(1, Number(mapHuntMap?.getBoundingClientRect?.().width) || mapHuntMap?.clientWidth || baseWidth);
+      const viewportScale = Math.max(.22, markerRenderedWidth / baseWidth);
       const mobile = window.matchMedia?.("(max-width: 520px)")?.matches;
       const zoomSteps = Math.max(0, Math.log2(k));
       // Small at overview; steadily becomes a useful target as the map zooms.
@@ -34398,32 +34425,19 @@ button,
       const svg = d3.select(mapHuntMap);
       const screenToSvg = px => px / (k * viewportScale);
 
-      // Keep all strokes screen-sized ourselves. `vector-effect:non-scaling-stroke`
-      // is convenient, but produces severe paint corruption in Samsung/Android
-      // browsers when a complex SVG group is repeatedly zoomed and recoloured.
-      svg.selectAll("path.map-hunt-context-country").each(function() {
-        this.style.setProperty("stroke-width", `${screenToSvg(.62)}px`, "important");
-      });
-      svg.selectAll("path.map-hunt-country").each(function() {
-        let px = .78;
-        if (this.classList.contains("wrong-tap")) px = 1.15;
-        else if (this.classList.contains("reveal-flash")) px = 1.65;
-        else if (this.classList.contains("try-1") || this.classList.contains("try-2") || this.classList.contains("try-3") || this.classList.contains("revealed")) px = .95;
-        this.style.setProperty("stroke-width", `${screenToSvg(px)}px`, "important");
-      });
+      // One set of CSS variables is much safer on Android than rewriting style
+      // attributes on dozens of transformed paths every pan/zoom frame.
+      mapHuntMap.style.setProperty("--mh-context-stroke", `${screenToSvg(.62)}px`);
+      mapHuntMap.style.setProperty("--mh-country-stroke", `${screenToSvg(.78)}px`);
+      mapHuntMap.style.setProperty("--mh-country-result-stroke", `${screenToSvg(.95)}px`);
+      mapHuntMap.style.setProperty("--mh-country-strong-stroke", `${screenToSvg(1.55)}px`);
+      mapHuntMap.style.setProperty("--mh-marker-stroke", `${screenToSvg(2.0)}px`);
+      mapHuntMap.style.setProperty("--mh-marker-result-stroke", `${screenToSvg(2.25)}px`);
+      mapHuntMap.style.setProperty("--mh-marker-strong-stroke", `${screenToSvg(3.0)}px`);
+      mapHuntMap.style.setProperty("--mh-halo-stroke", `${screenToSvg(2.2)}px`);
 
-      svg.selectAll("circle.map-hunt-marker")
-        .attr("r", screenToSvg(visiblePx))
-        .each(function() {
-          let px = 2.0;
-          if (this.classList.contains("wrong-tap")) px = 2.45;
-          else if (this.classList.contains("reveal-flash")) px = 3.0;
-          else if (this.classList.contains("try-1") || this.classList.contains("try-2") || this.classList.contains("try-3") || this.classList.contains("revealed")) px = 2.25;
-          this.style.setProperty("stroke-width", `${screenToSvg(px)}px`, "important");
-        });
-      svg.selectAll("circle.map-hunt-reveal-halo")
-        .attr("r", screenToSvg(haloPx))
-        .each(function() { this.style.setProperty("stroke-width", `${screenToSvg(2.2)}px`, "important"); });
+      svg.selectAll("circle.map-hunt-marker").attr("r", screenToSvg(visiblePx));
+      svg.selectAll("circle.map-hunt-reveal-halo").attr("r", screenToSvg(haloPx));
 
       const tempScreenPx = mobile ? 8.0 : 12.0;
       const revealScreenPx = mobile ? 8.5 : 13.0;
@@ -34494,20 +34508,80 @@ button,
       if (targetEligible && targetCode) handleMapHuntGuess(targetCode);
     }
 
+    function applyMapHuntViewTransform(transform) {
+      if (!mapHuntState?.svg) return;
+      const width = Number(mapHuntState.mapWidth) || 1000;
+      const height = Number(mapHuntState.mapHeight) || 555;
+      const t = transform || d3.zoomIdentity;
+      const k = Math.max(1, Number(t.k) || 1);
+      const x = -Number(t.x || 0) / k;
+      const y = -Number(t.y || 0) / k;
+      mapHuntState.svg.attr("viewBox", `${x} ${y} ${width / k} ${height / k}`);
+    }
+
+    function mapHuntFitTransformForCodes(codes = mapHuntState?.roundCodes) {
+      if (!mapHuntState || !window.d3) return d3.zoomIdentity;
+      const width = Number(mapHuntState.mapWidth) || 1000;
+      const height = Number(mapHuntState.mapHeight) || 555;
+      const featureBounds = mapHuntState.featureBounds || new Map();
+      const markerPoints = mapHuntState.markerPoints || new Map();
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      const includePoint = (x, y) => {
+        if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+        x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y);
+      };
+      for (const code of (codes || [])) {
+        const bounds = featureBounds.get(code);
+        if (bounds) {
+          includePoint(bounds[0]?.[0], bounds[0]?.[1]);
+          includePoint(bounds[1]?.[0], bounds[1]?.[1]);
+        }
+        const point = markerPoints.get(code);
+        if (point) includePoint(point.x, point.y);
+      }
+      if (![x0,y0,x1,y1].every(Number.isFinite)) return d3.zoomIdentity;
+      const spanX = Math.max(10, x1 - x0);
+      const spanY = Math.max(10, y1 - y0);
+      const mobile = window.matchMedia?.("(max-width: 520px)")?.matches;
+      const padX = mobile ? 58 : 42;
+      const padY = mobile ? 44 : 34;
+      let k = Math.min((width - padX * 2) / spanX, (height - padY * 2) / spanY);
+      k = Math.max(1, Math.min(64, k));
+      const cx = (x0 + x1) / 2;
+      const cy = (y0 + y1) / 2;
+      return d3.zoomIdentity.translate(width / 2 - k * cx, height / 2 - k * cy).scale(k);
+    }
+
+    function fitMapHuntToActiveArea({ animate = false } = {}) {
+      if (!mapHuntState?.svg || !mapHuntState?.zoom || !window.d3) return;
+      const transform = mapHuntFitTransformForCodes(mapHuntState.roundCodes);
+      mapHuntState.homeTransform = transform;
+      if (animate) mapHuntState.svg.transition().duration(180).call(mapHuntState.zoom.transform, transform);
+      else mapHuntState.svg.call(mapHuntState.zoom.transform, transform);
+    }
+
     function attachMapHuntZoom(svg, layer, width, height) {
       if (!window.d3 || !mapHuntState) return;
+      // Keep the geography itself untransformed. On Samsung/Android, deeply
+      // transformed SVG paths that are repeatedly recoloured can corrupt into
+      // bars/blocks. Zoom the root viewBox instead; visually it is identical but
+      // keeps each country path in a stable coordinate system.
+      layer.attr("transform", null);
       const zoom = d3.zoom()
         .scaleExtent([1, 64])
-        .translateExtent([[-width, -height], [width * 2, height * 2]])
+        .translateExtent([[-width * 1.4, -height * 1.4], [width * 2.4, height * 2.4]])
         .on("zoom", event => {
-          layer.attr("transform", event.transform);
           mapHuntState.zoomTransform = event.transform;
+          applyMapHuntViewTransform(event.transform);
           updateMapHuntMarkerScale(event.transform);
         });
       mapHuntState.zoom = zoom;
       mapHuntState.svg = svg;
       mapHuntState.layer = layer;
+      mapHuntState.mapWidth = width;
+      mapHuntState.mapHeight = height;
       mapHuntState.zoomTransform = d3.zoomIdentity;
+      svg.attr("viewBox", `0 0 ${width} ${height}`);
       svg.call(zoom).on("dblclick.zoom", null);
       updateMapHuntMarkerScale(d3.zoomIdentity);
     }
@@ -34518,8 +34592,7 @@ button,
     }
 
     function resetMapHuntZoom() {
-      if (!mapHuntState?.svg || !mapHuntState?.zoom || !window.d3) return;
-      mapHuntState.svg.transition().duration(170).call(mapHuntState.zoom.transform, d3.zoomIdentity);
+      fitMapHuntToActiveArea({ animate:true });
     }
 
     async function renderMapHuntMap() {
@@ -34562,6 +34635,7 @@ button,
       const represented = new Set();
       const tiny = new Set();
       mapHuntState.labelPoints = new Map();
+      mapHuntState.featureBounds = new Map();
       for (const feature of selectedFeatures) {
         const code = feature.properties?.__geodenCode || "";
         if (!code) continue;
@@ -34570,6 +34644,8 @@ button,
           if (Number.isFinite(centroid?.[0]) && Number.isFinite(centroid?.[1])) {
             mapHuntState.labelPoints.set(code, { x:centroid[0], y:centroid[1] });
           }
+          const bounds = path.bounds(feature);
+          if (bounds?.flat?.().every(Number.isFinite)) mapHuntState.featureBounds.set(code, bounds);
         } catch (_) {}
       }
       layer.append("g").selectAll("path")
@@ -34616,6 +34692,7 @@ button,
       attachMapHuntZoom(svg, layer, width, height);
       svg.on("click.maphunt", event => resolveMapHuntClick(event));
       updateMapHuntMapStates();
+      fitMapHuntToActiveArea({ animate:false });
     }
 
     function makeMapHuntState(allCodes, roundCodes, revision = false) {
@@ -34639,6 +34716,10 @@ button,
         zoomTransform:null,
         labelPoints:new Map(),
         markerPoints:new Map(),
+        featureBounds:new Map(),
+        mapWidth:1000,
+        mapHeight:555,
+        homeTransform:null,
         needsRender:false
       };
     }
@@ -34693,6 +34774,9 @@ button,
       const oldTransform = mapHuntState.zoomTransform;
       const oldLabelPoints = mapHuntState.labelPoints;
       const oldMarkerPoints = mapHuntState.markerPoints;
+      const oldFeatureBounds = mapHuntState.featureBounds;
+      const oldMapWidth = mapHuntState.mapWidth;
+      const oldMapHeight = mapHuntState.mapHeight;
       mapHuntState = makeMapHuntState(allCodes, struggled, true);
       mapHuntState.svg = oldSvg;
       mapHuntState.zoom = oldZoom;
@@ -34701,6 +34785,9 @@ button,
       mapHuntState.zoomTransform = oldTransform;
       mapHuntState.labelPoints = oldLabelPoints || new Map();
       mapHuntState.markerPoints = oldMarkerPoints || new Map();
+      mapHuntState.featureBounds = oldFeatureBounds || new Map();
+      mapHuntState.mapWidth = oldMapWidth || 1000;
+      mapHuntState.mapHeight = oldMapHeight || 555;
       mapHuntFinish?.classList.add("hidden");
       updateMapHuntMapStates();
       renderMapHuntPrompt();
