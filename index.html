@@ -12789,6 +12789,46 @@ button,
     .ranking-row.correct .ranking-direction:not(:empty) { white-space:nowrap; }
   </style>
 
+
+  <style id="gameplay-cleanup-v0504">
+    /* Map Hunt: the map itself is the UI. No persistent answer labels or bottom
+       progress/status chrome during play. */
+    .map-hunt-country-label { display:none !important; }
+    .map-hunt-progress-track { display:none !important; }
+    .map-hunt-feedback { display:none !important; }
+
+    /* Detective guesses are a readable history, not chips in columns. */
+    .detective-prior-guesses {
+      display:grid !important;
+      grid-template-columns:1fr !important;
+      gap:6px !important;
+      width:100% !important;
+    }
+    .detective-prior-label {
+      width:100%;
+      padding:0 !important;
+      text-align:left;
+    }
+    .detective-prior-chips {
+      width:100% !important;
+      display:flex !important;
+      flex-direction:column !important;
+      align-items:stretch !important;
+      gap:6px !important;
+    }
+    .detective-prior-chip {
+      width:100% !important;
+      min-height:36px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      padding:8px 10px !important;
+      border-radius:10px !important;
+      text-align:left !important;
+      font-size:.72rem !important;
+      line-height:1.2 !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -13490,7 +13530,7 @@ button,
           </div>
           <div class="detective-suggestions hidden" id="detectiveSuggestions" role="listbox" aria-label="Place suggestions"></div>
           <div class="detective-prior-guesses hidden" id="detectivePriorGuesses" aria-label="Previous guesses">
-            <span class="detective-prior-label">Already guessed</span>
+            <span class="detective-prior-label">Previous guesses</span>
             <div class="detective-prior-chips" id="detectivePriorGuessChips"></div>
           </div>
           <div class="detective-feedback" id="detectiveFeedback" aria-live="polite"></div>
@@ -14081,7 +14121,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.50.3";
+    const GEODEN_VERSION = "0.50.4";
     const GEODEN_BUILD_DATE = "2026-09-19";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -29119,10 +29159,11 @@ button,
         const meta = guessMeta.find(item => interactiveLooseNormalize(item?.label) === interactiveLooseNormalize(guess));
         const chip = document.createElement("span");
         chip.className = `detective-prior-chip${meta?.warmth ? ` ${meta.warmth}` : ""}`;
-        chip.textContent = guess;
-        if (meta?.proximityLabel) {
-          chip.title = meta.proximityLabel;
-          chip.setAttribute("aria-label", `${guess} · ${meta.proximityLabel}`);
+        const proximityText = meta?.proximityLabel || "";
+        chip.textContent = proximityText ? `${guess} — ${proximityText}` : guess;
+        if (proximityText) {
+          chip.title = proximityText;
+          chip.setAttribute("aria-label", `${guess} · ${proximityText}`);
         }
         detectivePriorGuessChips?.appendChild(chip);
       }
@@ -29297,7 +29338,7 @@ button,
       if (!target || !guessed || target.code === guessed.code) return null;
       const distanceKm = greatCircleDistanceKm(target, guessed);
       if (!Number.isFinite(distanceKm)) return null;
-      if (distanceKm <= 650) return { key:"hot", label:"Very close", distanceKm };
+      if (distanceKm <= 650) return { key:"hot", label:"Very close!", distanceKm };
       if (distanceKm <= 1800) return { key:"warm", label:"Close", distanceKm };
       if (distanceKm <= 3800) return { key:"cool", label:"Somewhat close", distanceKm };
       return { key:"cold", label:"Far away", distanceKm };
@@ -29427,11 +29468,10 @@ button,
       detectiveSuggestions.classList.add("hidden");
       detectiveSuggestionIndex = -1;
       hapticFeedback("wrong");
-      const warmthText = proximity?.label ? `${proximity.label}. ` : "";
       round.feedback = round.revealedCount < round.clues.length
-        ? `${warmthText}Try again, or take another clue.`
-        : `${warmthText}You’ve seen every clue — guess again or reveal the answer.`;
-      round.feedbackType = proximity?.key === "hot" || proximity?.key === "warm" ? "near" : "wrong";
+        ? "Try again, or take another clue."
+        : "You’ve seen every clue — guess again or reveal the answer.";
+      round.feedbackType = "wrong";
       saveStudySession();
       detectiveRenderRound();
     }
@@ -33971,21 +34011,11 @@ button,
     }
 
     function updateMapHuntResultLabels() {
+      // Correct answers are communicated by the country/marker colour only.
+      // Keep the map uncluttered; only temporary wrong/reveal labels are shown.
       if (!mapHuntState?.layer || !window.d3) return;
       let group = mapHuntState.layer.select("g.map-hunt-result-labels");
-      if (group.empty()) group = mapHuntState.layer.append("g").attr("class", "map-hunt-result-labels");
-      const codes = [...mapHuntState.results.keys()].filter(code => mapHuntLabelPoint(code));
-      group.selectAll("text.map-hunt-country-label")
-        .data(codes, code => code)
-        .join(
-          enter => enter.append("text").attr("class", "map-hunt-country-label"),
-          update => update,
-          exit => exit.remove()
-        )
-        .attr("x", code => mapHuntLabelPoint(code).x)
-        .attr("y", code => mapHuntLabelPoint(code).y)
-        .text(code => countryByCode(code)?.name || code);
-      updateMapHuntMarkerScale(mapHuntState.zoomTransform || d3.zoomIdentity);
+      if (!group.empty()) group.selectAll("*").remove();
     }
 
     function clearMapHuntWrongFeedback() {
@@ -34232,17 +34262,25 @@ button,
       const k = Math.max(1, Number(transform?.k) || 1);
       const svg = d3.select(mapHuntMap);
 
-      // Keep microstate dots a useful *screen-space* size instead of allowing
-      // them to collapse toward their real geographic size as the map zooms.
-      // This also keeps their invisible hit target comfortably tappable on phones.
+      // Microstate dots should be subtle at the overview, then become easier to
+      // see/tap as the learner zooms in. Their *screen-space* size therefore
+      // ramps with zoom instead of staying permanently large or shrinking away.
       const markerViewBoxWidth = Number(mapHuntMap.viewBox?.baseVal?.width) || 1000;
       const markerRenderedWidth = Math.max(1, Number(mapHuntMap.getBoundingClientRect?.().width) || mapHuntMap.clientWidth || markerViewBoxWidth);
       const markerViewportScale = Math.max(.22, markerRenderedWidth / markerViewBoxWidth);
       const markerMobile = window.matchMedia?.("(max-width: 520px)")?.matches;
+      const zoomSteps = Math.max(0, Math.log2(k));
+      const visibleMarkerPx = markerMobile
+        ? Math.min(8.5, 3.6 + zoomSteps * 1.15)
+        : Math.min(6.5, 3.2 + zoomSteps * .82);
+      const hitMarkerPx = markerMobile
+        ? Math.min(23, 13 + zoomSteps * 2.1)
+        : Math.min(18, 11 + zoomSteps * 1.55);
+      const haloMarkerPx = visibleMarkerPx + (markerMobile ? 4.5 : 3.5);
       const markerScreenToSvg = px => px / (k * markerViewportScale);
-      svg.selectAll("circle.map-hunt-marker").attr("r", markerScreenToSvg(markerMobile ? 8.5 : 6.5));
-      svg.selectAll("circle.map-hunt-marker-hit").attr("r", markerScreenToSvg(markerMobile ? 23 : 18));
-      svg.selectAll("circle.map-hunt-reveal-halo").attr("r", markerScreenToSvg(markerMobile ? 13 : 10));
+      svg.selectAll("circle.map-hunt-marker").attr("r", markerScreenToSvg(visibleMarkerPx));
+      svg.selectAll("circle.map-hunt-marker-hit").attr("r", markerScreenToSvg(hitMarkerPx));
+      svg.selectAll("circle.map-hunt-reveal-halo").attr("r", markerScreenToSvg(haloMarkerPx));
 
       // SVG text is also scaled by the responsive viewBox. Compensate for both
       // map zoom and the rendered SVG width so labels stay readable on phones.
@@ -34253,14 +34291,10 @@ button,
       // Phone labels were intentionally enlarged in v0.50.0, but that made
       // completed place names dominate the map. Keep desktop unchanged and
       // use roughly half the previous phone screen-space size.
-      const resultScreenPx = mobile ? 8.0 : 12.8;
       const tempScreenPx = mobile ? 8.0 : 12.0;
       const revealScreenPx = mobile ? 8.5 : 13.0;
       const screenToSvg = px => px / (k * viewportScale);
 
-      svg.selectAll("text.map-hunt-country-label")
-        .style("font-size", `${screenToSvg(resultScreenPx)}px`)
-        .style("stroke-width", `${screenToSvg(mobile ? 1.9 : 2.7)}px`);
       svg.selectAll("text.map-hunt-temp-label")
         .style("font-size", `${screenToSvg(tempScreenPx)}px`)
         .style("stroke-width", `${screenToSvg(mobile ? 1.8 : 2.4)}px`);
