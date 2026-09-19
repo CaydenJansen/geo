@@ -12783,6 +12783,12 @@ button,
     }
   </style>
 
+
+  <style id="ranking-known-correct-v0501">
+    .ranking-row.correct .ranking-direction { font-weight:900; }
+    .ranking-row.correct .ranking-direction:not(:empty) { white-space:nowrap; }
+  </style>
+
 </head>
 
 <body>
@@ -14075,7 +14081,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.50.0";
+    const GEODEN_VERSION = "0.50.3";
     const GEODEN_BUILD_DATE = "2026-09-19";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -34225,37 +34231,49 @@ button,
       if (!mapHuntMap || !window.d3) return;
       const k = Math.max(1, Number(transform?.k) || 1);
       const svg = d3.select(mapHuntMap);
-      svg.selectAll("circle.map-hunt-marker").attr("r", 6.3 / k);
-      svg.selectAll("circle.map-hunt-marker-hit").attr("r", 16 / k);
-      svg.selectAll("circle.map-hunt-reveal-halo").attr("r", 10 / k);
+
+      // Keep microstate dots a useful *screen-space* size instead of allowing
+      // them to collapse toward their real geographic size as the map zooms.
+      // This also keeps their invisible hit target comfortably tappable on phones.
+      const markerViewBoxWidth = Number(mapHuntMap.viewBox?.baseVal?.width) || 1000;
+      const markerRenderedWidth = Math.max(1, Number(mapHuntMap.getBoundingClientRect?.().width) || mapHuntMap.clientWidth || markerViewBoxWidth);
+      const markerViewportScale = Math.max(.22, markerRenderedWidth / markerViewBoxWidth);
+      const markerMobile = window.matchMedia?.("(max-width: 520px)")?.matches;
+      const markerScreenToSvg = px => px / (k * markerViewportScale);
+      svg.selectAll("circle.map-hunt-marker").attr("r", markerScreenToSvg(markerMobile ? 8.5 : 6.5));
+      svg.selectAll("circle.map-hunt-marker-hit").attr("r", markerScreenToSvg(markerMobile ? 23 : 18));
+      svg.selectAll("circle.map-hunt-reveal-halo").attr("r", markerScreenToSvg(markerMobile ? 13 : 10));
 
       // SVG text is also scaled by the responsive viewBox. Compensate for both
       // map zoom and the rendered SVG width so labels stay readable on phones.
-      const viewBoxWidth = Number(mapHuntMap.viewBox?.baseVal?.width) || 1000;
-      const renderedWidth = Math.max(1, Number(mapHuntMap.getBoundingClientRect?.().width) || mapHuntMap.clientWidth || viewBoxWidth);
-      const viewportScale = Math.max(.22, renderedWidth / viewBoxWidth);
-      const mobile = window.matchMedia?.("(max-width: 520px)")?.matches;
-      const resultScreenPx = mobile ? 15.5 : 12.8;
-      const tempScreenPx = mobile ? 14.8 : 12.0;
-      const revealScreenPx = mobile ? 15.5 : 13.0;
+      const viewBoxWidth = markerViewBoxWidth;
+      const renderedWidth = markerRenderedWidth;
+      const viewportScale = markerViewportScale;
+      const mobile = markerMobile;
+      // Phone labels were intentionally enlarged in v0.50.0, but that made
+      // completed place names dominate the map. Keep desktop unchanged and
+      // use roughly half the previous phone screen-space size.
+      const resultScreenPx = mobile ? 8.0 : 12.8;
+      const tempScreenPx = mobile ? 8.0 : 12.0;
+      const revealScreenPx = mobile ? 8.5 : 13.0;
       const screenToSvg = px => px / (k * viewportScale);
 
       svg.selectAll("text.map-hunt-country-label")
         .style("font-size", `${screenToSvg(resultScreenPx)}px`)
-        .style("stroke-width", `${screenToSvg(mobile ? 3.4 : 2.7)}px`);
+        .style("stroke-width", `${screenToSvg(mobile ? 1.9 : 2.7)}px`);
       svg.selectAll("text.map-hunt-temp-label")
         .style("font-size", `${screenToSvg(tempScreenPx)}px`)
-        .style("stroke-width", `${screenToSvg(mobile ? 3.1 : 2.4)}px`);
+        .style("stroke-width", `${screenToSvg(mobile ? 1.8 : 2.4)}px`);
       svg.selectAll("text.map-hunt-reveal-label")
         .style("font-size", `${screenToSvg(revealScreenPx)}px`)
-        .style("stroke-width", `${screenToSvg(mobile ? 3.5 : 2.8)}px`);
+        .style("stroke-width", `${screenToSvg(mobile ? 2.0 : 2.8)}px`);
     }
 
     function attachMapHuntZoom(svg, layer, width, height) {
       if (!window.d3 || !mapHuntState) return;
       const zoom = d3.zoom()
-        .scaleExtent([1, 32])
-        .translateExtent([[-width * .6, -height * .6], [width * 1.6, height * 1.6]])
+        .scaleExtent([1, 64])
+        .translateExtent([[-width, -height], [width * 2, height * 2]])
         .on("zoom", event => {
           layer.attr("transform", event.transform);
           mapHuntState.zoomTransform = event.transform;
@@ -34897,6 +34915,11 @@ function rankingTargetValues() {
       return new Set(rankingState.items.filter((item, index) => item.value === target[index]).map(item => item.c.code));
     }
 
+    function rankingTargetIndexForItem(item) {
+      if (!rankingState || !item) return -1;
+      return rankingTargetValues().indexOf(item.value);
+    }
+
     function recordRankingMastery(revealed = false) {
       if (!rankingState || rankingState.masteryRecorded) return;
       rankingState.masteryRecorded = true;
@@ -34926,6 +34949,8 @@ function rankingTargetValues() {
       rankingState.revealed = true;
       rankingState.verified = true;
       rankingState.checkedCorrectCodes = new Set(rankingState.items.map(item => item.c.code));
+      rankingState.knownCorrectCodes = new Set(rankingState.items.map(item => item.c.code));
+      rankingState.newlyConfirmedCodes = new Set();
       recordRankingMastery(false);
       const checks = Math.max(1, Number(rankingState.checks) || 1);
       rankingFeedback.textContent = `Perfect — solved in ${checks} check${checks === 1 ? "" : "s"}.`;
@@ -34941,12 +34966,17 @@ function rankingTargetValues() {
     }
 
     function rankingRowAssessment(item, index) {
-      const checked = rankingState?.checkedCorrectCodes instanceof Set
-        ? rankingState.checkedCorrectCodes
-        : new Set(rankingState?.checkedCorrectCodes || []);
-      if (!checked.size) return { cls:"", text:"" };
-      if (checked.has(item.c.code)) return { cls:"correct", text:"Correct" };
-      return { cls:"", text:"" };
+      if (!rankingState || !item) return { cls:"", text:"" };
+      const known = rankingState.knownCorrectCodes instanceof Set
+        ? rankingState.knownCorrectCodes
+        : new Set(rankingState.knownCorrectCodes || []);
+      if (!known.has(item.c.code)) return { cls:"", text:"" };
+      const targetIndex = rankingTargetIndexForItem(item);
+      if (targetIndex !== index) return { cls:"", text:"" };
+      const newly = rankingState.newlyConfirmedCodes instanceof Set
+        ? rankingState.newlyConfirmedCodes
+        : new Set(rankingState.newlyConfirmedCodes || []);
+      return { cls:"correct", text:newly.has(item.c.code) ? "Correct" : "Already correct" };
     }
 
     function rankingRowPositions() {
@@ -35011,10 +35041,12 @@ function rankingTargetValues() {
       const previousPositions = rankingRowPositions();
       [rankingState.items[index],rankingState.items[next]]=[rankingState.items[next],rankingState.items[index]];
 
-      // Moving anything ends the previous check. Correct markers disappear until
-      // the learner explicitly checks the new arrangement again.
+      // Moving anything ends the current check, but previously confirmed correct
+      // slots remain useful knowledge for the rest of the round. A known item
+      // only stays green while it is actually back in its confirmed position.
       rankingState.verified = false;
       rankingState.checkedCorrectCodes = null;
+      rankingState.newlyConfirmedCodes = new Set();
       rankingVerifyBtn.disabled = false;
       rankingVerifyBtn.classList.remove("hidden");
       rankingFeedback.textContent = "Check again when you’re ready.";
@@ -35033,7 +35065,14 @@ function rankingTargetValues() {
       rankingState.checks = Math.max(0, Number(rankingState.checks) || 0) + 1;
       const correctCodes = rankingCorrectCodes();
       if (!rankingState.firstCheckCorrectCodes) rankingState.firstCheckCorrectCodes = [...correctCodes];
+      const knownBefore = rankingState.knownCorrectCodes instanceof Set
+        ? new Set(rankingState.knownCorrectCodes)
+        : new Set(rankingState.knownCorrectCodes || []);
+      const newlyConfirmed = new Set([...correctCodes].filter(code => !knownBefore.has(code)));
+      const knownCorrect = new Set([...knownBefore, ...correctCodes]);
       rankingState.checkedCorrectCodes = correctCodes;
+      rankingState.knownCorrectCodes = knownCorrect;
+      rankingState.newlyConfirmedCodes = newlyConfirmed;
       rankingState.verified = true;
       renderRankingList();
 
@@ -35067,7 +35106,12 @@ function rankingTargetValues() {
         verifyRanking();
         return;
       }
-      const pick = misplaced[randomInt(misplaced.length)];
+      const known = rankingState.knownCorrectCodes instanceof Set
+        ? rankingState.knownCorrectCodes
+        : new Set(rankingState.knownCorrectCodes || []);
+      const unknownMisplaced = misplaced.filter(entry => !known.has(entry.item.c.code));
+      const hintPool = unknownMisplaced.length ? unknownMisplaced : misplaced;
+      const pick = hintPool[randomInt(hintPool.length)];
       const direction = pick.targetIndex < pick.index ? "up" : "down";
       rankingFeedback.textContent = `Hint · move ${pick.item.c.name} ${direction}.`;
       rankingRevealBtn.textContent = "Another hint";
@@ -35092,7 +35136,7 @@ function rankingTargetValues() {
         const items = await buildRankingItems({ avoidPrevious, metric: roundMetric });
         if (token !== rankingBuildToken || !rankingOverlay?.classList.contains("open")) return;
         if (items.length < 2) throw new Error("Not enough values");
-        rankingState={ metric:roundMetric, setKey:rankingSet, items, verified:false, revealed:false, checks:0, firstCheckCorrectCodes:null, checkedCorrectCodes:null, hints:0, masteryRecorded:false };
+        rankingState={ metric:roundMetric, setKey:rankingSet, items, verified:false, revealed:false, checks:0, firstCheckCorrectCodes:null, checkedCorrectCodes:null, knownCorrectCodes:new Set(), newlyConfirmedCodes:new Set(), hints:0, masteryRecorded:false };
         rankingLastRoundCodes = items.map(item => item.c.code);
         saveSpecialGamePrefs();
         rankingNewBtn.textContent = "Change setup";
