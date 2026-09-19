@@ -12829,6 +12829,69 @@ button,
       line-height:1.2 !important;
     }
   </style>
+
+  <style id="maphunt-mobile-integrity-v0505">
+    /* v0.50.5 — revision clarity + stable Android SVG rendering. */
+    .map-hunt-country,
+    .map-hunt-marker {
+      transition:none !important;
+    }
+
+    /* Active geography is deliberately darker than revision context. */
+    .map-hunt-country.unanswered { fill:#aeb4b0 !important; opacity:1 !important; }
+    .map-hunt-marker.unanswered { fill:#aeb4b0 !important; opacity:1 !important; }
+    .map-hunt-country.inactive {
+      fill:#e5e8e4 !important;
+      opacity:.30 !important;
+      pointer-events:none !important;
+      cursor:default !important;
+    }
+    .map-hunt-marker.inactive {
+      fill:#dfe3df !important;
+      opacity:.34 !important;
+      pointer-events:none !important;
+      cursor:default !important;
+    }
+    .map-hunt-map.revision .map-hunt-context-country { opacity:.16 !important; }
+
+    /* Samsung/Android browsers can smear transformed/filtered SVG circles into
+       horizontal streaks while the parent map is zoomed. Use opacity/stroke
+       pulses only; marker size feedback is done safely by changing the r attr. */
+    .map-hunt-marker.wrong-tap {
+      transform:none !important;
+      animation:none !important;
+      filter:none !important;
+    }
+    .map-hunt-marker.reveal-flash {
+      transform:none !important;
+      filter:none !important;
+      animation:mapHuntSafeMarkerPulse 700ms ease-in-out infinite alternate !important;
+    }
+    .map-hunt-country.reveal-flash {
+      filter:none !important;
+      animation:mapHuntSafeCountryPulse 700ms ease-in-out infinite alternate !important;
+    }
+    .map-hunt-reveal-halo.reveal-flash {
+      animation:mapHuntSafeHaloPulse 700ms ease-in-out infinite alternate !important;
+    }
+    @keyframes mapHuntSafeMarkerPulse {
+      from { opacity:.50; stroke-width:2px; }
+      to { opacity:1; stroke-width:4px; }
+    }
+    @keyframes mapHuntSafeCountryPulse {
+      from { opacity:.52; stroke-width:1.2px; }
+      to { opacity:1; stroke-width:2.2px; }
+    }
+    @keyframes mapHuntSafeHaloPulse {
+      from { opacity:.18; }
+      to { opacity:.95; }
+    }
+
+    /* Legacy broad hit circles are no longer rendered. Keep this defensive rule
+       so an old resumed DOM can never sit above neighbouring countries. */
+    .map-hunt-marker-hit { pointer-events:none !important; display:none !important; }
+  </style>
+
 </head>
 
 <body>
@@ -14121,7 +14184,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.50.4";
+    const GEODEN_VERSION = "0.50.5";
     const GEODEN_BUILD_DATE = "2026-09-19";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -33889,15 +33952,18 @@ button,
     }
 
     function mapHuntResultClass(code) {
+      // In Revision, anything outside the current revision pool is pure map
+      // context. It should look inactive and behave exactly like water.
+      if (mapHuntState?.revision && !mapHuntState.roundSet?.has(code)) return "inactive";
       const result = mapHuntState?.results?.get(code);
       if (result?.revealed) return "revealed";
       if (result?.tries >= 1 && result.tries <= 3) return `try-${result.tries}`;
-      if (mapHuntState?.revision && !mapHuntState.roundSet?.has(code)) return "inactive";
       return "unanswered";
     }
 
     function updateMapHuntMapStates() {
       if (!mapHuntState || !mapHuntMap || !window.d3) return;
+      mapHuntMap.classList.toggle("revision", !!mapHuntState.revision);
       const svg = d3.select(mapHuntMap);
       svg.selectAll("[data-map-hunt-code]")
         .attr("class", function() {
@@ -34039,6 +34105,7 @@ button,
       clicked.classed("wrong-tap", false);
       clicked.each(function() { try { void this.getBoundingClientRect(); } catch (_) {} });
       clicked.classed("wrong-tap", true);
+      pulseMapHuntMarker(code);
       if (c && point && mapHuntState?.layer) {
         let group = mapHuntState.layer.select("g.map-hunt-temp-labels");
         if (group.empty()) group = mapHuntState.layer.append("g").attr("class", "map-hunt-temp-labels");
@@ -34139,6 +34206,7 @@ button,
     function handleMapHuntGuess(code) {
       if (!mapHuntState || mapHuntState.finished || mapHuntState.locked) return;
       if (!code) return;
+      if (mapHuntState.revision && !mapHuntState.roundSet?.has(code)) return;
       const target = mapHuntCurrentCountry();
       if (!target) return;
 
@@ -34257,50 +34325,102 @@ button,
       window.setTimeout(() => (struggled.length ? mapHuntRevisionBtn : mapHuntReplayBtn)?.focus?.({ preventScroll:true }), 0);
     }
 
+    function mapHuntMarkerMetrics(transform = mapHuntState?.zoomTransform) {
+      const k = Math.max(1, Number(transform?.k) || 1);
+      const markerViewBoxWidth = Number(mapHuntMap?.viewBox?.baseVal?.width) || 1000;
+      const markerRenderedWidth = Math.max(1, Number(mapHuntMap?.getBoundingClientRect?.().width) || mapHuntMap?.clientWidth || markerViewBoxWidth);
+      const viewportScale = Math.max(.22, markerRenderedWidth / markerViewBoxWidth);
+      const mobile = window.matchMedia?.("(max-width: 520px)")?.matches;
+      const zoomSteps = Math.max(0, Math.log2(k));
+      // Small at overview; steadily becomes a useful target as the map zooms.
+      const visiblePx = mobile
+        ? Math.min(7.4, 2.25 + zoomSteps * 1.08)
+        : Math.min(6.0, 2.05 + zoomSteps * .78);
+      // The broad touch allowance is used only by nearest-marker hit testing;
+      // it is no longer an overlapping SVG circle sitting above countries.
+      const hitPx = mobile
+        ? Math.min(15.5, 9.5 + zoomSteps * .9)
+        : Math.min(12.5, 8.0 + zoomSteps * .7);
+      const haloPx = visiblePx + (mobile ? 4.0 : 3.2);
+      return { k, viewportScale, mobile, visiblePx, hitPx, haloPx };
+    }
+
     function updateMapHuntMarkerScale(transform) {
       if (!mapHuntMap || !window.d3) return;
-      const k = Math.max(1, Number(transform?.k) || 1);
+      const metrics = mapHuntMarkerMetrics(transform);
+      const { k, viewportScale, mobile, visiblePx, haloPx } = metrics;
       const svg = d3.select(mapHuntMap);
+      const screenToSvg = px => px / (k * viewportScale);
+      svg.selectAll("circle.map-hunt-marker").attr("r", screenToSvg(visiblePx));
+      svg.selectAll("circle.map-hunt-reveal-halo").attr("r", screenToSvg(haloPx));
 
-      // Microstate dots should be subtle at the overview, then become easier to
-      // see/tap as the learner zooms in. Their *screen-space* size therefore
-      // ramps with zoom instead of staying permanently large or shrinking away.
-      const markerViewBoxWidth = Number(mapHuntMap.viewBox?.baseVal?.width) || 1000;
-      const markerRenderedWidth = Math.max(1, Number(mapHuntMap.getBoundingClientRect?.().width) || mapHuntMap.clientWidth || markerViewBoxWidth);
-      const markerViewportScale = Math.max(.22, markerRenderedWidth / markerViewBoxWidth);
-      const markerMobile = window.matchMedia?.("(max-width: 520px)")?.matches;
-      const zoomSteps = Math.max(0, Math.log2(k));
-      const visibleMarkerPx = markerMobile
-        ? Math.min(8.5, 3.6 + zoomSteps * 1.15)
-        : Math.min(6.5, 3.2 + zoomSteps * .82);
-      const hitMarkerPx = markerMobile
-        ? Math.min(23, 13 + zoomSteps * 2.1)
-        : Math.min(18, 11 + zoomSteps * 1.55);
-      const haloMarkerPx = visibleMarkerPx + (markerMobile ? 4.5 : 3.5);
-      const markerScreenToSvg = px => px / (k * markerViewportScale);
-      svg.selectAll("circle.map-hunt-marker").attr("r", markerScreenToSvg(visibleMarkerPx));
-      svg.selectAll("circle.map-hunt-marker-hit").attr("r", markerScreenToSvg(hitMarkerPx));
-      svg.selectAll("circle.map-hunt-reveal-halo").attr("r", markerScreenToSvg(haloMarkerPx));
-
-      // SVG text is also scaled by the responsive viewBox. Compensate for both
-      // map zoom and the rendered SVG width so labels stay readable on phones.
-      const viewBoxWidth = markerViewBoxWidth;
-      const renderedWidth = markerRenderedWidth;
-      const viewportScale = markerViewportScale;
-      const mobile = markerMobile;
-      // Phone labels were intentionally enlarged in v0.50.0, but that made
-      // completed place names dominate the map. Keep desktop unchanged and
-      // use roughly half the previous phone screen-space size.
       const tempScreenPx = mobile ? 8.0 : 12.0;
       const revealScreenPx = mobile ? 8.5 : 13.0;
-      const screenToSvg = px => px / (k * viewportScale);
-
       svg.selectAll("text.map-hunt-temp-label")
         .style("font-size", `${screenToSvg(tempScreenPx)}px`)
         .style("stroke-width", `${screenToSvg(mobile ? 1.8 : 2.4)}px`);
       svg.selectAll("text.map-hunt-reveal-label")
         .style("font-size", `${screenToSvg(revealScreenPx)}px`)
         .style("stroke-width", `${screenToSvg(mobile ? 2.0 : 2.8)}px`);
+    }
+
+    function pulseMapHuntMarker(code) {
+      if (!code || !mapHuntMap || !window.d3) return;
+      const marker = d3.select(mapHuntMap).select(`circle.map-hunt-marker[data-map-hunt-code="${code}"]`);
+      if (marker.empty()) return;
+      const base = Number(marker.attr("r")) || 0;
+      if (!base) return;
+      marker.interrupt("maphunt-pop")
+        .attr("r", base * 1.7)
+        .transition("maphunt-pop")
+        .duration(330)
+        .ease(d3.easeCubicOut)
+        .attr("r", base);
+    }
+
+    function mapHuntEligibleCode(code) {
+      if (!code || !mapHuntState) return false;
+      return !mapHuntState.revision || mapHuntState.roundSet?.has(code);
+    }
+
+    function resolveMapHuntClick(event) {
+      if (!mapHuntState || !mapHuntState.layer || !window.d3 || event.defaultPrevented) return;
+      const targetEl = event.target?.closest?.("[data-map-hunt-code]");
+      const targetCode = targetEl?.getAttribute?.("data-map-hunt-code") || "";
+      const targetIsPath = targetEl?.tagName?.toLowerCase?.() === "path";
+      const targetIsMarker = targetEl?.classList?.contains?.("map-hunt-marker");
+      const targetEligible = mapHuntEligibleCode(targetCode);
+
+      const [x, y] = d3.pointer(event, mapHuntState.layer.node());
+      const metrics = mapHuntMarkerMetrics(mapHuntState.zoomTransform);
+      const markerPoints = mapHuntState.markerPoints || new Map();
+      let nearest = null;
+      for (const [code, point] of markerPoints) {
+        if (!mapHuntEligibleCode(code) || !point) continue;
+        const dx = x - point.x;
+        const dy = y - point.y;
+        const screenDist = Math.hypot(dx, dy) * metrics.k * metrics.viewportScale;
+        if (!nearest || screenDist < nearest.distance) nearest = { code, distance:screenDist };
+      }
+
+      // Clicking inside a genuine country polygon should prefer that country.
+      // A nearby microstate only wins if the tap is actually on/very near its
+      // visible dot; this stops São Tomé-style targets stealing mainland clicks.
+      if (targetIsPath && targetEligible) {
+        if (nearest && nearest.distance <= metrics.visiblePx + 2.5) handleMapHuntGuess(nearest.code);
+        else handleMapHuntGuess(targetCode);
+        return;
+      }
+
+      // When a dot (or water/context near one) is tapped, choose the nearest
+      // eligible microstate rather than whichever overlapping SVG circle happens
+      // to be painted on top.
+      if (nearest && (targetIsMarker || nearest.distance <= metrics.hitPx)) {
+        handleMapHuntGuess(nearest.code);
+        return;
+      }
+
+      if (targetEligible && targetCode) handleMapHuntGuess(targetCode);
     }
 
     function attachMapHuntZoom(svg, layer, width, height) {
@@ -34393,12 +34513,6 @@ button,
             try { if (!safe || path.area(feature) < 13) tiny.add(code); } catch (_) { tiny.add(code); }
           }
           return code;
-        })
-        .on("click", (event, feature) => {
-          event.stopPropagation();
-          if (event.defaultPrevented) return;
-          const code = feature.properties?.__geodenCode || "";
-          if (code) handleMapHuntGuess(code);
         });
 
       const markerCountries = mapHuntState.allCodes.map(countryByCode).filter(c => c && (!represented.has(c.code) || tiny.has(c.code)));
@@ -34406,6 +34520,7 @@ button,
         const point = projection([c.lon, c.lat]);
         return { country:c, x:point?.[0] ?? -20, y:point?.[1] ?? -20 };
       });
+      mapHuntState.markerPoints = new Map(markerPoints.map(point => [point.country.code, { x:point.x, y:point.y }]));
       for (const point of markerPoints) {
         if (Number.isFinite(point.x) && Number.isFinite(point.y)) {
           mapHuntState.labelPoints.set(point.country.code, { x:point.x, y:point.y });
@@ -34421,26 +34536,14 @@ button,
         .data(markerPoints).join("circle")
         .attr("class", "map-hunt-marker unanswered")
         .attr("data-map-hunt-code", d => d.country.code)
-        .attr("cx", d => d.x).attr("cy", d => d.y).attr("r", 6.3)
-        .on("click", (event, d) => {
-          event.stopPropagation();
-          if (!event.defaultPrevented) handleMapHuntGuess(d.country.code);
-        });
-      markers.selectAll("circle.map-hunt-marker-hit")
-        .data(markerPoints).join("circle")
-        .attr("class", "map-hunt-marker-hit")
-        .attr("cx", d => d.x).attr("cy", d => d.y).attr("r", 14)
-        .style("pointer-events", "all")
-        .on("click", (event, d) => {
-          event.stopPropagation();
-          if (!event.defaultPrevented) handleMapHuntGuess(d.country.code);
-        });
+        .attr("cx", d => d.x).attr("cy", d => d.y).attr("r", 6.3);
 
       layer.append("g").attr("class", "map-hunt-result-labels");
       layer.append("g").attr("class", "map-hunt-temp-labels");
       layer.append("g").attr("class", "map-hunt-reveal-labels");
       mapHuntState.projection = projection;
       attachMapHuntZoom(svg, layer, width, height);
+      svg.on("click.maphunt", event => resolveMapHuntClick(event));
       updateMapHuntMapStates();
     }
 
@@ -34464,6 +34567,7 @@ button,
         layer:null,
         zoomTransform:null,
         labelPoints:new Map(),
+        markerPoints:new Map(),
         needsRender:false
       };
     }
@@ -34517,6 +34621,7 @@ button,
       const oldProjection = mapHuntState.projection;
       const oldTransform = mapHuntState.zoomTransform;
       const oldLabelPoints = mapHuntState.labelPoints;
+      const oldMarkerPoints = mapHuntState.markerPoints;
       mapHuntState = makeMapHuntState(allCodes, struggled, true);
       mapHuntState.svg = oldSvg;
       mapHuntState.zoom = oldZoom;
@@ -34524,6 +34629,7 @@ button,
       mapHuntState.projection = oldProjection;
       mapHuntState.zoomTransform = oldTransform;
       mapHuntState.labelPoints = oldLabelPoints || new Map();
+      mapHuntState.markerPoints = oldMarkerPoints || new Map();
       mapHuntFinish?.classList.add("hidden");
       updateMapHuntMapStates();
       renderMapHuntPrompt();
@@ -34538,6 +34644,7 @@ button,
       if (mapHuntAdvanceTimer) { window.clearTimeout(mapHuntAdvanceTimer); mapHuntAdvanceTimer = null; }
       if (mapHuntState?.svg) mapHuntState.svg.on(".zoom", null);
       mapHuntState = null;
+      mapHuntMap?.classList.remove("revision");
       mapHuntLoading?.classList.add("hidden");
       mapHuntPlay?.classList.add("hidden");
       mapHuntSetup?.classList.remove("hidden");
