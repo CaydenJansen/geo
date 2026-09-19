@@ -12892,6 +12892,33 @@ button,
     .map-hunt-marker-hit { pointer-events:none !important; display:none !important; }
   </style>
 
+
+  <style id="maphunt-render-stability-v0506">
+    /* v0.50.6 — avoid Samsung/Android SVG paint corruption under deep zoom. */
+    .map-hunt-context-country,
+    .map-hunt-country,
+    .map-hunt-marker,
+    .map-hunt-reveal-halo {
+      vector-effect:none !important;
+      filter:none !important;
+      animation:none !important;
+      transition:none !important;
+    }
+    .map-hunt-country.reveal-flash {
+      fill:#c95845 !important;
+      opacity:1 !important;
+      stroke:#fff !important;
+    }
+    .map-hunt-country.reveal-flash.reveal-dim { opacity:.42 !important; }
+    .map-hunt-marker.reveal-flash {
+      fill:#c95845 !important;
+      opacity:1 !important;
+      stroke:#fff !important;
+    }
+    .map-hunt-marker.reveal-flash.reveal-dim { opacity:.42 !important; }
+    .map-hunt-reveal-halo.reveal-flash { opacity:.95 !important; stroke:#c95845 !important; }
+    .map-hunt-reveal-halo.reveal-flash.reveal-dim { opacity:.16 !important; }
+  </style>
 </head>
 
 <body>
@@ -14184,7 +14211,7 @@ button,
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 
   <script>
-    const GEODEN_VERSION = "0.50.5";
+    const GEODEN_VERSION = "0.50.6";
     const GEODEN_BUILD_DATE = "2026-09-19";
     const GEODEN_EXPECTED_COUNTRY_COUNT = 195;
     const GEODEN_EXPECTED_TERRITORY_COUNT = 26;
@@ -33920,6 +33947,7 @@ button,
     let mapHuntAdvanceTimer = null;
     let mapHuntWrongFeedbackTimer = null;
     let mapHuntRevealTimer = null;
+    let mapHuntRevealInterval = null;
 
     function mapHuntShuffle(items) {
       const copy = [...items];
@@ -33978,6 +34006,7 @@ button,
       const done = mapHuntState.results.size;
       const total = mapHuntState.roundCodes.length;
       if (mapHuntProgressFill) mapHuntProgressFill.style.width = `${total ? done / total * 100 : 0}%`;
+      updateMapHuntMarkerScale(mapHuntState.zoomTransform || d3.zoomIdentity);
     }
 
     function mapHuntCurrentCountry() {
@@ -34130,11 +34159,16 @@ button,
         window.clearTimeout(mapHuntRevealTimer);
         mapHuntRevealTimer = null;
       }
+      if (mapHuntRevealInterval) {
+        window.clearInterval(mapHuntRevealInterval);
+        mapHuntRevealInterval = null;
+      }
       if (!mapHuntMap || !window.d3) return;
       const svg = d3.select(mapHuntMap);
-      svg.selectAll("[data-map-hunt-code]").classed("reveal-flash", false);
-      svg.selectAll("[data-map-hunt-halo]").classed("reveal-flash", false);
+      svg.selectAll("[data-map-hunt-code]").classed("reveal-flash reveal-dim", false);
+      svg.selectAll("[data-map-hunt-halo]").classed("reveal-flash reveal-dim", false);
       svg.selectAll("text.map-hunt-reveal-label").remove();
+      updateMapHuntMarkerScale(mapHuntState?.zoomTransform || d3.zoomIdentity);
     }
 
     function flashMapHuntTargetReveal(code) {
@@ -34157,9 +34191,21 @@ button,
           .text(c.name);
         updateMapHuntMarkerScale(mapHuntState.zoomTransform || d3.zoomIdentity);
       }
-      // This is a persistent teaching state, not a one-off flash. It remains
-      // visible until the learner clicks the revealed target (or leaves/resets
-      // the round), so GeoDen never makes them hunt for the answer again.
+      // Persistent teaching state. Use a simple JS phase toggle instead of a
+      // CSS SVG animation: Samsung/Android can corrupt heavily transformed SVG
+      // paths when non-scaling strokes and infinite animations are combined.
+      let dim = false;
+      mapHuntRevealInterval = window.setInterval(() => {
+        if (!mapHuntState?.awaitingRevealClick || mapHuntCurrentCountry()?.code !== code || !mapHuntMap || !window.d3) {
+          clearMapHuntRevealFlash();
+          return;
+        }
+        dim = !dim;
+        const currentSvg = d3.select(mapHuntMap);
+        currentSvg.selectAll(`[data-map-hunt-code="${code}"]`).classed("reveal-dim", dim);
+        currentSvg.selectAll(`[data-map-hunt-halo="${code}"]`).classed("reveal-dim", dim);
+      }, 480);
+      updateMapHuntMarkerScale(mapHuntState.zoomTransform || d3.zoomIdentity);
     }
 
     function mapHuntScheduleNext(delay = 650) {
@@ -34351,8 +34397,33 @@ button,
       const { k, viewportScale, mobile, visiblePx, haloPx } = metrics;
       const svg = d3.select(mapHuntMap);
       const screenToSvg = px => px / (k * viewportScale);
-      svg.selectAll("circle.map-hunt-marker").attr("r", screenToSvg(visiblePx));
-      svg.selectAll("circle.map-hunt-reveal-halo").attr("r", screenToSvg(haloPx));
+
+      // Keep all strokes screen-sized ourselves. `vector-effect:non-scaling-stroke`
+      // is convenient, but produces severe paint corruption in Samsung/Android
+      // browsers when a complex SVG group is repeatedly zoomed and recoloured.
+      svg.selectAll("path.map-hunt-context-country").each(function() {
+        this.style.setProperty("stroke-width", `${screenToSvg(.62)}px`, "important");
+      });
+      svg.selectAll("path.map-hunt-country").each(function() {
+        let px = .78;
+        if (this.classList.contains("wrong-tap")) px = 1.15;
+        else if (this.classList.contains("reveal-flash")) px = 1.65;
+        else if (this.classList.contains("try-1") || this.classList.contains("try-2") || this.classList.contains("try-3") || this.classList.contains("revealed")) px = .95;
+        this.style.setProperty("stroke-width", `${screenToSvg(px)}px`, "important");
+      });
+
+      svg.selectAll("circle.map-hunt-marker")
+        .attr("r", screenToSvg(visiblePx))
+        .each(function() {
+          let px = 2.0;
+          if (this.classList.contains("wrong-tap")) px = 2.45;
+          else if (this.classList.contains("reveal-flash")) px = 3.0;
+          else if (this.classList.contains("try-1") || this.classList.contains("try-2") || this.classList.contains("try-3") || this.classList.contains("revealed")) px = 2.25;
+          this.style.setProperty("stroke-width", `${screenToSvg(px)}px`, "important");
+        });
+      svg.selectAll("circle.map-hunt-reveal-halo")
+        .attr("r", screenToSvg(haloPx))
+        .each(function() { this.style.setProperty("stroke-width", `${screenToSvg(2.2)}px`, "important"); });
 
       const tempScreenPx = mobile ? 8.0 : 12.0;
       const revealScreenPx = mobile ? 8.5 : 13.0;
